@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0F172A">
+  <title>ORSPEX · License</title>
+  <meta name="description" content="ORSPEX License — the terms under which ORSPEX Core is licensed to you: perpetual, single-user, Windows desktop.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orspex-dark: #0F172A;
+      --orspex-blue: #2563EB;
+      --orspex-sky: #5BC0EB;
+      --orspex-green: #22C55E;
+      --orspex-mint: #6EE7A0;
+      --orspex-slate: #64748B;
+      --orspex-border: #E2E8F0;
+      --orspex-white: #FFFFFF;
+      --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      --font-arabic: 'Segoe UI', 'Tahoma', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif;
+      --font-chinese: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Noto Sans SC', sans-serif;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--orspex-white);
+      font-family: var(--font-sans);
+      color: var(--orspex-dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      transition: font-family 0.2s ease;
+    }
+
+    html[lang="ar"] body { direction: rtl; font-family: var(--font-arabic); }
+    html[lang="zh"] body { font-family: var(--font-chinese); }
+
+    /* ============================================================
+       ANIMATED BACKGROUND
+    ============================================================ */
+    .bg-anim {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none; opacity: 0.28;
+    }
+    .bg-anim svg { width: 100%; height: 100%; display: block; }
+
+    @keyframes drift-slow {
+      0% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-30px) scale(1.06); }
+      66% { transform: translate(-30px,35px) scale(0.96); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-medium {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(-45px,40px) scale(1.08); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-fast {
+      0% { transform: translate(0,0); }
+      50% { transform: translate(35px,-40px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes color-mint-sky { 0%,100%{fill:#6EE7A0;} 50%{fill:#5BC0EB;} }
+    @keyframes color-sky-blue { 0%,100%{fill:#5BC0EB;} 50%{fill:#2563EB;} }
+    @keyframes color-blue-green { 0%,100%{fill:#2563EB;} 50%{fill:#22C55E;} }
+    @keyframes color-green-mint { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes color-sky-mint { 0%,100%{fill:#5BC0EB;} 50%{fill:#6EE7A0;} }
+    @keyframes pulse-soft { 0%,100%{opacity:0.18;} 50%{opacity:0.4;} }
+    @keyframes twinkle { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+    @keyframes dash-rotate { from{stroke-dashoffset:0;} to{stroke-dashoffset:-400;} }
+    @keyframes stroke-sky-blue { 0%,100%{stroke:#5BC0EB;} 50%{stroke:#2563EB;} }
+    @keyframes stroke-green-mint { 0%,100%{stroke:#22C55E;} 50%{stroke:#6EE7A0;} }
+
+    .orb-1 { animation: drift-slow 24s ease-in-out infinite, color-mint-sky 18s ease-in-out infinite; transform-origin: 200px 200px; }
+    .orb-2 { animation: drift-medium 30s ease-in-out infinite, color-sky-blue 22s ease-in-out infinite; transform-origin: 1200px 300px; }
+    .orb-3 { animation: drift-slow 36s ease-in-out infinite, color-blue-green 26s ease-in-out infinite; transform-origin: 400px 700px; }
+    .orb-4 { animation: drift-medium 28s ease-in-out infinite, color-green-mint 20s ease-in-out infinite; transform-origin: 1100px 800px; }
+    .orb-5 { animation: drift-fast 20s ease-in-out infinite, color-sky-mint 24s ease-in-out infinite; transform-origin: 700px 400px; }
+
+    .pulse-1 { animation: pulse-soft 6s ease-in-out infinite, stroke-sky-blue 20s ease-in-out infinite; }
+    .pulse-2 { animation: pulse-soft 8s ease-in-out infinite 1s, stroke-green-mint 24s ease-in-out infinite; }
+    .pulse-3 { animation: pulse-soft 7s ease-in-out infinite 2s, stroke-sky-blue 22s ease-in-out infinite; }
+
+    .dot-1 { animation: twinkle 4s ease-in-out infinite; }
+    .dot-2 { animation: twinkle 5s ease-in-out infinite 0.5s; }
+    .dot-3 { animation: twinkle 3.5s ease-in-out infinite 1s; }
+    .dot-4 { animation: twinkle 6s ease-in-out infinite 1.5s; }
+    .dot-5 { animation: twinkle 4.5s ease-in-out infinite 2s; }
+    .dot-6 { animation: twinkle 5.5s ease-in-out infinite 0.8s; }
+    .dot-7 { animation: twinkle 4.2s ease-in-out infinite 1.2s; }
+    .dot-8 { animation: twinkle 5.8s ease-in-out infinite 0.3s; }
+
+    .ring-1 { animation: dash-rotate 60s linear infinite; transform-origin: 1300px 200px; }
+    .ring-2 { animation: dash-rotate 80s linear infinite reverse; transform-origin: 250px 850px; }
+
+    @media (prefers-reduced-motion: reduce) { .bg-anim * { animation: none !important; } }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .site-header, main, .site-footer { position: relative; z-index: 1; }
+    .site-header, .site-footer {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .wrap { width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 2.75rem; }
+    .wrap-narrow { width: 100%; max-width: 900px; margin: 0 auto; padding: 0 2.75rem; }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .site-header { width: 100%; border-bottom: 1px solid var(--orspex-border); }
+    .header-inner { padding: 1.25rem 0; display: flex; flex-direction: column; gap: 1rem; }
+
+    .header-top {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1.5rem;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 1rem;
+      flex-shrink: 0; text-decoration: none; color: inherit;
+    }
+    .brand-mark { width: 58px; height: 58px; flex-shrink: 0; }
+    .brand-text { display: flex; flex-direction: column; gap: 0.15rem; }
+    .brand-text .name {
+      font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--orspex-dark); line-height: 1;
+    }
+    .brand-text .tagline {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 2.4px;
+      color: #334155; text-transform: uppercase; white-space: nowrap;
+    }
+    html[lang="zh"] .brand-text .tagline { letter-spacing: 4px; text-transform: none; font-weight: 500; }
+    html[lang="ar"] .brand-text .tagline { letter-spacing: 1px; text-transform: none; font-weight: 500; }
+
+    .header-actions { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+
+    .offline-badge {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #ECFDF5; color: #065F46;
+      font-size: 0.82rem; font-weight: 500;
+      padding: 0.5rem 1rem; border-radius: 60px;
+      border: 1px solid #A7F3D0; letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .offline-badge::before { content: "⚡"; font-size: 0.95rem; }
+
+    .btn-cta {
+      background: var(--orspex-dark); color: white;
+      font-size: 0.9rem; font-weight: 500;
+      padding: 0.7rem 1.4rem; border-radius: 60px;
+      border: 1px solid var(--orspex-dark); cursor: pointer;
+      letter-spacing: 0.3px; display: inline-flex;
+      align-items: center; gap: 0.5rem;
+      transition: background 0.15s, transform 0.15s;
+      white-space: nowrap; font-family: inherit;
+      text-decoration: none;
+    }
+    .btn-cta:hover { background: #1E293B; transform: translateY(-1px); }
+    .btn-cta span:first-child { font-size: 1rem; line-height: 1; }
+
+    .lang-switch {
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.28rem;
+    }
+    .lang-switch button {
+      background: transparent; border: none;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      color: #475569; padding: 0.4rem 0.75rem;
+      border-radius: 60px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.3px; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.4rem; line-height: 1;
+    }
+    .lang-switch button .flag { font-size: 1.05rem; line-height: 1; }
+    .lang-switch button:hover { color: var(--orspex-dark); }
+    .lang-switch button.active { background: var(--orspex-dark); color: white; }
+
+    .header-nav-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1rem;
+    }
+
+    .nav-links {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.25rem 0.3rem; list-style: none;
+    }
+    .nav-links > li { position: relative; }
+    .nav-links > li > a, .nav-links > li > button {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: inherit; font-size: 0.95rem; font-weight: 500;
+      color: #1E293B; text-decoration: none;
+      padding: 0.6rem 1.1rem; border-radius: 60px;
+      border: none; background: transparent; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap; line-height: 1.15;
+    }
+    .nav-links > li > a:hover, .nav-links > li > button:hover {
+      background: #F1F5F9; color: var(--orspex-blue);
+    }
+    .nav-links > li > a.current { background: #EFF6FF; color: var(--orspex-blue); }
+
+    .caret { font-size: 0.7rem; opacity: 0.7; transform: translateY(1px); }
+    .dropdown { position: relative; }
+    .dropdown-panel {
+      position: absolute; top: calc(100% + 8px); left: 0;
+      min-width: 300px; background: var(--orspex-white);
+      border-radius: 12px; border: 1px solid var(--orspex-border);
+      box-shadow: 0 12px 28px -6px rgba(15,23,42,0.12);
+      padding: 0.6rem; display: none; flex-direction: column;
+      gap: 0.15rem; z-index: 100;
+    }
+    html[lang="ar"] .dropdown-panel { right: 0; left: auto; }
+    .dropdown:hover .dropdown-panel,
+    .dropdown:focus-within .dropdown-panel { display: flex; }
+    .dropdown-panel a {
+      display: flex; flex-direction: column; gap: 0.1rem;
+      padding: 0.7rem 1rem; border-radius: 8px;
+      text-decoration: none; color: var(--orspex-dark);
+      font-size: 0.92rem; font-weight: 500;
+      transition: background 0.12s; line-height: 1.35;
+    }
+    .dropdown-panel a:hover { background: #F1F5F9; }
+    .dropdown-panel a small { font-size: 0.76rem; font-weight: 400; color: var(--orspex-slate); }
+    .dropdown-panel .divider { height: 1px; background: var(--orspex-border); margin: 0.3rem 0.6rem; }
+
+    .menu-toggle-checkbox { display: none; }
+    .menu-toggle-label {
+      display: none; align-items: center; justify-content: center;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.65rem 1.15rem;
+      font-size: 0.92rem; font-weight: 500;
+      color: var(--orspex-dark); cursor: pointer;
+      gap: 0.5rem; user-select: none; white-space: nowrap;
+    }
+    .menu-toggle-label span { font-size: 1.05rem; line-height: 1; }
+
+    /* ============================================================
+       LEGAL PAGE HEADER
+    ============================================================ */
+    main { flex: 1; padding: 4rem 0; }
+
+    .breadcrumb {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--orspex-slate); margin-bottom: 1.5rem;
+    }
+    .breadcrumb a { color: var(--orspex-slate); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--orspex-blue); }
+    .breadcrumb .sep { opacity: 0.5; }
+    .breadcrumb .current { color: var(--orspex-dark); font-weight: 500; }
+
+    .legal-hero {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--orspex-border);
+    }
+
+    .legal-hero .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 3px; color: var(--orspex-blue);
+      background: #EFF6FF; padding: 0.35rem 0.95rem;
+      border-radius: 999px; margin-bottom: 1.25rem; text-transform: uppercase;
+    }
+    html[lang="ar"] .legal-hero .eyebrow,
+    html[lang="zh"] .legal-hero .eyebrow { text-transform: none; letter-spacing: 2px; }
+
+    .legal-hero h1 {
+      font-size: clamp(1.9rem, 4vw, 2.75rem);
+      font-weight: 700; letter-spacing: -0.8px;
+      line-height: 1.15; margin-bottom: 1rem;
+    }
+    html[lang="ar"] .legal-hero h1 { letter-spacing: 0; line-height: 1.4; }
+    html[lang="zh"] .legal-hero h1 { letter-spacing: 0.5px; line-height: 1.3; }
+
+    .legal-hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      font-size: 0.85rem;
+      color: var(--orspex-slate);
+    }
+    .legal-hero .meta strong {
+      color: var(--orspex-dark);
+      font-weight: 600;
+    }
+
+    /* TL;DR summary box */
+    .legal-summary {
+      background: linear-gradient(135deg, #EFF6FF 0%, #ECFDF5 100%);
+      border: 1px solid #BFDBFE;
+      border-radius: 16px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+    .legal-summary .icon {
+      font-size: 1.75rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+    .legal-summary .body { flex: 1; }
+    .legal-summary h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--orspex-dark);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.2px;
+    }
+    .legal-summary p {
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.65;
+    }
+
+    /* Licence summary at-a-glance */
+    .licence-glance {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    .glance-card {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 14px;
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .glance-card .glance-k {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--orspex-slate);
+    }
+    html[lang="ar"] .glance-card .glance-k,
+    html[lang="zh"] .glance-card .glance-k { text-transform: none; letter-spacing: 0.5px; }
+    .glance-card .glance-v {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--orspex-dark);
+      letter-spacing: -0.2px;
+    }
+    .glance-card .glance-v small {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--orspex-slate);
+      margin-top: 0.15rem;
+    }
+    .glance-card.accent-green { border-inline-start: 4px solid var(--orspex-green); }
+    .glance-card.accent-blue { border-inline-start: 4px solid var(--orspex-blue); }
+    .glance-card.accent-sky { border-inline-start: 4px solid var(--orspex-sky); }
+    .glance-card.accent-violet { border-inline-start: 4px solid #8B5CF6; }
+
+    /* Legal body content */
+    .legal-body {
+      max-width: 720px;
+    }
+
+    .legal-section {
+      margin-bottom: 2.5rem;
+      scroll-margin-top: 2rem;
+    }
+
+    .legal-section h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--orspex-dark);
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--orspex-border);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      line-height: 1.3;
+    }
+    .legal-section h2 .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: #EFF6FF;
+      color: var(--orspex-blue);
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    html[lang="ar"] .legal-section h2 .num,
+    html[lang="zh"] .legal-section h2 .num { font-size: 0.82rem; }
+
+    .legal-section p {
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.75;
+      margin-bottom: 0.9rem;
+    }
+    html[lang="ar"] .legal-section p,
+    html[lang="zh"] .legal-section p { line-height: 1.95; }
+
+    .legal-section ul {
+      list-style: none;
+      margin: 0.75rem 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .legal-section ul li {
+      position: relative;
+      padding-inline-start: 1.35rem;
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.7;
+    }
+    .legal-section ul li::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0.7em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--orspex-blue);
+      opacity: 0.7;
+    }
+    html[lang="ar"] .legal-section ul li::before { background: var(--orspex-green); }
+
+    .legal-section strong { color: var(--orspex-dark); font-weight: 600; }
+
+    .legal-section a {
+      color: var(--orspex-blue);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+    .legal-section a:hover { border-bottom-color: var(--orspex-blue); }
+
+    /* Highlight cards */
+    .legal-highlight {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-inline-start: 4px solid var(--orspex-green);
+      border-radius: 12px;
+      padding: 1.15rem 1.35rem;
+      margin: 1rem 0 1.25rem;
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.7;
+    }
+    .legal-highlight strong { color: var(--orspex-dark); }
+
+    /* "Yes you may" and "No you may not" pair */
+    .yesno-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.25rem 0 1.5rem;
+    }
+    .yesno-card {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 12px;
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .yesno-card.yes { border-inline-start: 4px solid var(--orspex-green); }
+    .yesno-card.no  { border-inline-start: 4px solid #EF4444; }
+    .yesno-card .yn-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    html[lang="ar"] .yesno-card .yn-head,
+    html[lang="zh"] .yesno-card .yn-head { text-transform: none; letter-spacing: 0.3px; }
+    .yesno-card.yes .yn-head { color: #047857; }
+    .yesno-card.no  .yn-head { color: #B91C1C; }
+    .yesno-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin: 0;
+      padding: 0;
+    }
+    .yesno-card ul li {
+      font-size: 0.88rem;
+      color: #334155;
+      line-height: 1.55;
+      padding-inline-start: 1.15rem;
+      position: relative;
+    }
+    .yesno-card.yes ul li::before {
+      content: "✓";
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0;
+      color: var(--orspex-green);
+      font-weight: 700;
+    }
+    .yesno-card.no ul li::before {
+      content: "✕";
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0;
+      color: #EF4444;
+      font-weight: 700;
+    }
+
+    /* Table of contents */
+    .toc {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 14px;
+      padding: 1.35rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .toc h3 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orspex-slate);
+      margin-bottom: 0.9rem;
+    }
+    html[lang="ar"] .toc h3,
+    html[lang="zh"] .toc h3 { text-transform: none; letter-spacing: 1px; }
+
+    .toc ol {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.4rem 1.25rem;
+      counter-reset: toc;
+    }
+    .toc ol li {
+      counter-increment: toc;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .toc ol li::before {
+      content: counter(toc, decimal-leading-zero);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--orspex-blue);
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+    .toc ol li a {
+      color: #334155;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .toc ol li a:hover { color: var(--orspex-blue); }
+
+    /* Last updated + footer note */
+    .legal-footer-note {
+      margin-top: 3rem;
+      padding: 1.75rem 1.5rem;
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 16px;
+      text-align: center;
+    }
+    .legal-footer-note p {
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+    }
+    .legal-footer-note p:last-child { margin-bottom: 0; }
+    .legal-footer-note a {
+      color: var(--orspex-blue);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .legal-footer-note a:hover { text-decoration: underline; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .site-footer {
+      width: 100%; border-top: 1px solid var(--orspex-border); margin-top: auto;
+    }
+    .footer-inner {
+      padding: 2.5rem 0 1.5rem;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .footer-intro {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+    }
+    .footer-intro p {
+      font-size: 0.9rem; color: var(--orspex-slate);
+      line-height: 1.55; max-width: 640px;
+    }
+    .footer-status {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #EFF6FF; color: #1E40AF;
+      font-size: 0.78rem; font-weight: 500;
+      padding: 0.4rem 0.9rem; border-radius: 60px;
+      border: 1px solid #BFDBFE; white-space: nowrap;
+    }
+    .footer-status::before { content: "🔒"; font-size: 0.85rem; }
+
+    .footer-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem 2.5rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 2rem;
+    }
+    .footer-col h4 {
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--orspex-dark);
+      margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    html[lang="ar"] .footer-col h4,
+    html[lang="zh"] .footer-col h4 { text-transform: none; letter-spacing: 1px; }
+    .footer-col h4::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-blue); flex-shrink: 0;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col ul li a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; color: #334155; text-decoration: none;
+      padding: 0.2rem 0; transition: color 0.15s, transform 0.15s;
+    }
+    .footer-col ul li a:hover { color: var(--orspex-blue); transform: translateX(2px); }
+    html[lang="ar"] .footer-col ul li a:hover { transform: translateX(-2px); }
+    .footer-col ul li a small {
+      font-size: 0.66rem; color: var(--orspex-slate);
+      background: #F1F5F9; padding: 0.1rem 0.4rem;
+      border-radius: 4px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    html[lang="ar"] .footer-col ul li a small,
+    html[lang="zh"] .footer-col ul li a small { text-transform: none; letter-spacing: 0.2px; }
+    .footer-col ul li a small.offline { background: #ECFDF5; color: #047857; }
+    .footer-col ul li a small.online { background: #EFF6FF; color: #1D4ED8; }
+    .footer-col ul li a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .footer-bottom {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1.4rem;
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--orspex-slate); }
+    .footer-copy strong { color: var(--orspex-dark); font-weight: 600; }
+    .footer-legal {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.5rem 1.25rem; list-style: none;
+    }
+    .footer-legal a {
+      font-size: 0.82rem; color: var(--orspex-slate);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-legal a:hover { color: var(--orspex-blue); }
+    .footer-legal a.active { color: var(--orspex-blue); font-weight: 600; }
+    .footer-version {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
+      color: #475569; background: #F1F5F9;
+      padding: 0.3rem 0.7rem; border-radius: 40px;
+      border: 1px solid var(--orspex-border);
+    }
+    .footer-version::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-green);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18); flex-shrink: 0;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1000px) {
+      .wrap, .wrap-narrow { padding: 0 1.5rem; }
+
+      .header-nav-row { flex-direction: column; align-items: stretch; }
+      .menu-toggle-label { display: inline-flex; align-self: flex-start; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        gap: 0.3rem; padding-top: 0.6rem;
+      }
+      .menu-toggle-checkbox:checked ~ .nav-links { display: flex; }
+      .nav-links > li > a, .nav-links > li > button {
+        justify-content: space-between; width: 100%;
+        padding: 0.8rem 1.05rem; border-radius: 10px; background: #F8FAFC;
+      }
+      .dropdown-panel {
+        position: static; display: flex; box-shadow: none;
+        border: none; background: transparent;
+        padding: 0.25rem 0 0.25rem 1rem; min-width: auto;
+        border-left: 3px solid var(--orspex-sky);
+        border-radius: 0; margin-top: 0.25rem; margin-left: 0.5rem;
+      }
+      html[lang="ar"] .dropdown-panel {
+        border-left: none; border-right: 3px solid var(--orspex-sky);
+        padding: 0.25rem 1rem 0.25rem 0;
+        margin-left: 0; margin-right: 0.5rem;
+      }
+      .dropdown-panel a { padding: 0.6rem 0.8rem; background: transparent; }
+      .header-actions { width: 100%; justify-content: space-between; }
+
+      .footer-columns { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2rem; }
+    }
+
+    @media (max-width: 700px) {
+      .yesno-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .wrap, .wrap-narrow { padding: 0 1rem; }
+
+      .header-inner { padding: 1rem 0; gap: 0.85rem; }
+      .brand { gap: 0.75rem; }
+      .brand-mark { width: 46px; height: 46px; }
+      .brand-text .name { font-size: 1.3rem; }
+      .brand-text .tagline { font-size: 0.62rem; letter-spacing: 1.8px; }
+
+      .header-actions { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+      .offline-badge, .btn-cta { justify-content: center; }
+      .lang-switch { align-self: center; }
+
+      main { padding: 2.5rem 0; }
+
+      .legal-summary { flex-direction: column; gap: 0.75rem; padding: 1.25rem 1.25rem; }
+      .legal-section h2 { font-size: 1.1rem; }
+      .legal-section p, .legal-section ul li { font-size: 0.92rem; }
+
+      .licence-glance { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .glance-card { padding: 0.9rem 1rem; }
+      .glance-card .glance-v { font-size: 0.95rem; }
+
+      .footer-inner { padding: 1.75rem 0 1.25rem; gap: 1.5rem; }
+      .footer-intro { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .footer-intro p { font-size: 0.86rem; line-height: 1.5; }
+
+      .footer-columns {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem 1rem; padding-top: 1.25rem;
+      }
+      .footer-col h4 { font-size: 0.68rem; letter-spacing: 1.5px; margin-bottom: 0.65rem; }
+      .footer-col ul { gap: 0.4rem; }
+      .footer-col ul li a { font-size: 0.82rem; gap: 0.35rem; }
+      .footer-col ul li a small { font-size: 0.58rem; padding: 0.08rem 0.32rem; letter-spacing: 0.2px; }
+
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding-top: 1.1rem; }
+      .footer-copy { font-size: 0.76rem; }
+      .footer-legal { gap: 0.4rem 0.9rem; }
+      .footer-legal a { font-size: 0.76rem; }
+      .footer-version { font-size: 0.66rem; padding: 0.25rem 0.6rem; }
+    }
+
+    @media (max-width: 400px) {
+      .footer-columns { grid-template-columns: 1fr; }
+      .licence-glance { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       ANIMATED BACKGROUND
+  ============================================================ -->
+  <div class="bg-anim" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"
+         preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#0F172A" stroke-width="0.5" opacity="0.015"/>
+        </pattern>
+        <radialGradient id="fade-soft" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="white" stop-opacity="0.45"/>
+          <stop offset="55%" stop-color="white" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <rect width="1600" height="900" fill="url(#grid)"/>
+
+      <g class="orb-1"><circle cx="200" cy="200" r="220" fill="#6EE7A0" opacity="0.35"/><circle cx="200" cy="200" r="220" fill="url(#fade-soft)"/></g>
+      <g class="orb-2"><circle cx="1300" cy="220" r="260" fill="#5BC0EB" opacity="0.3"/><circle cx="1300" cy="220" r="260" fill="url(#fade-soft)"/></g>
+      <g class="orb-3"><circle cx="320" cy="720" r="240" fill="#2563EB" opacity="0.28"/><circle cx="320" cy="720" r="240" fill="url(#fade-soft)"/></g>
+      <g class="orb-4"><circle cx="1180" cy="760" r="230" fill="#22C55E" opacity="0.3"/><circle cx="1180" cy="760" r="230" fill="url(#fade-soft)"/></g>
+      <g class="orb-5"><circle cx="820" cy="440" r="150" fill="#5BC0EB" opacity="0.28"/><circle cx="820" cy="440" r="150" fill="url(#fade-soft)"/></g>
+
+      <circle class="pulse-1" cx="500" cy="480" r="140" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.25"/>
+      <circle class="pulse-2" cx="1080" cy="380" r="180" fill="none" stroke="#22C55E" stroke-width="1" opacity="0.22"/>
+      <circle class="pulse-3" cx="760" cy="620" r="110" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.22"/>
+
+      <circle class="ring-1" cx="1300" cy="200" r="200" fill="none" stroke="#2563EB" stroke-width="0.8" stroke-dasharray="6 14" opacity="0.22"/>
+      <circle class="ring-2" cx="250" cy="850" r="220" fill="none" stroke="#5BC0EB" stroke-width="0.8" stroke-dasharray="8 18" opacity="0.2"/>
+
+      <circle class="dot-1" cx="340" cy="140" r="2.5" fill="#2563EB"/>
+      <circle class="dot-2" cx="900" cy="120" r="2" fill="#5BC0EB"/>
+      <circle class="dot-3" cx="1250" cy="480" r="2.5" fill="#22C55E"/>
+      <circle class="dot-4" cx="1520" cy="700" r="2" fill="#6EE7A0"/>
+      <circle class="dot-5" cx="600" cy="820" r="2.5" fill="#2563EB"/>
+      <circle class="dot-6" cx="120" cy="560" r="2" fill="#5BC0EB"/>
+      <circle class="dot-7" cx="1000" cy="780" r="2" fill="#22C55E"/>
+      <circle class="dot-8" cx="700" cy="240" r="2.5" fill="#2563EB"/>
+    </svg>
+  </div>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header" aria-label="ORSPEX main header">
+    <div class="wrap header-inner">
+
+      <div class="header-top">
+        <a class="brand" href="#" aria-label="ORSPEX home">
+          <svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"
+               role="img" aria-label="ORSPEX mark">
+            <circle cx="300" cy="300" r="280" fill="none" stroke="#6EE7A0" stroke-width="18"/>
+            <circle cx="300" cy="300" r="200" fill="none" stroke="#5BC0EB" stroke-width="16"/>
+            <circle cx="300" cy="300" r="160" fill="#2563EB"/>
+            <circle cx="300" cy="300" r="90" fill="#0F172A"/>
+            <circle cx="300" cy="100" r="22" fill="#5BC0EB"/>
+            <circle cx="300" cy="500" r="22" fill="#5BC0EB"/>
+            <circle cx="100" cy="300" r="22" fill="#22C55E"/>
+            <circle cx="500" cy="300" r="22" fill="#22C55E"/>
+          </svg>
+          <div class="brand-text">
+            <span class="name">ORSPEX</span>
+            <span class="tagline" data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button type="button" data-lang="en" class="active" aria-label="English">
+              <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+            </button>
+            <button type="button" data-lang="ar" aria-label="العربية">
+              <span class="flag" aria-hidden="true">🇸🇦</span><span>عربي</span>
+            </button>
+            <button type="button" data-lang="zh" aria-label="中文">
+              <span class="flag" aria-hidden="true">🇨🇳</span><span>中文</span>
+            </button>
+          </div>
+
+          <span class="offline-badge" data-i18n="badge.offline">offline · no cloud</span>
+          <a class="btn-cta" href="#download">
+            <span>⬇</span> <span data-i18n="cta.get">get ORSPEX suite</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="header-nav-row">
+        <input type="checkbox" id="orspex-menu-toggle" class="menu-toggle-checkbox" aria-hidden="true">
+        <label for="orspex-menu-toggle" class="menu-toggle-label">
+          <span>☰</span> <span data-i18n="nav.products">Products</span>
+        </label>
+
+        <ul class="nav-links" role="menubar">
+          <li role="none"><a href="#" role="menuitem">🧩 <span data-i18n="nav.core">ORSPEX Core</span></a></li>
+          <li role="none"><a href="#" role="menuitem">👥 <span data-i18n="nav.job">Job Seeker</span></a></li>
+
+          <li class="dropdown" role="none">
+            <button type="button" role="menuitem" aria-haspopup="true">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span> <span class="caret">▼</span>
+            </button>
+            <div class="dropdown-panel" role="menu">
+              <a href="#" role="menuitem"><span>🌐 <span data-i18n="nav.pdf.online">Online Compressor</span></span><small data-i18n="nav.pdf.online.desc">compress huge PDFs in browser</small></a>
+              <div class="divider"></div>
+              <a href="#" role="menuitem"><span>💻 <span data-i18n="nav.pdf.offline">Offline / Desktop</span></span><small data-i18n="nav.pdf.offline.desc">standalone desktop tool</small></a>
+            </div>
+          </li>
+
+          <li class="dropdown" role="none">
+            <button type="button" role="menuitem" aria-haspopup="true">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <span class="caret">▼</span>
+            </button>
+            <div class="dropdown-panel" role="menu">
+              <a href="#" role="menuitem"><span>🌐 <span data-i18n="nav.favicon.online">Online Maker</span></span><small data-i18n="nav.favicon.online.desc">designer tool, works offline</small></a>
+              <div class="divider"></div>
+              <a href="#" role="menuitem"><span>💻 <span data-i18n="nav.favicon.offline">Offline / Desktop</span></span><small data-i18n="nav.favicon.offline.desc">compress &amp; generate favicons</small></a>
+            </div>
+          </li>
+
+          <li role="none"><a href="#" role="menuitem">🔍 <span data-i18n="nav.talent">Find Talent</span></a></li>
+        </ul>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN — License
+  ============================================================ -->
+  <main>
+    <div class="wrap-narrow">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="#" data-i18n="crumb.home">ORSPEX</a>
+        <span class="sep">/</span>
+        <a href="#" data-i18n="crumb.legal">Legal</a>
+        <span class="sep">/</span>
+        <span class="current" data-i18n="crumb.license">License</span>
+      </nav>
+
+      <header class="legal-hero">
+        <span class="eyebrow" data-i18n="license.eyebrow">Legal · License</span>
+        <h1 data-i18n="license.h1">License</h1>
+        <div class="meta">
+          <span><strong data-i18n="license.meta.effective">Effective</strong> · 1 January 2026</span>
+          <span><strong data-i18n="license.meta.updated">Last updated</strong> · 1 January 2026</span>
+          <span><strong data-i18n="license.meta.version">License version</strong> · 1.0</span>
+        </div>
+      </header>
+
+      <!-- TL;DR summary -->
+      <div class="legal-summary">
+        <div class="icon">🔑</div>
+        <div class="body">
+          <h2 data-i18n="license.tldr.h">The short version</h2>
+          <p data-i18n="license.tldr.p">
+            ORSPEX Core is licensed to you — not sold. Your licence is
+            <strong>perpetual</strong>, <strong>single-user</strong>, and for
+            <strong>Windows desktop</strong> use. You can use it freely for your own business or
+            personal bookkeeping, forever, without a subscription. You cannot redistribute it,
+            resell it, or share your licence with others.
+          </p>
+        </div>
+      </div>
+
+      <!-- At-a-glance cards -->
+      <div class="licence-glance">
+        <div class="glance-card accent-green">
+          <span class="glance-k" data-i18n="license.glance.type.k">Licence type</span>
+          <span class="glance-v" data-i18n="license.glance.type.v">Perpetual</span>
+        </div>
+        <div class="glance-card accent-blue">
+          <span class="glance-k" data-i18n="license.glance.users.k">Users</span>
+          <span class="glance-v" data-i18n="license.glance.users.v">Single-user</span>
+        </div>
+        <div class="glance-card accent-sky">
+          <span class="glance-k" data-i18n="license.glance.platform.k">Platform</span>
+          <span class="glance-v" data-i18n="license.glance.platform.v">Windows</span>
+        </div>
+        <div class="glance-card accent-violet">
+          <span class="glance-k" data-i18n="license.glance.fee.k">Renewal fee</span>
+          <span class="glance-v" data-i18n="license.glance.fee.v">None</span>
+        </div>
+      </div>
+
+      <!-- Table of contents -->
+      <nav class="toc" aria-label="Contents">
+        <h3 data-i18n="license.toc.h">On this page</h3>
+        <ol>
+          <li><a href="#l1" data-i18n="license.toc.1">What this licence covers</a></li>
+          <li><a href="#l2" data-i18n="license.toc.2">You may</a></li>
+          <li><a href="#l3" data-i18n="license.toc.3">You may not</a></li>
+          <li><a href="#l4" data-i18n="license.toc.4">Duration &amp; permanence</a></li>
+          <li><a href="#l5" data-i18n="license.toc.5">Installations &amp; devices</a></li>
+          <li><a href="#l6" data-i18n="license.toc.6">Transfers &amp; resale</a></li>
+          <li><a href="#l7" data-i18n="license.toc.7">Third-party components</a></li>
+          <li><a href="#l8" data-i18n="license.toc.8">Revocation</a></li>
+          <li><a href="#l9" data-i18n="license.toc.9">Relationship to Terms of Use</a></li>
+          <li><a href="#l10" data-i18n="license.toc.10">Contact us</a></li>
+        </ol>
+      </nav>
+
+      <article class="legal-body">
+
+        <!-- 1. What this license covers -->
+        <section class="legal-section" id="l1">
+          <h2><span class="num">01</span> <span data-i18n="license.s1.h">What this licence covers</span></h2>
+          <p data-i18n="license.s1.p1">
+            This License describes the rights and restrictions that apply to your use of
+            <strong>ORSPEX Core</strong> and any updates we provide for it. It sits alongside
+            our <a href="#">Terms of Use</a> and our <a href="#">Privacy Statement</a>, which
+            also apply.
+          </p>
+          <p data-i18n="license.s1.p2">
+            ORSPEX Core is <strong>licensed</strong>, not sold. When you obtain the software,
+            you receive a personal licence to use it — the software itself, including its code,
+            design, and documentation, remains the property of ORSPEX and its licensors.
+          </p>
+        </section>
+
+        <!-- 2. You may -->
+        <section class="legal-section" id="l2">
+          <h2><span class="num">02</span> <span data-i18n="license.s2.h">You may</span></h2>
+          <p data-i18n="license.s2.p1">
+            Under this licence, you may freely:
+          </p>
+          <ul>
+            <li data-i18n="license.s2.li1">Install ORSPEX Core on a Windows desktop device you own or control</li>
+            <li data-i18n="license.s2.li2">Use ORSPEX Core for your personal bookkeeping or your own business operations</li>
+            <li data-i18n="license.s2.li3">Enter, store, process, and manage any lawful data you wish</li>
+            <li data-i18n="license.s2.li4">Create and keep unlimited backups of your data file</li>
+            <li data-i18n="license.s2.li5">Generate, export, and share any reports, invoices, or documents you create</li>
+            <li data-i18n="license.s2.li6">Use the software for as long as you wish — this licence does not expire</li>
+          </ul>
+        </section>
+
+        <!-- 3. You may not -->
+        <section class="legal-section" id="l3">
+          <h2><span class="num">03</span> <span data-i18n="license.s3.h">You may not</span></h2>
+          <p data-i18n="license.s3.p1">
+            The licence is personal and single-user. To protect the software and other users,
+            you may not:
+          </p>
+          <ul>
+            <li data-i18n="license.s3.li1">Copy, resell, rent, lease, sublicense, or redistribute ORSPEX Core</li>
+            <li data-i18n="license.s3.li2">Share your copy or your licence with other individuals or organizations</li>
+            <li data-i18n="license.s3.li3">Modify, adapt, translate, or create derivative works based on the software</li>
+            <li data-i18n="license.s3.li4">Reverse engineer, decompile, or disassemble the application (except where local law expressly permits)</li>
+            <li data-i18n="license.s3.li5">Remove or alter any copyright, trademark, or proprietary notices</li>
+            <li data-i18n="license.s3.li6">Use the software to build a competing product or service</li>
+            <li data-i18n="license.s3.li7">Use the software for any unlawful purpose</li>
+          </ul>
+
+          <!-- Yes / No pair for a quick visual summary -->
+          <div class="yesno-grid">
+            <div class="yesno-card yes">
+              <div class="yn-head">✓ <span data-i18n="license.yesno.yes">You can</span></div>
+              <ul>
+                <li data-i18n="license.yesno.yes.1">Use it forever on your own Windows PC</li>
+                <li data-i18n="license.yesno.yes.2">Store your business data locally</li>
+                <li data-i18n="license.yesno.yes.3">Back up your data file freely</li>
+                <li data-i18n="license.yesno.yes.4">Export invoices and reports</li>
+              </ul>
+            </div>
+            <div class="yesno-card no">
+              <div class="yn-head">✕ <span data-i18n="license.yesno.no">You cannot</span></div>
+              <ul>
+                <li data-i18n="license.yesno.no.1">Redistribute or resell the app</li>
+                <li data-i18n="license.yesno.no.2">Share your licence with others</li>
+                <li data-i18n="license.yesno.no.3">Modify or reverse-engineer it</li>
+                <li data-i18n="license.yesno.no.4">Build a competing product from it</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Duration -->
+        <section class="legal-section" id="l4">
+          <h2><span class="num">04</span> <span data-i18n="license.s4.h">Duration &amp; permanence</span></h2>
+          <p data-i18n="license.s4.p1">
+            Your licence is <strong>perpetual</strong> for the version of ORSPEX Core that you
+            install. It does not expire, and it does not require a recurring subscription or
+            renewal fee.
+          </p>
+          <p data-i18n="license.s4.p2">
+            Updates, new features, or new major versions of ORSPEX Core released in the future
+            may be offered under separate terms. We are not obligated to provide updates, but
+            when we do, they will be considered part of the Services and governed by this
+            licence and our Terms of Use — unless we explicitly say otherwise.
+          </p>
+        </section>
+
+        <!-- 5. Installations -->
+        <section class="legal-section" id="l5">
+          <h2><span class="num">05</span> <span data-i18n="license.s5.h">Installations &amp; devices</span></h2>
+          <p data-i18n="license.s5.p1">
+            A single licence permits installation and use on <strong>one primary Windows
+            desktop device</strong> that you own or control, for the use of one individual.
+          </p>
+          <p data-i18n="license.s5.p2">
+            If you replace your computer (for example, upgrade to a new PC), you may uninstall
+            ORSPEX Core from the old device and install it on the new one. Your licence travels
+            with you — the software is bound to your use, not to a specific machine's hardware.
+          </p>
+          <p data-i18n="license.s5.p3">
+            Using the software on more than one device simultaneously, or by more than one
+            individual, requires additional licences. Please contact us if you would like to
+            discuss a multi-user or multi-device arrangement.
+          </p>
+        </section>
+
+        <!-- 6. Transfers -->
+        <section class="legal-section" id="l6">
+          <h2><span class="num">06</span> <span data-i18n="license.s6.h">Transfers &amp; resale</span></h2>
+          <p data-i18n="license.s6.p1">
+            This licence is personal to you and cannot be transferred, sold, gifted, or assigned
+            to another person or organization without our prior written consent.
+          </p>
+          <p data-i18n="license.s6.p2">
+            If you sell or transfer the device on which ORSPEX Core is installed, you must
+            uninstall the software first and delete your data file, unless the buyer independently
+            holds their own valid licence.
+          </p>
+        </section>
+
+        <!-- 7. Third-party components -->
+        <section class="legal-section" id="l7">
+          <h2><span class="num">07</span> <span data-i18n="license.s7.h">Third-party components</span></h2>
+          <p data-i18n="license.s7.p1">
+            ORSPEX Core may include third-party open-source libraries or components. These
+            components are provided under their own licences, which take precedence over this
+            licence with respect to those components only.
+          </p>
+          <p data-i18n="license.s7.p2">
+            A list of third-party components and their licences is available on request, or may
+            be included in the application's documentation.
+          </p>
+        </section>
+
+        <!-- 8. Revocation -->
+        <section class="legal-section" id="l8">
+          <h2><span class="num">08</span> <span data-i18n="license.s8.h">Revocation</span></h2>
+          <p data-i18n="license.s8.p1">
+            We may revoke your licence if you materially breach this licence or our Terms of
+            Use — for example, by redistributing the software, sharing your licence with
+            others, or attempting to bypass any licence controls.
+          </p>
+          <p data-i18n="license.s8.p2">
+            Where practical, we will give you notice and an opportunity to remedy the breach
+            before revoking. If your licence is revoked, you must uninstall ORSPEX Core.
+          </p>
+          <p data-i18n="license.s8.p3">
+            <strong>Your data remains yours.</strong> Revocation of a licence does not affect
+            your ownership of the data file on your device, and it does not give us any right
+            to access that data — which we never have, because ORSPEX Core is offline.
+          </p>
+        </section>
+
+        <!-- 9. Relationship to Terms -->
+        <section class="legal-section" id="l9">
+          <h2><span class="num">09</span> <span data-i18n="license.s9.h">Relationship to Terms of Use</span></h2>
+          <p data-i18n="license.s9.p1">
+            This License is part of, and is to be read together with, our
+            <a href="#">Terms of Use</a>. Where a topic is covered by both documents, the
+            provisions of this License control with respect to matters of licensing and
+            permitted use of the software; the Terms of Use govern broader matters such as
+            liability, governing law, and general use of the Services.
+          </p>
+          <p data-i18n="license.s9.p2">
+            In the event of a conflict between this License and the Terms of Use regarding
+            your rights to use the software, this License prevails.
+          </p>
+        </section>
+
+        <!-- 10. Contact -->
+        <section class="legal-section" id="l10">
+          <h2><span class="num">10</span> <span data-i18n="license.s10.h">Contact us</span></h2>
+          <p data-i18n="license.s10.p1">
+            If you have any questions about this License, or would like to discuss additional
+            licences (multi-user, multi-device, or enterprise), please reach out.
+          </p>
+          <ul>
+            <li><strong data-i18n="license.s10.email.lbl">Email:</strong> <a href="mailto:license@orspex.com">license@orspex.com</a></li>
+            <li><strong data-i18n="license.s10.postal.lbl">Postal:</strong> <span data-i18n="license.s10.postal.v">ORSPEX, Electra Street, Abu Dhabi, United Arab Emirates</span></li>
+          </ul>
+        </section>
+
+      </article>
+
+      <!-- Footer note -->
+      <div class="legal-footer-note">
+        <p data-i18n="license.note.p">
+          By installing or using ORSPEX Core, you confirm that you accept the terms of this
+          License.
+        </p>
+        <p>
+          <a href="#" data-i18n="license.note.privacy">View Privacy Statement</a>
+          ·
+          <a href="#" data-i18n="license.note.terms">View Terms of Use</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer" aria-label="ORSPEX footer">
+    <div class="wrap footer-inner">
+
+      <div class="footer-intro">
+        <p data-i18n="footer.intro">
+          A stand-alone, offline-first software suite. No cloud, no accounts, no internet
+          required — your data stays on your device.
+        </p>
+        <span class="footer-status" data-i18n="footer.status">offline by design · privacy first</span>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h4 data-i18n="footer.products">Products</h4>
+          <ul>
+            <li><a href="#">🧩 <span data-i18n="nav.core">ORSPEX Core</span> <small class="offline" data-i18n="badge.offline.short">offline</small></a></li>
+            <li><a href="#">👥 <span data-i18n="nav.job">Job Seeker</span> <small class="offline" data-i18n="badge.offline.short">offline</small></a></li>
+            <li><a href="#">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="#">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+            <li><a href="#">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="#">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.modules">Modules</h4>
+          <ul>
+            <li><a href="#" data-i18n="footer.modules.erp">🧩 Stand-alone ERP</a></li>
+            <li><a href="#" data-i18n="footer.modules.jobs">👥 Jobs &amp; Hiring</a></li>
+            <li><a href="#" data-i18n="footer.modules.pdf">📄 PDF Compression</a></li>
+            <li><a href="#" data-i18n="footer.modules.fav">⭐ Favicon Generation</a></li>
+            <li><a href="#" data-i18n="footer.modules.talent">🔍 Talent Directory</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.resources">Resources</h4>
+          <ul>
+            <li><a href="#" data-i18n="footer.resources.docs">📘 Documentation</a></li>
+            <li><a href="#" data-i18n="footer.resources.guides">🛠️ Install guides</a></li>
+            <li><a href="#" data-i18n="footer.resources.release">🧪 Release notes</a></li>
+            <li><a href="#" data-i18n="footer.resources.faq">❓ FAQ</a></li>
+            <li><a href="#" data-i18n="footer.resources.security">🛡️ Security &amp; privacy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.company">Company</h4>
+          <ul>
+            <li><a href="#" data-i18n="footer.company.about">🏢 About ORSPEX</a></li>
+            <li><a href="#" data-i18n="footer.company.contact">✉️ Contact</a></li>
+            <li><a href="#" data-i18n="footer.company.partners">🤝 Partners</a></li>
+            <li><a href="#" data-i18n="footer.company.press">📰 Press kit</a></li>
+            <li><a href="#" data-i18n="footer.company.careers">💼 Careers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          © <strong>ORSPEX</strong> · <span data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>. <span data-i18n="footer.rights">All rights reserved.</span>
+        </div>
+        <ul class="footer-legal">
+          <li><a href="#" data-i18n="footer.legal.privacy">Privacy</a></li>
+          <li><a href="#" data-i18n="footer.legal.terms">Terms</a></li>
+          <li><a href="#" class="active" data-i18n="footer.legal.license">License</a></li>
+          <li><a href="#" data-i18n="footer.legal.status">Status</a></li>
+        </ul>
+        <span class="footer-version">v1.0.0 · <span data-i18n="footer.version.stable">stable</span> · <span data-i18n="footer.version.offline">offline</span></span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       i18n
+  ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      const translations = {
+        en: {
+          'brand.tagline': 'Organization · Planning · Services · Execution',
+          'badge.offline': 'offline · no cloud',
+          'badge.offline.short': 'offline',
+          'badge.online.short': 'online',
+          'badge.desktop.short': 'desktop',
+          'cta.get': 'get ORSPEX suite',
+
+          'nav.products': 'Products',
+          'nav.core': 'ORSPEX Core',
+          'nav.job': 'Job Seeker',
+          'nav.pdf': 'PDF Compressor',
+          'nav.pdf.online': 'Online Compressor',
+          'nav.pdf.online.desc': 'compress huge PDFs in browser',
+          'nav.pdf.offline': 'Offline / Desktop',
+          'nav.pdf.offline.desc': 'standalone desktop tool',
+          'nav.favicon': 'Favicon Maker',
+          'nav.favicon.online': 'Online Maker',
+          'nav.favicon.online.desc': 'designer tool, works offline',
+          'nav.favicon.offline': 'Offline / Desktop',
+          'nav.favicon.offline.desc': 'compress & generate favicons',
+          'nav.talent': 'Find Talent',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.legal': 'Legal',
+          'crumb.license': 'License',
+
+          'license.eyebrow': 'Legal · License',
+          'license.h1': 'License',
+          'license.meta.effective': 'Effective',
+          'license.meta.updated': 'Last updated',
+          'license.meta.version': 'License version',
+
+          'license.tldr.h': 'The short version',
+          'license.tldr.p': 'ORSPEX Core is licensed to you — not sold. Your licence is perpetual, single-user, and for Windows desktop use. You can use it freely for your own business or personal bookkeeping, forever, without a subscription. You cannot redistribute it, resell it, or share your licence with others.',
+
+          'license.glance.type.k': 'Licence type',
+          'license.glance.type.v': 'Perpetual',
+          'license.glance.users.k': 'Users',
+          'license.glance.users.v': 'Single-user',
+          'license.glance.platform.k': 'Platform',
+          'license.glance.platform.v': 'Windows',
+          'license.glance.fee.k': 'Renewal fee',
+          'license.glance.fee.v': 'None',
+
+          'license.toc.h': 'On this page',
+          'license.toc.1': 'What this licence covers',
+          'license.toc.2': 'You may',
+          'license.toc.3': 'You may not',
+          'license.toc.4': 'Duration & permanence',
+          'license.toc.5': 'Installations & devices',
+          'license.toc.6': 'Transfers & resale',
+          'license.toc.7': 'Third-party components',
+          'license.toc.8': 'Revocation',
+          'license.toc.9': 'Relationship to Terms of Use',
+          'license.toc.10': 'Contact us',
+
+          'license.s1.h': 'What this licence covers',
+          'license.s1.p1': 'This License describes the rights and restrictions that apply to your use of ORSPEX Core and any updates we provide for it. It sits alongside our Terms of Use and our Privacy Statement, which also apply.',
+          'license.s1.p2': 'ORSPEX Core is licensed, not sold. When you obtain the software, you receive a personal licence to use it — the software itself, including its code, design, and documentation, remains the property of ORSPEX and its licensors.',
+
+          'license.s2.h': 'You may',
+          'license.s2.p1': 'Under this licence, you may freely:',
+          'license.s2.li1': 'Install ORSPEX Core on a Windows desktop device you own or control',
+          'license.s2.li2': 'Use ORSPEX Core for your personal bookkeeping or your own business operations',
+          'license.s2.li3': 'Enter, store, process, and manage any lawful data you wish',
+          'license.s2.li4': 'Create and keep unlimited backups of your data file',
+          'license.s2.li5': 'Generate, export, and share any reports, invoices, or documents you create',
+          'license.s2.li6': 'Use the software for as long as you wish — this licence does not expire',
+
+          'license.s3.h': 'You may not',
+          'license.s3.p1': 'The licence is personal and single-user. To protect the software and other users, you may not:',
+          'license.s3.li1': 'Copy, resell, rent, lease, sublicense, or redistribute ORSPEX Core',
+          'license.s3.li2': 'Share your copy or your licence with other individuals or organizations',
+          'license.s3.li3': 'Modify, adapt, translate, or create derivative works based on the software',
+          'license.s3.li4': 'Reverse engineer, decompile, or disassemble the application (except where local law expressly permits)',
+          'license.s3.li5': 'Remove or alter any copyright, trademark, or proprietary notices',
+          'license.s3.li6': 'Use the software to build a competing product or service',
+          'license.s3.li7': 'Use the software for any unlawful purpose',
+
+          'license.yesno.yes': 'You can',
+          'license.yesno.yes.1': 'Use it forever on your own Windows PC',
+          'license.yesno.yes.2': 'Store your business data locally',
+          'license.yesno.yes.3': 'Back up your data file freely',
+          'license.yesno.yes.4': 'Export invoices and reports',
+          'license.yesno.no': 'You cannot',
+          'license.yesno.no.1': 'Redistribute or resell the app',
+          'license.yesno.no.2': 'Share your licence with others',
+          'license.yesno.no.3': 'Modify or reverse-engineer it',
+          'license.yesno.no.4': 'Build a competing product from it',
+
+          'license.s4.h': 'Duration & permanence',
+          'license.s4.p1': 'Your licence is perpetual for the version of ORSPEX Core that you install. It does not expire, and it does not require a recurring subscription or renewal fee.',
+          'license.s4.p2': 'Updates, new features, or new major versions of ORSPEX Core released in the future may be offered under separate terms. We are not obligated to provide updates, but when we do, they will be considered part of the Services and governed by this licence and our Terms of Use — unless we explicitly say otherwise.',
+
+          'license.s5.h': 'Installations & devices',
+          'license.s5.p1': 'A single licence permits installation and use on one primary Windows desktop device that you own or control, for the use of one individual.',
+          'license.s5.p2': 'If you replace your computer (for example, upgrade to a new PC), you may uninstall ORSPEX Core from the old device and install it on the new one. Your licence travels with you — the software is bound to your use, not to a specific machine\'s hardware.',
+          'license.s5.p3': 'Using the software on more than one device simultaneously, or by more than one individual, requires additional licences. Please contact us if you would like to discuss a multi-user or multi-device arrangement.',
+
+          'license.s6.h': 'Transfers & resale',
+          'license.s6.p1': 'This licence is personal to you and cannot be transferred, sold, gifted, or assigned to another person or organization without our prior written consent.',
+          'license.s6.p2': 'If you sell or transfer the device on which ORSPEX Core is installed, you must uninstall the software first and delete your data file, unless the buyer independently holds their own valid licence.',
+
+          'license.s7.h': 'Third-party components',
+          'license.s7.p1': 'ORSPEX Core may include third-party open-source libraries or components. These components are provided under their own licences, which take precedence over this licence with respect to those components only.',
+          'license.s7.p2': 'A list of third-party components and their licences is available on request, or may be included in the application\'s documentation.',
+
+          'license.s8.h': 'Revocation',
+          'license.s8.p1': 'We may revoke your licence if you materially breach this licence or our Terms of Use — for example, by redistributing the software, sharing your licence with others, or attempting to bypass any licence controls.',
+          'license.s8.p2': 'Where practical, we will give you notice and an opportunity to remedy the breach before revoking. If your licence is revoked, you must uninstall ORSPEX Core.',
+          'license.s8.p3': 'Your data remains yours. Revocation of a licence does not affect your ownership of the data file on your device, and it does not give us any right to access that data — which we never have, because ORSPEX Core is offline.',
+
+          'license.s9.h': 'Relationship to Terms of Use',
+          'license.s9.p1': 'This License is part of, and is to be read together with, our Terms of Use. Where a topic is covered by both documents, the provisions of this License control with respect to matters of licensing and permitted use of the software; the Terms of Use govern broader matters such as liability, governing law, and general use of the Services.',
+          'license.s9.p2': 'In the event of a conflict between this License and the Terms of Use regarding your rights to use the software, this License prevails.',
+
+          'license.s10.h': 'Contact us',
+          'license.s10.p1': 'If you have any questions about this License, or would like to discuss additional licences (multi-user, multi-device, or enterprise), please reach out.',
+          'license.s10.email.lbl': 'Email:',
+          'license.s10.postal.lbl': 'Postal:',
+          'license.s10.postal.v': 'ORSPEX, Electra Street, Abu Dhabi, United Arab Emirates',
+
+          'license.note.p': 'By installing or using ORSPEX Core, you confirm that you accept the terms of this License.',
+          'license.note.privacy': 'View Privacy Statement',
+          'license.note.terms': 'View Terms of Use',
+
+          'footer.intro': 'A stand-alone, offline-first software suite. No cloud, no accounts, no internet required — your data stays on your device.',
+          'footer.status': 'offline by design · privacy first',
+          'footer.products': 'Products',
+          'footer.modules': 'Modules',
+          'footer.resources': 'Resources',
+          'footer.company': 'Company',
+          'footer.modules.erp': '🧩 Stand-alone ERP',
+          'footer.modules.jobs': '👥 Jobs & Hiring',
+          'footer.modules.pdf': '📄 PDF Compression',
+          'footer.modules.fav': '⭐ Favicon Generation',
+          'footer.modules.talent': '🔍 Talent Directory',
+          'footer.resources.docs': '📘 Documentation',
+          'footer.resources.guides': '🛠️ Install guides',
+          'footer.resources.release': '🧪 Release notes',
+          'footer.resources.faq': '❓ FAQ',
+          'footer.resources.security': '🛡️ Security & privacy',
+          'footer.company.about': '🏢 About ORSPEX',
+          'footer.company.contact': '✉️ Contact',
+          'footer.company.partners': '🤝 Partners',
+          'footer.company.press': '📰 Press kit',
+          'footer.company.careers': '💼 Careers',
+          'footer.rights': 'All rights reserved.',
+          'footer.legal.privacy': 'Privacy',
+          'footer.legal.terms': 'Terms',
+          'footer.legal.license': 'License',
+          'footer.legal.status': 'Status',
+          'footer.version.stable': 'stable',
+          'footer.version.offline': 'offline'
+        },
+
+        ar: {
+          'brand.tagline': 'التنظيم · التخطيط · الخدمات · التنفيذ',
+          'badge.offline': 'يعمل دون اتصال · بدون سحابة',
+          'badge.offline.short': 'دون اتصال',
+          'badge.online.short': 'عبر الإنترنت',
+          'badge.desktop.short': 'سطح المكتب',
+          'cta.get': 'احصل على حزمة ORSPEX',
+
+          'nav.products': 'المنتجات',
+          'nav.core': 'نظام ORSPEX الأساسي',
+          'nav.job': 'الباحث عن عمل',
+          'nav.pdf': 'ضاغط PDF',
+          'nav.pdf.online': 'الضاغط عبر الإنترنت',
+          'nav.pdf.online.desc': 'ضغط ملفات PDF الكبيرة في المتصفح',
+          'nav.pdf.offline': 'دون اتصال / سطح المكتب',
+          'nav.pdf.offline.desc': 'أداة سطح مكتب مستقلة',
+          'nav.favicon': 'صانع الأيقونات',
+          'nav.favicon.online': 'الصانع عبر الإنترنت',
+          'nav.favicon.online.desc': 'أداة مصمم تعمل دون اتصال',
+          'nav.favicon.offline': 'دون اتصال / سطح المكتب',
+          'nav.favicon.offline.desc': 'ضغط وإنشاء الأيقونات',
+          'nav.talent': 'ابحث عن موهبة',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.legal': 'القانونية',
+          'crumb.license': 'الترخيص',
+
+          'license.eyebrow': 'قانوني · الترخيص',
+          'license.h1': 'الترخيص',
+          'license.meta.effective': 'ساري المفعول',
+          'license.meta.updated': 'آخر تحديث',
+          'license.meta.version': 'إصدار الترخيص',
+
+          'license.tldr.h': 'الملخص السريع',
+          'license.tldr.p': 'يُمنح ORSPEX Core لك بموجب ترخيص — لا يُباع. ترخيصك دائم، لمستخدم واحد، ولسطح مكتب ويندوز. يمكنك استخدامه بحرية لأعمالك الخاصة أو محاسبتك الشخصية، إلى الأبد، دون اشتراك. لا يمكنك إعادة توزيعه أو بيعه أو مشاركة ترخيصك مع الآخرين.',
+
+          'license.glance.type.k': 'نوع الترخيص',
+          'license.glance.type.v': 'دائم',
+          'license.glance.users.k': 'المستخدمون',
+          'license.glance.users.v': 'مستخدم واحد',
+          'license.glance.platform.k': 'المنصة',
+          'license.glance.platform.v': 'ويندوز',
+          'license.glance.fee.k': 'رسوم التجديد',
+          'license.glance.fee.v': 'لا يوجد',
+
+          'license.toc.h': 'في هذه الصفحة',
+          'license.toc.1': 'ما يغطيه هذا الترخيص',
+          'license.toc.2': 'يُسمح لك',
+          'license.toc.3': 'لا يُسمح لك',
+          'license.toc.4': 'المدة والاستمرارية',
+          'license.toc.5': 'عمليات التثبيت والأجهزة',
+          'license.toc.6': 'النقل وإعادة البيع',
+          'license.toc.7': 'مكونات الأطراف الثالثة',
+          'license.toc.8': 'إلغاء الترخيص',
+          'license.toc.9': 'العلاقة بشروط الاستخدام',
+          'license.toc.10': 'اتصل بنا',
+
+          'license.s1.h': 'ما يغطيه هذا الترخيص',
+          'license.s1.p1': 'يوضح هذا الترخيص الحقوق والقيود التي تنطبق على استخدامك لـ ORSPEX Core وأي تحديثات نوفرها له. وهو يُقرأ مع شروط الاستخدام وبيان الخصوصية لدينا، وكلاهما ينطبق أيضاً.',
+          'license.s1.p2': 'يُمنح ORSPEX Core بموجب ترخيص، ولا يُباع. عند حصولك على البرنامج، تحصل على ترخيص شخصي لاستخدامه — ويظل البرنامج نفسه، بما في ذلك شفرته وتصميمه ووثائقه، ملكاً لـ ORSPEX والمرخصين لها.',
+
+          'license.s2.h': 'يُسمح لك',
+          'license.s2.p1': 'بموجب هذا الترخيص، يمكنك بحرية:',
+          'license.s2.li1': 'تثبيت ORSPEX Core على جهاز سطح مكتب ويندوز تملكه أو تتحكم به',
+          'license.s2.li2': 'استخدام ORSPEX Core لمحاسبتك الشخصية أو عمليات أعمالك الخاصة',
+          'license.s2.li3': 'إدخال وتخزين ومعالجة وإدارة أي بيانات مشروعة تريدها',
+          'license.s2.li4': 'إنشاء والاحتفاظ بنسخ احتياطية غير محدودة من ملف بياناتك',
+          'license.s2.li5': 'إنشاء وتصدير ومشاركة أي تقارير أو فواتير أو مستندات تُنشئها',
+          'license.s2.li6': 'استخدام البرنامج طالما أردت — هذا الترخيص لا ينتهي',
+
+          'license.s3.h': 'لا يُسمح لك',
+          'license.s3.p1': 'الترخيص شخصي لمستخدم واحد. لحماية البرنامج والمستخدمين الآخرين، لا يجوز لك:',
+          'license.s3.li1': 'نسخ أو إعادة بيع أو تأجير أو تُأجير من الباطن أو ترخيص أو إعادة توزيع ORSPEX Core',
+          'license.s3.li2': 'مشاركة نسختك أو ترخيصك مع أفراد أو مؤسسات أخرى',
+          'license.s3.li3': 'تعديل أو تكييف أو ترجمة أو إنشاء أعمال مشتقة بناءً على البرنامج',
+          'license.s3.li4': 'إجراء هندسة عكسية أو فك تجميع أو تفكيك التطبيق (إلا حيث يسمح القانون المحلي صراحةً)',
+          'license.s3.li5': 'إزالة أو تغيير أي إشعارات حقوق الطبع أو العلامات التجارية أو الإشعارات الخاصة',
+          'license.s3.li6': 'استخدام البرنامج لبناء منتج أو خدمة منافسة',
+          'license.s3.li7': 'استخدام البرنامج لأي غرض غير قانوني',
+
+          'license.yesno.yes': 'يمكنك',
+          'license.yesno.yes.1': 'استخدامه للأبد على جهاز ويندوز الخاص بك',
+          'license.yesno.yes.2': 'تخزين بيانات عملك محلياً',
+          'license.yesno.yes.3': 'نسخ ملف بياناتك احتياطياً بحرية',
+          'license.yesno.yes.4': 'تصدير الفواتير والتقارير',
+          'license.yesno.no': 'لا يمكنك',
+          'license.yesno.no.1': 'إعادة توزيع أو إعادة بيع التطبيق',
+          'license.yesno.no.2': 'مشاركة ترخيصك مع الآخرين',
+          'license.yesno.no.3': 'تعديله أو إجراء هندسة عكسية عليه',
+          'license.yesno.no.4': 'بناء منتج منافس منه',
+
+          'license.s4.h': 'المدة والاستمرارية',
+          'license.s4.p1': 'ترخيصك دائم للإصدار الذي تقوم بتثبيته من ORSPEX Core. لا ينتهي، ولا يتطلب اشتراكاً متكرراً أو رسوم تجديد.',
+          'license.s4.p2': 'قد تُقدَّم التحديثات أو الميزات الجديدة أو الإصدارات الرئيسية الجديدة من ORSPEX Core في المستقبل بموجب شروط منفصلة. نحن لسنا ملزمين بتقديم تحديثات، ولكن عندما نقدمها، ستُعتبر جزءاً من الخدمات وتخضع لهذا الترخيص وشروط الاستخدام — ما لم نذكر خلاف ذلك صراحةً.',
+
+          'license.s5.h': 'عمليات التثبيت والأجهزة',
+          'license.s5.p1': 'يسمح الترخيص الواحد بالتثبيت والاستخدام على جهاز سطح مكتب ويندوز رئيسي واحد تملكه أو تتحكم به، لاستخدام فرد واحد.',
+          'license.s5.p2': 'إذا استبدلت جهاز الكمبيوتر (على سبيل المثال، قمت بالترقية إلى جهاز جديد)، فيمكنك إلغاء تثبيت ORSPEX Core من الجهاز القديم وتثبيته على الجديد. ينتقل ترخيصك معك — البرنامج مرتبط باستخدامك، لا بالأجهزة المحددة.',
+          'license.s5.p3': 'يتطلب استخدام البرنامج على أكثر من جهاز واحد في نفس الوقت، أو من قبل أكثر من فرد واحد، تراخيص إضافية. يرجى التواصل معنا إذا كنت ترغب في مناقشة ترتيب متعدد المستخدمين أو الأجهزة.',
+
+          'license.s6.h': 'النقل وإعادة البيع',
+          'license.s6.p1': 'هذا الترخيص شخصي لك ولا يمكن نقله أو بيعه أو إهداؤه أو التنازل عنه لشخص آخر أو مؤسسة أخرى دون موافقتنا الكتابية المسبقة.',
+          'license.s6.p2': 'إذا قمت ببيع أو نقل الجهاز الذي تم تثبيت ORSPEX Core عليه، فيجب عليك أولاً إلغاء تثبيت البرنامج وحذف ملف بياناتك، إلا إذا كان المشتري يحمل ترخيصاً صالحاً خاصاً به.',
+
+          'license.s7.h': 'مكونات الأطراف الثالثة',
+          'license.s7.p1': 'قد يتضمن ORSPEX Core مكتبات أو مكونات مفتوحة المصدر من أطراف ثالثة. تُقدَّم هذه المكونات بموجب تراخيصها الخاصة، والتي تكون لها الأولوية على هذا الترخيص فيما يتعلق بتلك المكونات فقط.',
+          'license.s7.p2': 'تتوفر قائمة بمكونات الأطراف الثالثة وتراخيصها عند الطلب، أو قد تكون مضمنة في وثائق التطبيق.',
+
+          'license.s8.h': 'إلغاء الترخيص',
+          'license.s8.p1': 'يجوز لنا إلغاء ترخيصك إذا انتهكت هذا الترخيص أو شروط الاستخدام بشكل جوهري — على سبيل المثال، بإعادة توزيع البرنامج، أو مشاركة ترخيصك مع الآخرين، أو محاولة تجاوز أي من ضوابط الترخيص.',
+          'license.s8.p2': 'حيثما أمكن، سنمنحك إشعاراً وفرصة لتصحيح الانتهاك قبل الإلغاء. إذا تم إلغاء ترخيصك، فيجب عليك إلغاء تثبيت ORSPEX Core.',
+          'license.s8.p3': 'بياناتك تبقى لك. إلغاء الترخيص لا يؤثر على ملكيتك لملف البيانات على جهازك، ولا يمنحنا أي حق في الوصول إلى تلك البيانات — وهو حق لا نملكه أبداً، لأن ORSPEX Core يعمل دون اتصال.',
+
+          'license.s9.h': 'العلاقة بشروط الاستخدام',
+          'license.s9.p1': 'هذا الترخيص جزء من شروط الاستخدام لدينا، ويجب قراءته معها. عندما يغطي الموضوع كلا المستندين، تسري أحكام هذا الترخيص فيما يتعلق بمسائل الترخيص والاستخدام المسموح به للبرنامج؛ بينما تحكم شروط الاستخدام المسائل الأوسع مثل المسؤولية والقانون الحاكم والاستخدام العام للخدمات.',
+          'license.s9.p2': 'في حالة وجود تعارض بين هذا الترخيص وشروط الاستخدام فيما يتعلق بحقوقك في استخدام البرنامج، يسود هذا الترخيص.',
+
+          'license.s10.h': 'اتصل بنا',
+          'license.s10.p1': 'إذا كانت لديك أي أسئلة حول هذا الترخيص، أو ترغب في مناقشة تراخيص إضافية (متعددة المستخدمين، أو متعددة الأجهزة، أو للمؤسسات)، فيرجى التواصل معنا.',
+          'license.s10.email.lbl': 'البريد الإلكتروني:',
+          'license.s10.postal.lbl': 'البريد:',
+          'license.s10.postal.v': 'ORSPEX، شارع إلكترا، أبوظبي، الإمارات العربية المتحدة',
+
+          'license.note.p': 'بتثبيتك أو استخدامك ORSPEX Core، فإنك تؤكد قبولك لشروط هذا الترخيص.',
+          'license.note.privacy': 'عرض بيان الخصوصية',
+          'license.note.terms': 'عرض شروط الاستخدام',
+
+          'footer.intro': 'حزمة برامج مستقلة تعمل دون اتصال. بلا سحابة، بلا حسابات، بلا حاجة للإنترنت — بياناتك تبقى على جهازك.',
+          'footer.status': 'مصمم للعمل دون اتصال · الخصوصية أولاً',
+          'footer.products': 'المنتجات',
+          'footer.modules': 'الوحدات',
+          'footer.resources': 'الموارد',
+          'footer.company': 'الشركة',
+          'footer.modules.erp': '🧩 تخطيط موارد المؤسسات',
+          'footer.modules.jobs': '👥 الوظائف والتوظيف',
+          'footer.modules.pdf': '📄 ضغط PDF',
+          'footer.modules.fav': '⭐ إنشاء الأيقونات',
+          'footer.modules.talent': '🔍 دليل المواهب',
+          'footer.resources.docs': '📘 الوثائق',
+          'footer.resources.guides': '🛠️ أدلة التثبيت',
+          'footer.resources.release': '🧪 ملاحظات الإصدار',
+          'footer.resources.faq': '❓ الأسئلة الشائعة',
+          'footer.resources.security': '🛡️ الأمان والخصوصية',
+          'footer.company.about': '🏢 عن ORSPEX',
+          'footer.company.contact': '✉️ اتصل بنا',
+          'footer.company.partners': '🤝 الشركاء',
+          'footer.company.press': '📰 الحقيبة الصحفية',
+          'footer.company.careers': '💼 الوظائف',
+          'footer.rights': 'جميع الحقوق محفوظة.',
+          'footer.legal.privacy': 'الخصوصية',
+          'footer.legal.terms': 'الشروط',
+          'footer.legal.license': 'الترخيص',
+          'footer.legal.status': 'الحالة',
+          'footer.version.stable': 'مستقر',
+          'footer.version.offline': 'دون اتصال'
+        },
+
+        zh: {
+          'brand.tagline': '组织 · 规划 · 服务 · 执行',
+          'badge.offline': '离线 · 无需云端',
+          'badge.offline.short': '离线',
+          'badge.online.short': '在线',
+          'badge.desktop.short': '桌面',
+          'cta.get': '获取 ORSPEX 套件',
+
+          'nav.products': '产品',
+          'nav.core': 'ORSPEX 核心',
+          'nav.job': '求职者',
+          'nav.pdf': 'PDF 压缩器',
+          'nav.pdf.online': '在线压缩器',
+          'nav.pdf.online.desc': '在浏览器中压缩大型 PDF',
+          'nav.pdf.offline': '离线 / 桌面版',
+          'nav.pdf.offline.desc': '独立桌面工具',
+          'nav.favicon': '图标生成器',
+          'nav.favicon.online': '在线生成器',
+          'nav.favicon.online.desc': '设计师工具，可离线使用',
+          'nav.favicon.offline': '离线 / 桌面版',
+          'nav.favicon.offline.desc': '压缩并生成图标',
+          'nav.talent': '寻找人才',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.legal': '法律',
+          'crumb.license': '许可',
+
+          'license.eyebrow': '法律 · 许可',
+          'license.h1': '许可协议',
+          'license.meta.effective': '生效日期',
+          'license.meta.updated': '最后更新',
+          'license.meta.version': '许可版本',
+
+          'license.tldr.h': '简短说明',
+          'license.tldr.p': 'ORSPEX Core 是授权给您使用 —— 而不是出售给您。您的许可是永久性的、单用户的，用于 Windows 桌面。您可以自由地将其用于自己的业务或个人记账，永久使用，无需订阅。您不得再分发、转售或将您的许可与他人共享。',
+
+          'license.glance.type.k': '许可类型',
+          'license.glance.type.v': '永久',
+          'license.glance.users.k': '用户数',
+          'license.glance.users.v': '单用户',
+          'license.glance.platform.k': '平台',
+          'license.glance.platform.v': 'Windows',
+          'license.glance.fee.k': '续费',
+          'license.glance.fee.v': '无',
+
+          'license.toc.h': '本页内容',
+          'license.toc.1': '本许可涵盖的内容',
+          'license.toc.2': '您可以',
+          'license.toc.3': '您不可以',
+          'license.toc.4': '期限与永久性',
+          'license.toc.5': '安装与设备',
+          'license.toc.6': '转让与转售',
+          'license.toc.7': '第三方组件',
+          'license.toc.8': '撤销',
+          'license.toc.9': '与使用条款的关系',
+          'license.toc.10': '联系我们',
+
+          'license.s1.h': '本许可涵盖的内容',
+          'license.s1.p1': '本许可协议描述了适用于您使用 ORSPEX Core 及我们为其提供的任何更新的权利和限制。它与我们的使用条款和隐私声明一同适用。',
+          'license.s1.p2': 'ORSPEX Core 是授权使用，而非出售。当您获得本软件时，您获得的是使用它的个人许可 —— 软件本身（包括其代码、设计和文档）仍为 ORSPEX 及其许可方的财产。',
+
+          'license.s2.h': '您可以',
+          'license.s2.p1': '在本许可下，您可以自由：',
+          'license.s2.li1': '在您拥有或控制的 Windows 桌面设备上安装 ORSPEX Core',
+          'license.s2.li2': '将 ORSPEX Core 用于您的个人记账或您自己的业务运营',
+          'license.s2.li3': '输入、存储、处理和管理任何合法的数据',
+          'license.s2.li4': '创建并保留无限数量的数据文件备份',
+          'license.s2.li5': '生成、导出并分享您创建的任何报表、发票或文档',
+          'license.s2.li6': '随时使用本软件 —— 本许可不会过期',
+
+          'license.s3.h': '您不可以',
+          'license.s3.p1': '本许可是个人的、单用户的。为了保护软件和其他用户，您不得：',
+          'license.s3.li1': '复制、转售、出租、租赁、再许可或再分发 ORSPEX Core',
+          'license.s3.li2': '与其他个人或组织共享您的副本或许可',
+          'license.s3.li3': '修改、改编、翻译或基于本软件创建衍生作品',
+          'license.s3.li4': '对本应用程序进行反向工程、反编译或反汇编（当地法律明确允许的除外）',
+          'license.s3.li5': '删除或更改任何版权、商标或专有声明',
+          'license.s3.li6': '使用本软件构建竞争产品或服务',
+          'license.s3.li7': '将本软件用于任何非法目的',
+
+          'license.yesno.yes': '您可以',
+          'license.yesno.yes.1': '在您自己的 Windows 电脑上永久使用',
+          'license.yesno.yes.2': '在本地存储您的业务数据',
+          'license.yesno.yes.3': '自由备份您的数据文件',
+          'license.yesno.yes.4': '导出发票和报表',
+          'license.yesno.no': '您不可以',
+          'license.yesno.no.1': '再分发或转售本应用',
+          'license.yesno.no.2': '与他人共享您的许可',
+          'license.yesno.no.3': '修改或反向工程它',
+          'license.yesno.no.4': '用它构建竞争产品',
+
+          'license.s4.h': '期限与永久性',
+          'license.s4.p1': '对于您安装的 ORSPEX Core 版本，您的许可是永久性的。它不会过期，也不需要经常性订阅或续费。',
+          'license.s4.p2': '我们未来发布的 ORSPEX Core 更新、新功能或新主要版本可能会根据单独的条款提供。我们没有义务提供更新，但当我们提供时，它们将被视为服务的一部分，并受本许可和我们的使用条款约束 —— 除非我们明确说明另有规定。',
+
+          'license.s5.h': '安装与设备',
+          'license.s5.p1': '一份许可允许在您拥有或控制的一台主 Windows 桌面设备上安装和使用，供一位个人使用。',
+          'license.s5.p2': '如果您更换电脑（例如升级到新电脑），您可以从旧设备卸载 ORSPEX Core 并安装到新设备上。您的许可随您而行 —— 软件绑定于您的使用，而非特定机器的硬件。',
+          'license.s5.p3': '同时在多台设备上使用本软件，或由多位个人使用本软件，需要额外的许可。如果您想讨论多用户或多设备安排，请联系我们。',
+
+          'license.s6.h': '转让与转售',
+          'license.s6.p1': '本许可是您个人的，未经我们事先书面同意，不得转让、出售、赠送或转让给其他个人或组织。',
+          'license.s6.p2': '如果您出售或转让安装了 ORSPEX Core 的设备，您必须先卸载本软件并删除数据文件，除非买方独立持有其自身的有效许可。',
+
+          'license.s7.h': '第三方组件',
+          'license.s7.p1': 'ORSPEX Core 可能包含第三方开源库或组件。这些组件根据其自身的许可提供，就这些组件而言，其许可优先于本许可。',
+          'license.s7.p2': '第三方组件及其许可的清单可应要求提供，或可能包含在应用程序的文档中。',
+
+          'license.s8.h': '撤销',
+          'license.s8.p1': '如果您严重违反本许可或我们的使用条款 —— 例如再分发本软件、与他人共享您的许可，或试图绕过任何许可控制 —— 我们可能会撤销您的许可。',
+          'license.s8.p2': '在可行的情况下，我们会在撤销之前向您发出通知并给予您纠正违规的机会。如果您的许可被撤销，您必须卸载 ORSPEX Core。',
+          'license.s8.p3': '您的数据仍然属于您。撤销许可不影响您对设备上数据文件的所有权，也不赋予我们访问该数据的任何权利 —— 我们从不拥有该权利，因为 ORSPEX Core 是离线的。',
+
+          'license.s9.h': '与使用条款的关系',
+          'license.s9.p1': '本许可是我们使用条款的一部分，并应与其一并阅读。当某个主题同时被两份文件涵盖时，就软件的许可和允许使用事宜而言，以本许可的规定为准；使用条款则管辖更广泛的事宜，如责任、适用法律和服务的总体使用。',
+          'license.s9.p2': '如果本许可与使用条款就您使用软件的权利发生冲突，以本许可为准。',
+
+          'license.s10.h': '联系我们',
+          'license.s10.p1': '如果您对本许可有任何疑问，或想讨论附加许可（多用户、多设备或企业版），请与我们联系。',
+          'license.s10.email.lbl': '电子邮件：',
+          'license.s10.postal.lbl': '邮寄地址：',
+          'license.s10.postal.v': 'ORSPEX，Electra Street，阿布扎比，阿拉伯联合酋长国',
+
+          'license.note.p': '安装或使用 ORSPEX Core 即表示您确认接受本许可协议的条款。',
+          'license.note.privacy': '查看隐私声明',
+          'license.note.terms': '查看使用条款',
+
+          'footer.intro': '一套独立、离线优先的软件套件。无云端，无账户，无需互联网 —— 数据保留在您的设备上。',
+          'footer.status': '天生离线 · 隐私优先',
+          'footer.products': '产品',
+          'footer.modules': '模块',
+          'footer.resources': '资源',
+          'footer.company': '公司',
+          'footer.modules.erp': '🧩 独立 ERP',
+          'footer.modules.jobs': '👥 招聘与求职',
+          'footer.modules.pdf': '📄 PDF 压缩',
+          'footer.modules.fav': '⭐ 图标生成',
+          'footer.modules.talent': '🔍 人才目录',
+          'footer.resources.docs': '📘 文档',
+          'footer.resources.guides': '🛠️ 安装指南',
+          'footer.resources.release': '🧪 发行说明',
+          'footer.resources.faq': '❓ 常见问题',
+          'footer.resources.security': '🛡️ 安全与隐私',
+          'footer.company.about': '🏢 关于 ORSPEX',
+          'footer.company.contact': '✉️ 联系我们',
+          'footer.company.partners': '🤝 合作伙伴',
+          'footer.company.press': '📰 媒体资料',
+          'footer.company.careers': '💼 招聘',
+          'footer.rights': '版权所有。',
+          'footer.legal.privacy': '隐私',
+          'footer.legal.terms': '条款',
+          'footer.legal.license': '许可',
+          'footer.legal.status': '状态',
+          'footer.version.stable': '稳定版',
+          'footer.version.offline': '离线'
+        }
+      };
+
+      const root = document.getElementById('html-root');
+      const buttons = document.querySelectorAll('.lang-switch button');
+
+      function setLanguage(lang) {
+        if (!translations[lang]) return;
+        root.setAttribute('lang', lang);
+
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          const key = el.getAttribute('data-i18n');
+          const value = translations[lang][key];
+          if (value !== undefined) el.textContent = value;
+        });
+
+        buttons.forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+
+        try { localStorage.setItem('orspex-lang', lang); } catch (e) {}
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setLanguage(btn.getAttribute('data-lang'));
+        });
+      });
+
+      let initial = 'en';
+      try {
+        const saved = localStorage.getItem('orspex-lang');
+        if (saved && translations[saved]) initial = saved;
+        else {
+          const nav = (navigator.language || 'en').toLowerCase();
+          if (nav.startsWith('ar')) initial = 'ar';
+          else if (nav.startsWith('zh')) initial = 'zh';
+        }
+      } catch (e) {}
+
+      setLanguage(initial);
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "ORSPEX Suite",
+  "short_name": "ORSPEX",
+  "description": "Standalone, offline-first software suite — ERP, PDF compressor, favicon maker, and job tools.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0F172A",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

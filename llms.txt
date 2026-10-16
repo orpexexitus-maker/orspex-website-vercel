@@ -1,0 +1,29 @@
+# ORSPEX
+
+> Organization · Planning · Services · Execution. A standalone, offline-first software suite built for individuals and small teams.
+
+ORSPEX is a family of six standalone applications that run entirely offline — no cloud, no accounts, no internet required. The suite includes ERP software, job-seeking tools, PDF compression utilities (online and desktop), and favicon generation utilities (online and desktop). Your data never leaves your machine.
+
+## Products
+
+- [ORSPEX Core](https://your-real-domain.vercel.app/orspex-core/orspex-core.html): Stand-alone ERP — accounting, journal entries, taxation, branch company setup, customers, and suppliers.
+- [Job Seeker](https://orspex-jobs-seeking.vercel.app/): Online job-seeking platform and talent directory.
+- [PDF Compressor (online)](https://your-real-domain.vercel.app/pdf-compressor/pdf-compressor.html): Client-side PDF compression, no uploads.
+- [PDF Compressor (offline/desktop)](https://your-real-domain.vercel.app/pdf-compressor-offline/pdf-compressor-offline.html): Desktop application for Windows, macOS, and Linux. Source: https://github.com/orpexexitus-maker/orspex-pdf-compressor
+- [Favicon Maker (online)](https://your-real-domain.vercel.app/favicon-maker/favicon-maker.html): Generate favicons from any image.
+- [Favicon Maker (offline/desktop)](https://your-real-domain.vercel.app/favicon-maker-offline/favicon-maker-offline.html): Desktop favicon generator.
+
+## Philosophy
+
+- **Offline-first**: Every product works without an internet connection.
+- **No accounts**: No sign-ups, no logins, no tracking.
+- **Privacy by design**: Your files and data never leave your device.
+- **Standalone**: Each tool is independent — install only what you need.
+
+## Optional
+
+- [Privacy policy](https://your-real-domain.vercel.app/privacy.html)
+- [Terms of service](https://your-real-domain.vercel.app/terms.html)
+- [License](https://your-real-domain.vercel.app/license.html)
+- [Status](https://your-real-domain.vercel.app/status.html)
+- [GitHub repository](https://github.com/orpexexitus-maker/orspex-pdf-compressor)

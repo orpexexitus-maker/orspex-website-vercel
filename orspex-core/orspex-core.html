@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0F172A">
+  <title>ORSPEX Core · Stand-Alone ERP</title>
+  <meta name="description" content="ORSPEX Core — a single-user, stand-alone ERP that runs entirely on your Windows machine. Inventory, Purchasing, Sales, Accounting, Reports. No internet, no cloud, no accounts.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orspex-dark: #0F172A;
+      --orspex-blue: #2563EB;
+      --orspex-sky: #5BC0EB;
+      --orspex-green: #22C55E;
+      --orspex-mint: #6EE7A0;
+      --orspex-slate: #64748B;
+      --orspex-border: #E2E8F0;
+      --orspex-white: #FFFFFF;
+      --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      --font-arabic: 'Segoe UI', 'Tahoma', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif;
+      --font-chinese: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Noto Sans SC', sans-serif;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--orspex-white);
+      font-family: var(--font-sans);
+      color: var(--orspex-dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      transition: font-family 0.2s ease;
+    }
+
+    html[lang="ar"] body { direction: rtl; font-family: var(--font-arabic); }
+    html[lang="zh"] body { font-family: var(--font-chinese); }
+
+    /* ============================================================
+       ANIMATED BACKGROUND
+    ============================================================ */
+    .bg-anim {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none; opacity: 0.28;
+    }
+    .bg-anim svg { width: 100%; height: 100%; display: block; }
+
+    @keyframes drift-slow {
+      0% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-30px) scale(1.06); }
+      66% { transform: translate(-30px,35px) scale(0.96); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-medium {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(-45px,40px) scale(1.08); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-fast {
+      0% { transform: translate(0,0); }
+      50% { transform: translate(35px,-40px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes color-mint-sky { 0%,100%{fill:#6EE7A0;} 50%{fill:#5BC0EB;} }
+    @keyframes color-sky-blue { 0%,100%{fill:#5BC0EB;} 50%{fill:#2563EB;} }
+    @keyframes color-blue-green { 0%,100%{fill:#2563EB;} 50%{fill:#22C55E;} }
+    @keyframes color-green-mint { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes color-sky-mint { 0%,100%{fill:#5BC0EB;} 50%{fill:#6EE7A0;} }
+    @keyframes pulse-soft { 0%,100%{opacity:0.18;} 50%{opacity:0.4;} }
+    @keyframes twinkle { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+    @keyframes dash-rotate { from{stroke-dashoffset:0;} to{stroke-dashoffset:-400;} }
+    @keyframes stroke-sky-blue { 0%,100%{stroke:#5BC0EB;} 50%{stroke:#2563EB;} }
+    @keyframes stroke-green-mint { 0%,100%{stroke:#22C55E;} 50%{stroke:#6EE7A0;} }
+    @keyframes bar-grow {
+      0% { transform: scaleY(0.3); opacity: 0.15; }
+      40% { transform: scaleY(1); opacity: 0.5; }
+      70% { transform: scaleY(1); opacity: 0.5; }
+      100% { transform: scaleY(0.3); opacity: 0.15; }
+    }
+    @keyframes bar-color { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes line-draw {
+      0% { stroke-dashoffset: 800; }
+      50% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -800; }
+    }
+    @keyframes float-y {
+      0%,100% { transform: translateY(0); opacity: 0.28; }
+      50% { transform: translateY(-18px); opacity: 0.5; }
+    }
+    @keyframes coin-pulse {
+      0%,100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.05); }
+    }
+    @keyframes tick-fade { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+
+    .orb-1 { animation: drift-slow 24s ease-in-out infinite, color-mint-sky 18s ease-in-out infinite; transform-origin: 200px 200px; }
+    .orb-2 { animation: drift-medium 30s ease-in-out infinite, color-sky-blue 22s ease-in-out infinite; transform-origin: 1200px 300px; }
+    .orb-3 { animation: drift-slow 36s ease-in-out infinite, color-blue-green 26s ease-in-out infinite; transform-origin: 400px 700px; }
+    .orb-4 { animation: drift-medium 28s ease-in-out infinite, color-green-mint 20s ease-in-out infinite; transform-origin: 1100px 800px; }
+    .orb-5 { animation: drift-fast 20s ease-in-out infinite, color-sky-mint 24s ease-in-out infinite; transform-origin: 700px 400px; }
+
+    .pulse-1 { animation: pulse-soft 6s ease-in-out infinite, stroke-sky-blue 20s ease-in-out infinite; }
+    .pulse-2 { animation: pulse-soft 8s ease-in-out infinite 1s, stroke-green-mint 24s ease-in-out infinite; }
+    .pulse-3 { animation: pulse-soft 7s ease-in-out infinite 2s, stroke-sky-blue 22s ease-in-out infinite; }
+
+    .dot-1 { animation: twinkle 4s ease-in-out infinite; }
+    .dot-2 { animation: twinkle 5s ease-in-out infinite 0.5s; }
+    .dot-3 { animation: twinkle 3.5s ease-in-out infinite 1s; }
+    .dot-4 { animation: twinkle 6s ease-in-out infinite 1.5s; }
+    .dot-5 { animation: twinkle 4.5s ease-in-out infinite 2s; }
+    .dot-6 { animation: twinkle 5.5s ease-in-out infinite 0.8s; }
+    .dot-7 { animation: twinkle 4.2s ease-in-out infinite 1.2s; }
+    .dot-8 { animation: twinkle 5.8s ease-in-out infinite 0.3s; }
+
+    .ring-1 { animation: dash-rotate 60s linear infinite; transform-origin: 1300px 200px; }
+    .ring-2 { animation: dash-rotate 80s linear infinite reverse; transform-origin: 250px 850px; }
+
+    .bar-1 { animation: bar-grow 9s ease-in-out infinite, bar-color 12s ease-in-out infinite; transform-origin: 1000px 640px; }
+    .bar-2 { animation: bar-grow 9s ease-in-out infinite 0.6s, bar-color 12s ease-in-out infinite 0.6s; transform-origin: 1060px 640px; }
+    .bar-3 { animation: bar-grow 9s ease-in-out infinite 1.2s, bar-color 12s ease-in-out infinite 1.2s; transform-origin: 1120px 640px; }
+    .bar-4 { animation: bar-grow 9s ease-in-out infinite 1.8s, bar-color 12s ease-in-out infinite 1.8s; transform-origin: 1180px 640px; }
+    .bar-5 { animation: bar-grow 9s ease-in-out infinite 2.4s, bar-color 12s ease-in-out infinite 2.4s; transform-origin: 1240px 640px; }
+
+    .trend-line { animation: line-draw 14s ease-in-out infinite; }
+    .currency { animation: float-y 8s ease-in-out infinite; transform-origin: 260px 640px; }
+    .coin { animation: coin-pulse 5s ease-in-out infinite; transform-origin: 260px 640px; }
+
+    .tick-1 { animation: tick-fade 6s ease-in-out infinite; }
+    .tick-2 { animation: tick-fade 7s ease-in-out infinite 0.5s; }
+    .tick-3 { animation: tick-fade 5s ease-in-out infinite 1s; }
+    .tick-4 { animation: tick-fade 6.5s ease-in-out infinite 1.5s; }
+
+    @media (prefers-reduced-motion: reduce) { .bg-anim * { animation: none !important; } }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .site-header, main, .site-footer { position: relative; z-index: 1; }
+    .site-header, .site-footer {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .wrap { width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 2.75rem; }
+    .wrap-narrow { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 2.75rem; }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .site-header { width: 100%; border-bottom: 1px solid var(--orspex-border); }
+    .header-inner { padding: 1.25rem 0; display: flex; flex-direction: column; gap: 1rem; }
+
+    .header-top {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1.5rem;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 1rem;
+      flex-shrink: 0; text-decoration: none; color: inherit;
+    }
+    .brand-mark { width: 58px; height: 58px; flex-shrink: 0; }
+    .brand-text { display: flex; flex-direction: column; gap: 0.15rem; }
+    .brand-text .name {
+      font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--orspex-dark); line-height: 1;
+    }
+    .brand-text .tagline {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 2.4px;
+      color: #334155; text-transform: uppercase; white-space: nowrap;
+    }
+    html[lang="zh"] .brand-text .tagline { letter-spacing: 4px; text-transform: none; font-weight: 500; }
+    html[lang="ar"] .brand-text .tagline { letter-spacing: 1px; text-transform: none; font-weight: 500; }
+
+    .header-actions { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+
+    .offline-badge {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #ECFDF5; color: #065F46;
+      font-size: 0.82rem; font-weight: 500;
+      padding: 0.5rem 1rem; border-radius: 60px;
+      border: 1px solid #A7F3D0; letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .offline-badge::before { content: "⚡"; font-size: 0.95rem; }
+
+    .btn-cta {
+      background: var(--orspex-dark); color: white;
+      font-size: 0.9rem; font-weight: 500;
+      padding: 0.7rem 1.4rem; border-radius: 60px;
+      border: 1px solid var(--orspex-dark); cursor: pointer;
+      letter-spacing: 0.3px; display: inline-flex;
+      align-items: center; gap: 0.5rem;
+      transition: background 0.15s, transform 0.15s;
+      white-space: nowrap; font-family: inherit;
+      text-decoration: none;
+    }
+    .btn-cta:hover { background: #1E293B; transform: translateY(-1px); }
+    .btn-cta span:first-child { font-size: 1rem; line-height: 1; }
+
+    .lang-switch {
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.28rem;
+    }
+    .lang-switch button {
+      background: transparent; border: none;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      color: #475569; padding: 0.4rem 0.75rem;
+      border-radius: 60px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.3px; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.4rem; line-height: 1;
+    }
+    .lang-switch button .flag { font-size: 1.05rem; line-height: 1; }
+    .lang-switch button:hover { color: var(--orspex-dark); }
+    .lang-switch button.active { background: var(--orspex-dark); color: white; }
+
+    .header-nav-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1rem;
+    }
+
+    /* ============================================================
+       NAV — FLAT, NO DROPDOWNS
+    ============================================================ */
+    .nav-links {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.25rem 0.3rem; list-style: none;
+    }
+    .nav-links > li { position: relative; }
+    .nav-links > li > a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: inherit; font-size: 0.95rem; font-weight: 500;
+      color: #1E293B; text-decoration: none;
+      padding: 0.6rem 1.1rem; border-radius: 60px;
+      border: none; background: transparent; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap; line-height: 1.15;
+    }
+    .nav-links > li > a:hover {
+      background: #F1F5F9; color: var(--orspex-blue);
+    }
+    .nav-links > li > a.current { background: #EFF6FF; color: var(--orspex-blue); }
+
+    /* Inline badge suffix on nav items */
+    .nav-links > li > a small {
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.4px; text-transform: uppercase;
+      padding: 0.15rem 0.45rem; border-radius: 40px;
+      background: #F1F5F9; color: #475569;
+      margin-left: 0.15rem;
+    }
+    html[lang="ar"] .nav-links > li > a small,
+    html[lang="zh"] .nav-links > li > a small { text-transform: none; letter-spacing: 0.2px; }
+    .nav-links > li > a small.offline { background: #ECFDF5; color: #047857; }
+    .nav-links > li > a small.online  { background: #EFF6FF; color: #1D4ED8; }
+    .nav-links > li > a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .menu-toggle-checkbox { display: none; }
+    .menu-toggle-label {
+      display: none; align-items: center; justify-content: center;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.65rem 1.15rem;
+      font-size: 0.92rem; font-weight: 500;
+      color: var(--orspex-dark); cursor: pointer;
+      gap: 0.5rem; user-select: none; white-space: nowrap;
+    }
+    .menu-toggle-label span { font-size: 1.05rem; line-height: 1; }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    main { flex: 1; padding: 4rem 0 0; }
+    .product-hero { padding-bottom: 3rem; }
+
+    .breadcrumb {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--orspex-slate); margin-bottom: 1.5rem;
+    }
+    .breadcrumb a { color: var(--orspex-slate); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--orspex-blue); }
+    .breadcrumb .sep { opacity: 0.5; }
+    .breadcrumb .current { color: var(--orspex-dark); font-weight: 500; }
+
+    .hero-grid {
+      display: grid; grid-template-columns: 1.1fr 1fr;
+      gap: 3.5rem; align-items: center;
+    }
+
+    .hero-text .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 3px; color: var(--orspex-blue);
+      background: #EFF6FF; padding: 0.35rem 0.95rem;
+      border-radius: 999px; margin-bottom: 1.25rem; text-transform: uppercase;
+    }
+    html[lang="ar"] .hero-text .eyebrow,
+    html[lang="zh"] .hero-text .eyebrow { text-transform: none; letter-spacing: 2px; }
+
+    .hero-text h1 {
+      font-size: clamp(2rem, 4.4vw, 3rem);
+      font-weight: 700; letter-spacing: -1px;
+      line-height: 1.15; margin-bottom: 1.25rem;
+    }
+    html[lang="ar"] .hero-text h1 { letter-spacing: 0; line-height: 1.4; }
+    html[lang="zh"] .hero-text h1 { letter-spacing: 0.5px; line-height: 1.3; }
+
+    .hero-text h1 .accent {
+      background: linear-gradient(90deg, var(--orspex-blue), var(--orspex-green));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .hero-text .lede {
+      font-size: 1.08rem; color: var(--orspex-slate);
+      line-height: 1.65; margin-bottom: 1.75rem; max-width: 560px;
+    }
+    html[lang="ar"] .hero-text .lede,
+    html[lang="zh"] .hero-text .lede { line-height: 1.9; }
+
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.75rem; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px;
+      padding: 0.42rem 0.9rem; border-radius: 60px;
+      background: #F1F5F9; color: #334155;
+      border: 1px solid var(--orspex-border); white-space: nowrap;
+    }
+    .pill.offline { background: #ECFDF5; color: #047857; border-color: #A7F3D0; }
+    .pill.single { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+    .pill.private { background: #F5F3FF; color: #6D28D9; border-color: #DDD6FE; }
+    .pill.no-fee { background: #FEF3C7; color: #B45309; border-color: #FDE68A; }
+
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      background: var(--orspex-dark); color: white;
+      font-size: 1rem; font-weight: 500;
+      padding: 0.9rem 1.75rem; border-radius: 60px;
+      border: 1px solid var(--orspex-dark); cursor: pointer;
+      text-decoration: none; transition: background 0.15s, transform 0.15s;
+      font-family: inherit; white-space: nowrap;
+    }
+    .btn-primary:hover { background: #1E293B; transform: translateY(-1px); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      background: transparent; color: var(--orspex-dark);
+      font-size: 1rem; font-weight: 500;
+      padding: 0.9rem 1.75rem; border-radius: 60px;
+      border: 1px solid var(--orspex-border); cursor: pointer;
+      text-decoration: none; transition: background 0.15s, border-color 0.15s;
+      font-family: inherit; white-space: nowrap;
+    }
+    .btn-secondary:hover { background: #F8FAFC; border-color: #CBD5E1; }
+
+    /* ---------- Product visual ---------- */
+    .hero-visual { display: flex; align-items: center; justify-content: center; }
+
+    .product-shot {
+      width: 100%; max-width: 540px;
+      aspect-ratio: 4 / 3; border-radius: 20px;
+      border: 1px solid var(--orspex-border);
+      background: linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%);
+      box-shadow: 0 24px 42px -12px rgba(15,23,42,0.15), 0 8px 16px -8px rgba(15,23,42,0.06);
+      position: relative; overflow: hidden;
+      padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .product-shot::before {
+      content: ""; position: absolute; top: 0.9rem; left: 1.25rem;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #EF4444; box-shadow: 18px 0 0 #F59E0B, 36px 0 0 #10B981;
+    }
+    .shot-title {
+      margin-top: 0.9rem; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase; color: var(--orspex-slate);
+    }
+    .shot-body { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 0.4rem; }
+    .shot-stat {
+      background: white; border: 1px solid var(--orspex-border);
+      border-radius: 10px; padding: 0.65rem 0.7rem;
+    }
+    .shot-stat .lbl {
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--orspex-slate); margin-bottom: 0.25rem;
+    }
+    .shot-stat .val { font-size: 0.95rem; font-weight: 700; color: var(--orspex-dark); letter-spacing: -0.3px; }
+    .shot-stat.blue .val { color: var(--orspex-blue); }
+    .shot-stat.green .val { color: var(--orspex-green); }
+
+    .shot-chart {
+      background: white; border: 1px solid var(--orspex-border);
+      border-radius: 10px; padding: 0.75rem 0.85rem;
+      display: flex; flex-direction: column; gap: 0.55rem;
+    }
+    .shot-chart .chart-row { display: flex; align-items: center; gap: 0.6rem; }
+    .shot-chart .chart-row .name { font-size: 0.7rem; font-weight: 500; color: var(--orspex-slate); min-width: 58px; }
+    .shot-chart .bar-track {
+      flex: 1; height: 6px; background: #F1F5F9;
+      border-radius: 4px; overflow: hidden; position: relative;
+    }
+    .shot-chart .bar-fill { height: 100%; border-radius: 4px; background: var(--orspex-blue); }
+    .shot-chart .bar-fill.green { background: var(--orspex-green); }
+    .shot-chart .bar-fill.mint { background: var(--orspex-mint); }
+    .shot-chart .bar-fill.sky { background: var(--orspex-sky); }
+
+    .shot-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.55rem 0.85rem; background: var(--orspex-dark); color: white;
+      border-radius: 10px; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.4px;
+    }
+    .shot-footer .dot {
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-green); margin-right: 0.4rem;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+    }
+
+    /* ============================================================
+       SECTION HEAD (shared)
+    ============================================================ */
+    .section-head {
+      text-align: center; max-width: 720px; margin: 0 auto 3rem;
+    }
+    .section-head .eyebrow {
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 3px; color: var(--orspex-blue);
+      background: #EFF6FF; padding: 0.35rem 0.95rem;
+      border-radius: 999px; margin-bottom: 1rem; text-transform: uppercase;
+    }
+    html[lang="ar"] .section-head .eyebrow,
+    html[lang="zh"] .section-head .eyebrow { text-transform: none; letter-spacing: 2px; }
+
+    .section-head h2 {
+      font-size: clamp(1.6rem, 3.2vw, 2.15rem);
+      font-weight: 700; letter-spacing: -0.6px;
+      margin-bottom: 0.75rem; line-height: 1.2;
+    }
+    .section-head p { font-size: 1rem; color: var(--orspex-slate); line-height: 1.65; }
+
+    /* ============================================================
+       MODULES GRID
+    ============================================================ */
+    .modules {
+      padding: 4rem 0;
+      border-top: 1px solid var(--orspex-border);
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .module-card {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 18px;
+      padding: 1.75rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent, var(--orspex-blue));
+      opacity: 0.9;
+    }
+    .module-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px -10px rgba(15,23,42,0.12);
+      border-color: #CBD5E1;
+    }
+
+    .module-card.inventory  { --accent: #2563EB; }
+    .module-card.services   { --accent: #5BC0EB; }
+    .module-card.purchasing { --accent: #6EE7A0; }
+    .module-card.sales      { --accent: #22C55E; }
+    .module-card.accounting { --accent: #8B5CF6; }
+    .module-card.reports    { --accent: #F59E0B; }
+    .module-card.system     { --accent: #64748B; }
+
+    .module-head { display: flex; align-items: center; gap: 0.85rem; }
+    .module-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.35rem;
+      background: color-mix(in srgb, var(--accent) 12%, white);
+      color: var(--accent);
+    }
+    .module-title { display: flex; flex-direction: column; gap: 0.15rem; }
+    .module-title h3 {
+      font-size: 1.05rem; font-weight: 600;
+      letter-spacing: -0.2px; color: var(--orspex-dark);
+    }
+    .module-title .count {
+      font-size: 0.72rem; font-weight: 500;
+      color: var(--orspex-slate); letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    html[lang="ar"] .module-title .count,
+    html[lang="zh"] .module-title .count { text-transform: none; letter-spacing: 0.2px; }
+
+    .module-card > p { font-size: 0.92rem; color: var(--orspex-slate); line-height: 1.6; }
+
+    .module-items {
+      list-style: none; display: flex; flex-direction: column;
+      gap: 0.35rem; margin-top: auto;
+      padding-top: 0.75rem; border-top: 1px solid var(--orspex-border);
+    }
+    .module-items li {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.86rem; color: #334155; line-height: 1.4;
+    }
+    .module-items li::before {
+      content: ""; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent); opacity: 0.7; flex-shrink: 0;
+    }
+
+    /* ============================================================
+       SCREENSHOT GALLERY
+    ============================================================ */
+    .gallery {
+      padding: 4rem 0;
+      border-top: 1px solid var(--orspex-border);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .shot-card { display: flex; flex-direction: column; gap: 0.85rem; }
+
+    .shot-frame {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      border-radius: 14px;
+      border: 1px solid var(--orspex-border);
+      overflow: hidden;
+      background: #F8FAFC;
+      box-shadow: 0 12px 24px -10px rgba(15,23,42,0.12);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .shot-frame:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 32px -12px rgba(15,23,42,0.18);
+    }
+
+    .shot-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .shot-chrome {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 22px;
+      background: rgba(255,255,255,0.85);
+      border-bottom: 1px solid var(--orspex-border);
+      display: flex; align-items: center; gap: 4px;
+      padding: 0 0.5rem;
+      backdrop-filter: blur(4px);
+      z-index: 2;
+    }
+    .shot-chrome span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #CBD5E1;
+    }
+
+    .shot-caption {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem;
+    }
+    .shot-caption .title {
+      font-size: 0.95rem; font-weight: 600;
+      color: var(--orspex-dark); letter-spacing: -0.2px;
+    }
+    .shot-caption .tag {
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.4px; text-transform: uppercase;
+      padding: 0.25rem 0.6rem; border-radius: 40px;
+      background: #EFF6FF; color: #1D4ED8; white-space: nowrap;
+    }
+    html[lang="ar"] .shot-caption .tag,
+    html[lang="zh"] .shot-caption .tag { text-transform: none; letter-spacing: 0.2px; }
+
+    .shot-caption .tag.green { background: #ECFDF5; color: #047857; }
+    .shot-caption .tag.violet { background: #F5F3FF; color: #6D28D9; }
+    .shot-caption .tag.amber { background: #FEF3C7; color: #B45309; }
+    .shot-caption .tag.sky { background: #EFF6FF; color: #0369A1; }
+
+    /* ============================================================
+       SPECS
+    ============================================================ */
+    .specs { padding: 4rem 0; border-top: 1px solid var(--orspex-border); }
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .spec-item {
+      background: white; border: 1px solid var(--orspex-border);
+      border-radius: 14px; padding: 1.25rem 1.15rem;
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .spec-item .k {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--orspex-slate);
+    }
+    html[lang="ar"] .spec-item .k,
+    html[lang="zh"] .spec-item .k { text-transform: none; letter-spacing: 0.5px; }
+    .spec-item .v {
+      font-size: 1.15rem; font-weight: 600;
+      color: var(--orspex-dark); letter-spacing: -0.3px;
+    }
+    .spec-item .v small {
+      display: block; font-size: 0.78rem; font-weight: 400;
+      color: var(--orspex-slate); margin-top: 0.2rem; letter-spacing: 0;
+    }
+
+    /* ============================================================
+       CTA BAND
+    ============================================================ */
+    .cta-band {
+      padding: 4rem 0;
+      border-top: 1px solid var(--orspex-border);
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .cta-inner {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 2rem;
+    }
+    .cta-copy h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700; letter-spacing: -0.6px; margin-bottom: 0.5rem;
+    }
+    .cta-copy p {
+      font-size: 1rem; color: var(--orspex-slate);
+      max-width: 600px; line-height: 1.6;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .site-footer {
+      width: 100%; border-top: 1px solid var(--orspex-border); margin-top: auto;
+    }
+    .footer-inner {
+      padding: 2.5rem 0 1.5rem;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .footer-intro {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+    }
+    .footer-intro p {
+      font-size: 0.9rem; color: var(--orspex-slate);
+      line-height: 1.55; max-width: 640px;
+    }
+    .footer-status {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #EFF6FF; color: #1E40AF;
+      font-size: 0.78rem; font-weight: 500;
+      padding: 0.4rem 0.9rem; border-radius: 60px;
+      border: 1px solid #BFDBFE; white-space: nowrap;
+    }
+    .footer-status::before { content: "🔒"; font-size: 0.85rem; }
+
+    .footer-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem 2.5rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 2rem;
+    }
+    .footer-col h4 {
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--orspex-dark);
+      margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    html[lang="ar"] .footer-col h4,
+    html[lang="zh"] .footer-col h4 { text-transform: none; letter-spacing: 1px; }
+    .footer-col h4::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-blue); flex-shrink: 0;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col ul li a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; color: #334155; text-decoration: none;
+      padding: 0.2rem 0; transition: color 0.15s, transform 0.15s;
+    }
+    .footer-col ul li a:hover { color: var(--orspex-blue); transform: translateX(2px); }
+    html[lang="ar"] .footer-col ul li a:hover { transform: translateX(-2px); }
+    .footer-col ul li a small {
+      font-size: 0.66rem; color: var(--orspex-slate);
+      background: #F1F5F9; padding: 0.1rem 0.4rem;
+      border-radius: 4px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    html[lang="ar"] .footer-col ul li a small,
+    html[lang="zh"] .footer-col ul li a small { text-transform: none; letter-spacing: 0.2px; }
+    .footer-col ul li a small.offline { background: #ECFDF5; color: #047857; }
+    .footer-col ul li a small.online { background: #EFF6FF; color: #1D4ED8; }
+    .footer-col ul li a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .footer-bottom {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1.4rem;
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--orspex-slate); }
+    .footer-copy strong { color: var(--orspex-dark); font-weight: 600; }
+    .footer-legal {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.5rem 1.25rem; list-style: none;
+    }
+    .footer-legal a {
+      font-size: 0.82rem; color: var(--orspex-slate);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-legal a:hover { color: var(--orspex-blue); }
+    .footer-version {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
+      color: #475569; background: #F1F5F9;
+      padding: 0.3rem 0.7rem; border-radius: 40px;
+      border: 1px solid var(--orspex-border);
+    }
+    .footer-version::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-green);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18); flex-shrink: 0;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1000px) {
+      .wrap, .wrap-narrow { padding: 0 1.5rem; }
+
+      .header-nav-row { flex-direction: column; align-items: stretch; }
+      .menu-toggle-label { display: inline-flex; align-self: flex-start; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        gap: 0.3rem; padding-top: 0.6rem;
+      }
+      .menu-toggle-checkbox:checked ~ .nav-links { display: flex; }
+      .nav-links > li > a {
+        justify-content: space-between; width: 100%;
+        padding: 0.8rem 1.05rem; border-radius: 10px; background: #F8FAFC;
+      }
+      .nav-links > li > a small { margin-left: auto; }
+      .header-actions { width: 100%; justify-content: space-between; }
+
+      .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .hero-visual { order: -1; }
+
+      .footer-columns { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2rem; }
+    }
+
+    @media (max-width: 640px) {
+      .wrap, .wrap-narrow { padding: 0 1rem; }
+
+      .header-inner { padding: 1rem 0; gap: 0.85rem; }
+      .brand { gap: 0.75rem; }
+      .brand-mark { width: 46px; height: 46px; }
+      .brand-text .name { font-size: 1.3rem; }
+      .brand-text .tagline { font-size: 0.62rem; letter-spacing: 1.8px; }
+
+      .header-actions { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+      .offline-badge, .btn-cta { justify-content: center; }
+      .lang-switch { align-self: center; }
+
+      main { padding: 2.5rem 0 0; }
+      .product-hero { padding-bottom: 2rem; }
+      .modules, .gallery, .specs, .cta-band { padding: 3rem 0; }
+
+      .hero-cta { width: 100%; }
+      .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+
+      .footer-inner { padding: 1.75rem 0 1.25rem; gap: 1.5rem; }
+      .footer-intro { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .footer-intro p { font-size: 0.86rem; line-height: 1.5; }
+
+      .footer-columns {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem 1rem; padding-top: 1.25rem;
+      }
+      .footer-col h4 { font-size: 0.68rem; letter-spacing: 1.5px; margin-bottom: 0.65rem; }
+      .footer-col ul { gap: 0.4rem; }
+      .footer-col ul li a { font-size: 0.82rem; gap: 0.35rem; }
+      .footer-col ul li a small { font-size: 0.58rem; padding: 0.08rem 0.32rem; letter-spacing: 0.2px; }
+
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding-top: 1.1rem; }
+      .footer-copy { font-size: 0.76rem; }
+      .footer-legal { gap: 0.4rem 0.9rem; }
+      .footer-legal a { font-size: 0.76rem; }
+      .footer-version { font-size: 0.66rem; padding: 0.25rem 0.6rem; }
+
+      .cta-inner { flex-direction: column; align-items: stretch; }
+
+      .gallery-grid { grid-template-columns: 1fr; }
+      .shot-caption { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+    }
+
+    @media (max-width: 400px) {
+      .footer-columns { grid-template-columns: 1fr; }
+      .shot-body { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       ANIMATED BACKGROUND
+  ============================================================ -->
+  <div class="bg-anim" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"
+         preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#0F172A" stroke-width="0.5" opacity="0.015"/>
+        </pattern>
+        <radialGradient id="fade-soft" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="white" stop-opacity="0.45"/>
+          <stop offset="55%" stop-color="white" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <rect width="1600" height="900" fill="url(#grid)"/>
+
+      <g class="orb-1"><circle cx="200" cy="200" r="220" fill="#6EE7A0" opacity="0.35"/><circle cx="200" cy="200" r="220" fill="url(#fade-soft)"/></g>
+      <g class="orb-2"><circle cx="1300" cy="220" r="260" fill="#5BC0EB" opacity="0.3"/><circle cx="1300" cy="220" r="260" fill="url(#fade-soft)"/></g>
+      <g class="orb-3"><circle cx="320" cy="720" r="240" fill="#2563EB" opacity="0.28"/><circle cx="320" cy="720" r="240" fill="url(#fade-soft)"/></g>
+      <g class="orb-4"><circle cx="1180" cy="760" r="230" fill="#22C55E" opacity="0.3"/><circle cx="1180" cy="760" r="230" fill="url(#fade-soft)"/></g>
+      <g class="orb-5"><circle cx="820" cy="440" r="150" fill="#5BC0EB" opacity="0.28"/><circle cx="820" cy="440" r="150" fill="url(#fade-soft)"/></g>
+
+      <circle class="pulse-1" cx="500" cy="480" r="140" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.25"/>
+      <circle class="pulse-2" cx="1080" cy="380" r="180" fill="none" stroke="#22C55E" stroke-width="1" opacity="0.22"/>
+      <circle class="pulse-3" cx="760" cy="620" r="110" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.22"/>
+
+      <circle class="ring-1" cx="1300" cy="200" r="200" fill="none" stroke="#2563EB" stroke-width="0.8" stroke-dasharray="6 14" opacity="0.22"/>
+      <circle class="ring-2" cx="250" cy="850" r="220" fill="none" stroke="#5BC0EB" stroke-width="0.8" stroke-dasharray="8 18" opacity="0.2"/>
+
+      <circle class="dot-1" cx="340" cy="140" r="2.5" fill="#2563EB"/>
+      <circle class="dot-2" cx="900" cy="120" r="2" fill="#5BC0EB"/>
+      <circle class="dot-3" cx="1250" cy="480" r="2.5" fill="#22C55E"/>
+      <circle class="dot-4" cx="1520" cy="700" r="2" fill="#6EE7A0"/>
+      <circle class="dot-5" cx="600" cy="820" r="2.5" fill="#2563EB"/>
+      <circle class="dot-6" cx="120" cy="560" r="2" fill="#5BC0EB"/>
+      <circle class="dot-7" cx="1000" cy="780" r="2" fill="#22C55E"/>
+      <circle class="dot-8" cx="700" cy="240" r="2.5" fill="#2563EB"/>
+
+      <g opacity="0.6">
+        <line x1="980" y1="640" x2="1290" y2="640" stroke="#0F172A" stroke-width="0.6" opacity="0.15"/>
+        <rect class="bar-1" x="995" y="540" width="22" height="100" rx="3" fill="#22C55E"/>
+        <rect class="bar-2" x="1055" y="500" width="22" height="140" rx="3" fill="#22C55E"/>
+        <rect class="bar-3" x="1115" y="460" width="22" height="180" rx="3" fill="#22C55E"/>
+        <rect class="bar-4" x="1175" y="430" width="22" height="210" rx="3" fill="#22C55E"/>
+        <rect class="bar-5" x="1235" y="390" width="22" height="250" rx="3" fill="#22C55E"/>
+        <path class="trend-line" d="M 1006 530 L 1066 480 L 1126 440 L 1186 400 L 1246 355"
+              fill="none" stroke="#2563EB" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="800" opacity="0.5"/>
+        <circle cx="1246" cy="355" r="3" fill="#2563EB" opacity="0.5"/>
+      </g>
+
+      <g class="coin" opacity="0.4">
+        <circle cx="260" cy="640" r="42" fill="none" stroke="#22C55E" stroke-width="1.4"/>
+        <circle cx="260" cy="640" r="34" fill="none" stroke="#6EE7A0" stroke-width="0.8" stroke-dasharray="3 6"/>
+      </g>
+      <text class="currency" x="260" y="660" text-anchor="middle"
+            font-family="'Inter', system-ui, sans-serif" font-size="48"
+            font-weight="600" fill="#22C55E" opacity="0.35">$</text>
+
+      <g opacity="0.35">
+        <line class="tick-1" x1="1360" y1="600" x2="1360" y2="650" stroke="#22C55E" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-1" x="1355" y="615" width="10" height="20" rx="1.5" fill="#22C55E" opacity="0.7"/>
+        <line class="tick-2" x1="1390" y1="590" x2="1390" y2="655" stroke="#2563EB" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-2" x="1385" y="608" width="10" height="24" rx="1.5" fill="#2563EB" opacity="0.7"/>
+        <line class="tick-3" x1="1420" y1="575" x2="1420" y2="645" stroke="#22C55E" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-3" x="1415" y="595" width="10" height="22" rx="1.5" fill="#22C55E" opacity="0.7"/>
+        <line class="tick-4" x1="1450" y1="560" x2="1450" y2="630" stroke="#6EE7A0" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-4" x="1445" y="580" width="10" height="26" rx="1.5" fill="#6EE7A0" opacity="0.7"/>
+      </g>
+
+      <text x="930" y="430" text-anchor="middle"
+            font-family="'Inter', system-ui, sans-serif" font-size="36"
+            font-weight="500" fill="#5BC0EB" opacity="0.18">%</text>
+    </svg>
+  </div>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header" aria-label="ORSPEX main header">
+    <div class="wrap header-inner">
+
+      <div class="header-top">
+        <!-- ✅ BRAND → home (up one folder) -->
+        <a class="brand" href="../index.html" aria-label="ORSPEX home">
+          <svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"
+               role="img" aria-label="ORSPEX mark">
+            <circle cx="300" cy="300" r="280" fill="none" stroke="#6EE7A0" stroke-width="18"/>
+            <circle cx="300" cy="300" r="200" fill="none" stroke="#5BC0EB" stroke-width="16"/>
+            <circle cx="300" cy="300" r="160" fill="#2563EB"/>
+            <circle cx="300" cy="300" r="90" fill="#0F172A"/>
+            <circle cx="300" cy="100" r="22" fill="#5BC0EB"/>
+            <circle cx="300" cy="500" r="22" fill="#5BC0EB"/>
+            <circle cx="100" cy="300" r="22" fill="#22C55E"/>
+            <circle cx="500" cy="300" r="22" fill="#22C55E"/>
+          </svg>
+          <div class="brand-text">
+            <span class="name">ORSPEX</span>
+            <span class="tagline" data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button type="button" data-lang="en" class="active" aria-label="English">
+              <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+            </button>
+            <button type="button" data-lang="ar" aria-label="العربية">
+              <span class="flag" aria-hidden="true">🇸🇦</span><span>عربي</span>
+            </button>
+            <button type="button" data-lang="zh" aria-label="中文">
+              <span class="flag" aria-hidden="true">🇨🇳</span><span>中文</span>
+            </button>
+          </div>
+
+          <span class="offline-badge" data-i18n="badge.offline">offline · no cloud</span>
+          <a class="btn-cta" href="#download">
+            <span>⬇</span> <span data-i18n="cta.get">get ORSPEX suite</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="header-nav-row">
+        <input type="checkbox" id="orspex-menu-toggle" class="menu-toggle-checkbox" aria-hidden="true">
+        <label for="orspex-menu-toggle" class="menu-toggle-label">
+          <span>☰</span> <span data-i18n="nav.products">Products</span>
+        </label>
+
+        <ul class="nav-links">
+          <!-- ✅ Home -->
+          <li>
+            <a href="../index.html">
+              🏠 <span data-i18n="nav.home">Home</span>
+            </a>
+          </li>
+
+          <!-- ✅ ORSPEX Core (this page) -->
+          <li>
+            <a href="orspex-core.html" class="current">
+              🧩 <span data-i18n="nav.core">ORSPEX Core</span>
+              <small class="offline" data-i18n="badge.offline.short">offline</small>
+            </a>
+          </li>
+
+          <!-- ✅ Job Seeker (external) -->
+          <li>
+            <a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener">
+              👥 <span data-i18n="nav.job">Job Seeker</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+
+          <!-- ✅ PDF Compressor — Online -->
+          <li>
+            <a href="../pdf-compressor/pdf-compressor.html">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+
+          <!-- ✅ PDF Compressor — Offline / Desktop -->
+          <li>
+            <a href="../pdf-compressor-offline/pdf-compressor-offline.html">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span>
+              <small class="desktop" data-i18n="badge.desktop.short">desktop</small>
+            </a>
+          </li>
+
+          <!-- ✅ Favicon Maker — Online -->
+          <li>
+            <a href="../favicon-maker/favicon-maker.html">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+
+          <!-- ✅ Favicon Maker — Offline / Desktop -->
+          <li>
+            <a href="../favicon-maker-offline/favicon-maker-offline.html">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span>
+              <small class="desktop" data-i18n="badge.desktop.short">desktop</small>
+            </a>
+          </li>
+
+          <!-- ✅ Find Talent (external) -->
+          <li>
+            <a href="https://orspex-jobs-seeking.vercel.app/jobs" target="_blank" rel="noopener">
+              🔍 <span data-i18n="nav.talent">Find Talent</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN
+  ============================================================ -->
+  <main>
+
+    <!-- ---------- HERO ---------- -->
+    <section class="product-hero">
+      <div class="wrap">
+
+        <!-- ✅ Breadcrumb — home and products point to index -->
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="../index.html" data-i18n="crumb.home">ORSPEX</a>
+          <span class="sep">/</span>
+          <a href="../index.html" data-i18n="crumb.products">Products</a>
+          <span class="sep">/</span>
+          <span class="current">ORSPEX Core</span>
+        </nav>
+
+        <div class="hero-grid">
+
+          <div class="hero-text">
+            <span class="eyebrow" data-i18n="core.eyebrow">Stand-alone ERP · Single-user</span>
+
+            <h1>
+              <span data-i18n="core.h1a">Your business,</span>
+              <span class="accent" data-i18n="core.h1b">fully offline.</span>
+            </h1>
+
+            <p class="lede" data-i18n="core.lede">
+              ORSPEX Core is a single-user ERP that runs entirely on your Windows machine. Inventory,
+              purchasing, sales, accounting, reports — no internet, no cloud, no accounts.
+              Your data never leaves your device.
+            </p>
+
+            <div class="hero-badges">
+              <span class="pill offline" data-i18n="core.pill.offline">⚡ 100% offline</span>
+              <span class="pill single" data-i18n="core.pill.single">👤 Single-user</span>
+              <span class="pill private" data-i18n="core.pill.private">🔒 Private by design</span>
+              <span class="pill no-fee" data-i18n="core.pill.nofee">💳 No subscription</span>
+            </div>
+
+            <div class="hero-cta">
+              <a class="btn-primary" href="#download">
+                <span>⬇</span> <span data-i18n="core.cta.download">Download for Windows</span>
+              </a>
+              <a class="btn-secondary" href="#modules">
+                <span data-i18n="core.cta.learn">See what's inside</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-hidden="true">
+            <div class="product-shot">
+              <div class="shot-title" data-i18n="hero.shot.title">ORSPEX Core · Dashboard</div>
+              <div class="shot-body">
+                <div class="shot-stat blue"><div class="lbl" data-i18n="hero.shot.invoices">Invoices</div><div class="val">128</div></div>
+                <div class="shot-stat green"><div class="lbl" data-i18n="hero.shot.revenue">Revenue</div><div class="val">$42k</div></div>
+                <div class="shot-stat"><div class="lbl" data-i18n="hero.shot.items">Items</div><div class="val">1,204</div></div>
+                <div class="shot-stat"><div class="lbl" data-i18n="hero.shot.clients">Clients</div><div class="val">86</div></div>
+              </div>
+              <div class="shot-chart">
+                <div class="chart-row"><span class="name" data-i18n="hero.shot.sales">Sales</span><div class="bar-track"><div class="bar-fill green" style="width: 82%"></div></div></div>
+                <div class="chart-row"><span class="name" data-i18n="hero.shot.stock">Stock</span><div class="bar-track"><div class="bar-fill" style="width: 64%"></div></div></div>
+                <div class="chart-row"><span class="name" data-i18n="hero.shot.expenses">Expenses</span><div class="bar-track"><div class="bar-fill sky" style="width: 47%"></div></div></div>
+                <div class="chart-row"><span class="name" data-i18n="hero.shot.profit">Profit</span><div class="bar-track"><div class="bar-fill mint" style="width: 71%"></div></div></div>
+              </div>
+              <div class="shot-footer">
+                <span><span class="dot"></span><span data-i18n="hero.shot.status">Local database · encrypted</span></span>
+                <span>v1.0.0</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- MODULES ---------- -->
+    <section class="modules" id="modules">
+      <div class="wrap-narrow">
+
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="modules.eyebrow">Modules</span>
+          <h2 data-i18n="modules.h2">Seven modules. One offline app.</h2>
+          <p data-i18n="modules.p">
+            Every part of your business — from inventory to accounting to reports —
+            organized the same way you'll find it in the app.
+          </p>
+        </div>
+
+        <div class="module-grid">
+
+          <article class="module-card inventory">
+            <div class="module-head">
+              <div class="module-icon">📦</div>
+              <div class="module-title">
+                <h3 data-i18n="mod.inventory.h">Inventory</h3>
+                <span class="count" data-i18n="mod.inventory.count">5 tools</span>
+              </div>
+            </div>
+            <p data-i18n="mod.inventory.p">
+              Products, assemblies, adjustments, stock transfers, warehouses, and
+              stockrooms — with full account mapping per item.
+            </p>
+            <ul class="module-items">
+              <li data-i18n="mod.inventory.i1">Products</li>
+              <li data-i18n="mod.inventory.i2">Build / Assembly</li>
+              <li data-i18n="mod.inventory.i3">Adjustments</li>
+              <li data-i18n="mod.inventory.i4">Stock Transfers</li>
+              <li data-i18n="mod.inventory.i5">Warehouses &amp; Stockrooms</li>
+            </ul>
+          </article>
+
+          <article class="module-card services">
+            <div class="module-head">
+              <div class="module-icon">🛠️</div>
+              <div class="module-title">
+                <h3 data-i18n="mod.services.h">Services</h3>
+                <span class="count" data-i18n="mod.services.count">6 tools</span>
+              </div>
+            </div>
+            <p data-i18n="mod.services.p">
+              Non-inventory items like freight, installation, and consulting —
+              with dedicated revenue and expense account allocation.
+            </p>
+            <ul class="module-items">
+              <li data-i18n="mod.services.i1">Service Catalog</li>
+              <li data-i18n="mod.services.i2">Landed Cost Allocation</li>
+              <li data-i18n="mod.services.i3">RFQ / Inquiry</li>
+              <li data-i18n="mod.services.i4">Purchase Order</li>
+              <li data-i18n="mod.services.i5">Sales Quotation</li>
+              <li data-i18n="mod.services.i6">Sales Order &amp; Tax Invoice</li>
+            </ul>
+          </article>
+
+          <article class="module-card purchasing">
+            <div class="module-head">
+              <div class="module-icon">🛒</div>
+              <div class="module-title">
+                <h3 data-i18n="mod.purchasing.h">Purchasing</h3>
+                <span class="count" data-i18n="mod.purchasing.count">5 tools</span>
+              </div>
+            </div>
+            <p data-i18n="mod.purchasing.p">
+              Vendors, inquiries, purchase orders, and supplier payments — with
+              default AP account mapping and full VAT support.
+            </p>
+            <ul class="module-items">
+              <li data-i18n="mod.purchasing.i1">Suppliers</li>
+              <li data-i18n="mod.purchasing.i2">RFQ / Inquiry</li>
+              <li data-i18n="mod.purchasing.i3">Purchase Orders</li>
+              <li data-i18n="mod.purchasing.i4">Supplier Payments</li>
+              <li data-i18n="mod.purchasing.i5">Purchase Returns</li>
+            </ul>
+          </article>
+
+          <article class="module-card sales">
+            <div class="module-head">
+              <div class="module-icon">💼</div>
+              <div class="module-title">
+                <h3 data-i18n="mod.sales.h">Sales</h3>
+                <span class="count" data-i18n="mod.sales.count">7 tools</span>
+              </div>
+            </div>
+            <p data-i18n="mod.sales.p">
+              Customers, quotations, orders, packing slips, tax invoices, and
+              receipts — a complete sales pipeline, offline.
+            </p>
+            <ul class="module-items">
+              <li data-i18n="mod.sales.i1">Customers</li>
+              <li data-i18n="mod.sales.i2">Quotation</li>
+              <li data-i18n="mod.sales.i3">Sales Orders</li>
+              <li data-i18n="mod.sales.i4">Packing Slips</li>
+              <li data-i18n="mod.sales.i5">Tax Invoices</li>
+              <li data-i18n="mod.sales.i6">Customer Receipts</li>
+            </ul>
+          </article>
+
+          <article class="module-card accounting">
+            <div class="module-head">
+              <div class="module-icon">📘</div>
+              <div class="module-title">
+                <h3 data-i18n="mod.accounting.h">Accounting</h3>
+                <span class="count" data-i18n="mod.accounting.count">3 tools</span>
+              </div>
+            </div>
+            <p data-i18n="mod.accounting.p">
+              Chart of accounts, general journal entry with balance validation,
+              and payments — a proper double-entry system.
+            </p>
+            <ul class="module-items">
+              <li data-i18n="mod.accounting.i1">Chart of Accounts</li>
+              <li data-i18n="mod.accounting.i2">Journal Entries</li>
+              <li data-i18n="mod.accounting.i3">Payments</li>
+            </ul>
+          </article>
+
+          <article class="module-card reports">
+            <div class="module-head">
+              <div class="module-icon">📊</div>
+              <div class="module-title">
+                <h3 data-i18n="mod.reports.h">Reports</h3>
+                <span class="count" data-i18n="mod.reports.count">9 reports</span>
+              </div>
+            </div>
+            <p data-i18n="mod.reports.p">
+              Stock valuation, VAT returns, income statement, balance sheet,
+              AR/AP statements, low stock, and expiry tracking.
+            </p>
+            <ul class="module-items">
+              <li data-i18n="mod.reports.i1">Stock Valuation</li>
+              <li data-i18n="mod.reports.i2">VAT 201 Return</li>
+              <li data-i18n="mod.reports.i3">Income Statement</li>
+              <li data-i18n="mod.reports.i4">Balance Sheet</li>
+              <li data-i18n="mod.reports.i5">Statement of AR / AP</li>
+              <li data-i18n="mod.reports.i6">Low Stock &amp; Stock Expiry</li>
+            </ul>
+          </article>
+
+          <article class="module-card system">
+            <div class="module-head">
+              <div class="module-icon">⚙️</div>
+              <div class="module-title">
+                <h3 data-i18n="mod.system.h">System</h3>
+                <span class="count" data-i18n="mod.system.count">5 tools</span>
+              </div>
+            </div>
+            <p data-i18n="mod.system.p">
+              Administration, company info, multi-branch, taxation codes, and
+              authentication — configure once, use forever.
+            </p>
+            <ul class="module-items">
+              <li data-i18n="mod.system.i1">Administration (users, roles, permissions)</li>
+              <li data-i18n="mod.system.i2">Company Information</li>
+              <li data-i18n="mod.system.i3">Branch</li>
+              <li data-i18n="mod.system.i4">Taxation</li>
+              <li data-i18n="mod.system.i5">Authentication</li>
+            </ul>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- SCREENSHOT GALLERY ---------- -->
+    <section class="gallery" id="gallery">
+      <div class="wrap-narrow">
+
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="gallery.eyebrow">Screenshots</span>
+          <h2 data-i18n="gallery.h2">A real ERP — take a look</h2>
+          <p data-i18n="gallery.p">
+            Actual screens from ORSPEX Core. Clean, dark-navy headers, light workspaces,
+            and consistent patterns across every module.
+          </p>
+        </div>
+
+        <div class="gallery-grid">
+
+          <figure class="shot-card">
+            <div class="shot-frame">
+              <div class="shot-chrome"><span></span><span></span><span></span></div>
+              <img src="img/Mainpage.png" alt="ORSPEX Core dashboard">
+            </div>
+            <figcaption class="shot-caption">
+              <span class="title" data-i18n="gallery.1.title">Dashboard &amp; landing screen</span>
+              <span class="tag" data-i18n="gallery.1.tag">Home</span>
+            </figcaption>
+          </figure>
+
+          <figure class="shot-card">
+            <div class="shot-frame">
+              <div class="shot-chrome"><span></span><span></span><span></span></div>
+              <img src="img/products.png" alt="ORSPEX Core inventory and products">
+            </div>
+            <figcaption class="shot-caption">
+              <span class="title" data-i18n="gallery.2.title">Inventory &amp; product catalog</span>
+              <span class="tag sky" data-i18n="gallery.2.tag">Inventory</span>
+            </figcaption>
+          </figure>
+
+          <figure class="shot-card">
+            <div class="shot-frame">
+              <div class="shot-chrome"><span></span><span></span><span></span></div>
+              <img src="img/ChartoftheAccounts.png" alt="ORSPEX Core chart of accounts">
+            </div>
+            <figcaption class="shot-caption">
+              <span class="title" data-i18n="gallery.3.title">Chart of accounts with live balances</span>
+              <span class="tag violet" data-i18n="gallery.3.tag">Accounting</span>
+            </figcaption>
+          </figure>
+
+          <figure class="shot-card">
+            <div class="shot-frame">
+              <div class="shot-chrome"><span></span><span></span><span></span></div>
+              <img src="img/JournalEntries.png" alt="ORSPEX Core journal entry">
+            </div>
+            <figcaption class="shot-caption">
+              <span class="title" data-i18n="gallery.4.title">Double-entry journal entry</span>
+              <span class="tag violet" data-i18n="gallery.4.tag">Accounting</span>
+            </figcaption>
+          </figure>
+
+          <figure class="shot-card">
+            <div class="shot-frame">
+              <div class="shot-chrome"><span></span><span></span><span></span></div>
+              <img src="img/Taxationmodule.png" alt="ORSPEX Core taxation">
+            </div>
+            <figcaption class="shot-caption">
+              <span class="title" data-i18n="gallery.5.title">Tax codes &amp; VAT rules</span>
+              <span class="tag amber" data-i18n="gallery.5.tag">Taxation</span>
+            </figcaption>
+          </figure>
+
+          <figure class="shot-card">
+            <div class="shot-frame">
+              <div class="shot-chrome"><span></span><span></span><span></span></div>
+              <img src="img/BranchCompanySetup.png" alt="ORSPEX Core branches">
+            </div>
+            <figcaption class="shot-caption">
+              <span class="title" data-i18n="gallery.6.title">Multi-branch management</span>
+              <span class="tag green" data-i18n="gallery.6.tag">System</span>
+            </figcaption>
+          </figure>
+
+          <figure class="shot-card">
+            <div class="shot-frame">
+              <div class="shot-chrome"><span></span><span></span><span></span></div>
+              <img src="img/Customers.png" alt="ORSPEX Core customers">
+            </div>
+            <figcaption class="shot-caption">
+              <span class="title" data-i18n="gallery.7.title">Customer master with AR mapping</span>
+              <span class="tag green" data-i18n="gallery.7.tag">Sales</span>
+            </figcaption>
+          </figure>
+
+          <figure class="shot-card">
+            <div class="shot-frame">
+              <div class="shot-chrome"><span></span><span></span><span></span></div>
+              <img src="img/Suppliers.png" alt="ORSPEX Core suppliers">
+            </div>
+            <figcaption class="shot-caption">
+              <span class="title" data-i18n="gallery.8.title">Vendor master with AP mapping</span>
+              <span class="tag sky" data-i18n="gallery.8.tag">Purchasing</span>
+            </figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- SPECS ---------- -->
+    <section class="specs" id="download">
+      <div class="wrap-narrow">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="specs.eyebrow">Specifications</span>
+          <h2 data-i18n="specs.h2">Runs natively on Windows</h2>
+          <p data-i18n="specs.p">Lightweight, native, and designed for a single user on Windows. No servers, no container, no browser tab required.</p>
+        </div>
+
+        <div class="specs-grid">
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.platform.k">Platform</span>
+            <span class="v">Windows
+              <small data-i18n="spec.platform.v">Native Windows desktop app</small>
+            </span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.users.k">Users</span>
+            <span class="v">1
+              <small data-i18n="spec.users.v">Single-user by design</small>
+            </span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.storage.k">Storage</span>
+            <span class="v" data-i18n="spec.storage.v">Local file</span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.net.k">Network</span>
+            <span class="v" data-i18n="spec.net.v">None · fully offline</span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.size.k">Install size</span>
+            <span class="v" data-i18n="spec.size.v">&lt; 120 MB</span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.license.k">License</span>
+            <span class="v" data-i18n="spec.license.v">Perpetual · no subscription</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- CTA BAND ---------- -->
+    <section class="cta-band">
+      <div class="wrap-narrow">
+        <div class="cta-inner">
+          <div class="cta-copy">
+            <h2 data-i18n="cta.h2">Ready to run your business offline?</h2>
+            <p data-i18n="cta.p">Download ORSPEX Core for Windows and start managing inventory, invoices, and clients on your own machine — no cloud, no sign-up.</p>
+          </div>
+          <div class="hero-cta">
+            <a class="btn-primary" href="#download">
+              <span>⬇</span> <span data-i18n="cta.download">Download for Windows</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer" aria-label="ORSPEX footer">
+    <div class="wrap footer-inner">
+
+      <div class="footer-intro">
+        <p data-i18n="footer.intro">
+          A stand-alone, offline-first software suite. No cloud, no accounts, no internet
+          required — your data stays on your device.
+        </p>
+        <span class="footer-status" data-i18n="footer.status">offline by design · privacy first</span>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h4 data-i18n="footer.products">Products</h4>
+          <ul>
+            <li><a href="orspex-core.html">🧩 <span data-i18n="nav.core">ORSPEX Core</span> <small class="offline" data-i18n="badge.offline.short">offline</small></a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener">👥 <span data-i18n="nav.job">Job Seeker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="../pdf-compressor/pdf-compressor.html">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="../pdf-compressor-offline/pdf-compressor-offline.html">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+            <li><a href="../favicon-maker/favicon-maker.html">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="../favicon-maker-offline/favicon-maker-offline.html">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.modules">Modules</h4>
+          <ul>
+            <li><a href="orspex-core.html" data-i18n="footer.modules.erp">🧩 Stand-alone ERP</a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener" data-i18n="footer.modules.jobs">👥 Jobs &amp; Hiring</a></li>
+            <li><a href="../pdf-compressor/pdf-compressor.html" data-i18n="footer.modules.pdf">📄 PDF Compression</a></li>
+            <li><a href="../favicon-maker/favicon-maker.html" data-i18n="footer.modules.fav">⭐ Favicon Generation</a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/jobs" target="_blank" rel="noopener" data-i18n="footer.modules.talent">🔍 Talent Directory</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.resources">Resources</h4>
+          <ul>
+            <li><a href="orspex-core.html" data-i18n="footer.resources.docs">📘 Documentation</a></li>
+            <li><a href="orspex-core.html" data-i18n="footer.resources.guides">🛠️ Install guides</a></li>
+            <li><a href="../status.html" data-i18n="footer.resources.release">🧪 Release notes</a></li>
+            <li><a href="orspex-core.html" data-i18n="footer.resources.faq">❓ FAQ</a></li>
+            <li><a href="../privacy.html" data-i18n="footer.resources.security">🛡️ Security &amp; privacy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.company">Company</h4>
+          <ul>
+            <li><a href="../index.html" data-i18n="footer.company.about">🏢 About ORSPEX</a></li>
+            <li><a href="mailto:info@orspex.com" data-i18n="footer.company.contact">✉️ Contact</a></li>
+            <li><a href="../index.html" data-i18n="footer.company.partners">🤝 Partners</a></li>
+            <li><a href="../index.html" data-i18n="footer.company.press">📰 Press kit</a></li>
+            <li><a href="../index.html" data-i18n="footer.company.careers">💼 Careers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          © <strong>ORSPEX</strong> · <span data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>. <span data-i18n="footer.rights">All rights reserved.</span>
+        </div>
+        <ul class="footer-legal">
+          <li><a href="../privacy.html" data-i18n="footer.legal.privacy">Privacy</a></li>
+          <li><a href="../terms.html" data-i18n="footer.legal.terms">Terms</a></li>
+          <li><a href="../license.html" data-i18n="footer.legal.license">License</a></li>
+          <li><a href="../status.html" data-i18n="footer.legal.status">Status</a></li>
+        </ul>
+        <span class="footer-version">v1.0.0 · <span data-i18n="footer.version.stable">stable</span> · <span data-i18n="footer.version.offline">offline</span></span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       i18n
+  ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      const translations = {
+        en: {
+          'brand.tagline': 'Organization · Planning · Services · Execution',
+          'badge.offline': 'offline · no cloud',
+          'badge.offline.short': 'offline',
+          'badge.online.short': 'online',
+          'badge.desktop.short': 'desktop',
+          'cta.get': 'get ORSPEX suite',
+
+          'nav.home': 'Home',
+          'nav.products': 'Products',
+          'nav.core': 'ORSPEX Core',
+          'nav.job': 'Job Seeker',
+          'nav.pdf': 'PDF Compressor',
+          'nav.favicon': 'Favicon Maker',
+          'nav.talent': 'Find Talent',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.products': 'Products',
+
+          'core.eyebrow': 'Stand-alone ERP · Single-user',
+          'core.h1a': 'Your business,',
+          'core.h1b': 'fully offline.',
+          'core.lede': 'ORSPEX Core is a single-user ERP that runs entirely on your Windows machine. Inventory, purchasing, sales, accounting, reports — no internet, no cloud, no accounts. Your data never leaves your device.',
+          'core.pill.offline': '⚡ 100% offline',
+          'core.pill.single': '👤 Single-user',
+          'core.pill.private': '🔒 Private by design',
+          'core.pill.nofee': '💳 No subscription',
+          'core.cta.download': 'Download for Windows',
+          'core.cta.learn': "See what's inside",
+
+          'hero.shot.title': 'ORSPEX Core · Dashboard',
+          'hero.shot.invoices': 'Invoices',
+          'hero.shot.revenue': 'Revenue',
+          'hero.shot.items': 'Items',
+          'hero.shot.clients': 'Clients',
+          'hero.shot.sales': 'Sales',
+          'hero.shot.stock': 'Stock',
+          'hero.shot.expenses': 'Expenses',
+          'hero.shot.profit': 'Profit',
+          'hero.shot.status': 'Local database · encrypted',
+
+          'modules.eyebrow': 'Modules',
+          'modules.h2': 'Seven modules. One offline app.',
+          'modules.p': 'Every part of your business — from inventory to accounting to reports — organized the same way you\'ll find it in the app.',
+
+          'mod.inventory.h': 'Inventory',
+          'mod.inventory.count': '5 tools',
+          'mod.inventory.p': 'Products, assemblies, adjustments, stock transfers, warehouses, and stockrooms — with full account mapping per item.',
+          'mod.inventory.i1': 'Products',
+          'mod.inventory.i2': 'Build / Assembly',
+          'mod.inventory.i3': 'Adjustments',
+          'mod.inventory.i4': 'Stock Transfers',
+          'mod.inventory.i5': 'Warehouses & Stockrooms',
+
+          'mod.services.h': 'Services',
+          'mod.services.count': '6 tools',
+          'mod.services.p': 'Non-inventory items like freight, installation, and consulting — with dedicated revenue and expense account allocation.',
+          'mod.services.i1': 'Service Catalog',
+          'mod.services.i2': 'Landed Cost Allocation',
+          'mod.services.i3': 'RFQ / Inquiry',
+          'mod.services.i4': 'Purchase Order',
+          'mod.services.i5': 'Sales Quotation',
+          'mod.services.i6': 'Sales Order & Tax Invoice',
+
+          'mod.purchasing.h': 'Purchasing',
+          'mod.purchasing.count': '5 tools',
+          'mod.purchasing.p': 'Vendors, inquiries, purchase orders, and supplier payments — with default AP account mapping and full VAT support.',
+          'mod.purchasing.i1': 'Suppliers',
+          'mod.purchasing.i2': 'RFQ / Inquiry',
+          'mod.purchasing.i3': 'Purchase Orders',
+          'mod.purchasing.i4': 'Supplier Payments',
+          'mod.purchasing.i5': 'Purchase Returns',
+
+          'mod.sales.h': 'Sales',
+          'mod.sales.count': '7 tools',
+          'mod.sales.p': 'Customers, quotations, orders, packing slips, tax invoices, and receipts — a complete sales pipeline, offline.',
+          'mod.sales.i1': 'Customers',
+          'mod.sales.i2': 'Quotation',
+          'mod.sales.i3': 'Sales Orders',
+          'mod.sales.i4': 'Packing Slips',
+          'mod.sales.i5': 'Tax Invoices',
+          'mod.sales.i6': 'Customer Receipts',
+
+          'mod.accounting.h': 'Accounting',
+          'mod.accounting.count': '3 tools',
+          'mod.accounting.p': 'Chart of accounts, general journal entry with balance validation, and payments — a proper double-entry system.',
+          'mod.accounting.i1': 'Chart of Accounts',
+          'mod.accounting.i2': 'Journal Entries',
+          'mod.accounting.i3': 'Payments',
+
+          'mod.reports.h': 'Reports',
+          'mod.reports.count': '9 reports',
+          'mod.reports.p': 'Stock valuation, VAT returns, income statement, balance sheet, AR/AP statements, low stock, and expiry tracking.',
+          'mod.reports.i1': 'Stock Valuation',
+          'mod.reports.i2': 'VAT 201 Return',
+          'mod.reports.i3': 'Income Statement',
+          'mod.reports.i4': 'Balance Sheet',
+          'mod.reports.i5': 'Statement of AR / AP',
+          'mod.reports.i6': 'Low Stock & Stock Expiry',
+
+          'mod.system.h': 'System',
+          'mod.system.count': '5 tools',
+          'mod.system.p': 'Administration, company info, multi-branch, taxation codes, and authentication — configure once, use forever.',
+          'mod.system.i1': 'Administration (users, roles, permissions)',
+          'mod.system.i2': 'Company Information',
+          'mod.system.i3': 'Branch',
+          'mod.system.i4': 'Taxation',
+          'mod.system.i5': 'Authentication',
+
+          'gallery.eyebrow': 'Screenshots',
+          'gallery.h2': 'A real ERP — take a look',
+          'gallery.p': 'Actual screens from ORSPEX Core. Clean, dark-navy headers, light workspaces, and consistent patterns across every module.',
+          'gallery.1.title': 'Dashboard & landing screen',
+          'gallery.1.tag': 'Home',
+          'gallery.2.title': 'Inventory & product catalog',
+          'gallery.2.tag': 'Inventory',
+          'gallery.3.title': 'Chart of accounts with live balances',
+          'gallery.3.tag': 'Accounting',
+          'gallery.4.title': 'Double-entry journal entry',
+          'gallery.4.tag': 'Accounting',
+          'gallery.5.title': 'Tax codes & VAT rules',
+          'gallery.5.tag': 'Taxation',
+          'gallery.6.title': 'Multi-branch management',
+          'gallery.6.tag': 'System',
+          'gallery.7.title': 'Customer master with AR mapping',
+          'gallery.7.tag': 'Sales',
+          'gallery.8.title': 'Vendor master with AP mapping',
+          'gallery.8.tag': 'Purchasing',
+
+          'specs.eyebrow': 'Specifications',
+          'specs.h2': 'Runs natively on Windows',
+          'specs.p': 'Lightweight, native, and designed for a single user on Windows. No servers, no container, no browser tab required.',
+          'spec.platform.k': 'Platform',
+          'spec.platform.v': 'Native Windows desktop app',
+          'spec.users.k': 'Users',
+          'spec.users.v': 'Single-user by design',
+          'spec.storage.k': 'Storage',
+          'spec.storage.v': 'Local file',
+          'spec.net.k': 'Network',
+          'spec.net.v': 'None · fully offline',
+          'spec.size.k': 'Install size',
+          'spec.size.v': '< 120 MB',
+          'spec.license.k': 'License',
+          'spec.license.v': 'Perpetual · no subscription',
+
+          'cta.h2': 'Ready to run your business offline?',
+          'cta.p': 'Download ORSPEX Core for Windows and start managing inventory, invoices, and clients on your own machine — no cloud, no sign-up.',
+          'cta.download': 'Download for Windows',
+
+          'footer.intro': 'A stand-alone, offline-first software suite. No cloud, no accounts, no internet required — your data stays on your device.',
+          'footer.status': 'offline by design · privacy first',
+          'footer.products': 'Products',
+          'footer.modules': 'Modules',
+          'footer.resources': 'Resources',
+          'footer.company': 'Company',
+          'footer.modules.erp': '🧩 Stand-alone ERP',
+          'footer.modules.jobs': '👥 Jobs & Hiring',
+          'footer.modules.pdf': '📄 PDF Compression',
+          'footer.modules.fav': '⭐ Favicon Generation',
+          'footer.modules.talent': '🔍 Talent Directory',
+          'footer.resources.docs': '📘 Documentation',
+          'footer.resources.guides': '🛠️ Install guides',
+          'footer.resources.release': '🧪 Release notes',
+          'footer.resources.faq': '❓ FAQ',
+          'footer.resources.security': '🛡️ Security & privacy',
+          'footer.company.about': '🏢 About ORSPEX',
+          'footer.company.contact': '✉️ Contact',
+          'footer.company.partners': '🤝 Partners',
+          'footer.company.press': '📰 Press kit',
+          'footer.company.careers': '💼 Careers',
+          'footer.rights': 'All rights reserved.',
+          'footer.legal.privacy': 'Privacy',
+          'footer.legal.terms': 'Terms',
+          'footer.legal.license': 'License',
+          'footer.legal.status': 'Status',
+          'footer.version.stable': 'stable',
+          'footer.version.offline': 'offline'
+        },
+
+        ar: {
+          'brand.tagline': 'التنظيم · التخطيط · الخدمات · التنفيذ',
+          'badge.offline': 'يعمل دون اتصال · بدون سحابة',
+          'badge.offline.short': 'دون اتصال',
+          'badge.online.short': 'عبر الإنترنت',
+          'badge.desktop.short': 'سطح المكتب',
+          'cta.get': 'احصل على حزمة ORSPEX',
+
+          'nav.home': 'الرئيسية',
+          'nav.products': 'المنتجات',
+          'nav.core': 'نظام ORSPEX الأساسي',
+          'nav.job': 'الباحث عن عمل',
+          'nav.pdf': 'ضاغط PDF',
+          'nav.favicon': 'صانع الأيقونات',
+          'nav.talent': 'ابحث عن موهبة',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.products': 'المنتجات',
+
+          'core.eyebrow': 'نظام ERP مستقل · مستخدم واحد',
+          'core.h1a': 'عملك،',
+          'core.h1b': 'دون اتصال بالكامل.',
+          'core.lede': 'ORSPEX Core هو نظام ERP لمستخدم واحد يعمل بالكامل على جهاز ويندوز. المخزون، المشتريات، المبيعات، المحاسبة، التقارير — بلا إنترنت، بلا سحابة، بلا حسابات. بياناتك لا تغادر جهازك أبداً.',
+          'core.pill.offline': '⚡ دون اتصال 100%',
+          'core.pill.single': '👤 مستخدم واحد',
+          'core.pill.private': '🔒 خصوصية بالتصميم',
+          'core.pill.nofee': '💳 بلا اشتراك',
+          'core.cta.download': 'حمّل لويندوز',
+          'core.cta.learn': 'اكتشف ما بالداخل',
+
+          'hero.shot.title': 'ORSPEX Core · لوحة المعلومات',
+          'hero.shot.invoices': 'الفواتير',
+          'hero.shot.revenue': 'الإيرادات',
+          'hero.shot.items': 'الأصناف',
+          'hero.shot.clients': 'العملاء',
+          'hero.shot.sales': 'المبيعات',
+          'hero.shot.stock': 'المخزون',
+          'hero.shot.expenses': 'المصروفات',
+          'hero.shot.profit': 'الأرباح',
+          'hero.shot.status': 'قاعدة بيانات محلية · مشفّرة',
+
+          'modules.eyebrow': 'الوحدات',
+          'modules.h2': 'سبع وحدات. تطبيق واحد دون اتصال.',
+          'modules.p': 'كل جزء من عملك — من المخزون إلى المحاسبة إلى التقارير — منظم بنفس الطريقة التي ستجدها في التطبيق.',
+
+          'mod.inventory.h': 'المخزون',
+          'mod.inventory.count': '5 أدوات',
+          'mod.inventory.p': 'المنتجات، التجميعات، التسويات، تحويلات المخزون، المستودعات وغرف المخزون — مع ربط كامل للحسابات لكل صنف.',
+          'mod.inventory.i1': 'المنتجات',
+          'mod.inventory.i2': 'البناء / التجميع',
+          'mod.inventory.i3': 'التسويات',
+          'mod.inventory.i4': 'تحويلات المخزون',
+          'mod.inventory.i5': 'المستودعات وغرف المخزون',
+
+          'mod.services.h': 'الخدمات',
+          'mod.services.count': '6 أدوات',
+          'mod.services.p': 'عناصر غير مخزنية مثل الشحن والتركيب والاستشارات — مع تخصيص حسابات الإيرادات والمصروفات.',
+          'mod.services.i1': 'كتالوج الخدمات',
+          'mod.services.i2': 'تخصيص تكاليف الشحن',
+          'mod.services.i3': 'طلب عرض سعر / استفسار',
+          'mod.services.i4': 'أمر شراء',
+          'mod.services.i5': 'عرض سعر بيع',
+          'mod.services.i6': 'أمر بيع وفاتورة ضريبية',
+
+          'mod.purchasing.h': 'المشتريات',
+          'mod.purchasing.count': '5 أدوات',
+          'mod.purchasing.p': 'الموردون، الاستفسارات، أوامر الشراء، ومدفوعات الموردين — مع ربط حساب الدفع الافتراضي ودعم كامل لضريبة القيمة المضافة.',
+          'mod.purchasing.i1': 'الموردون',
+          'mod.purchasing.i2': 'طلب عرض سعر / استفسار',
+          'mod.purchasing.i3': 'أوامر الشراء',
+          'mod.purchasing.i4': 'مدفوعات الموردين',
+          'mod.purchasing.i5': 'مرتجعات الشراء',
+
+          'mod.sales.h': 'المبيعات',
+          'mod.sales.count': '7 أدوات',
+          'mod.sales.p': 'العملاء، عروض الأسعار، الأوامر، قوائم التعبئة، الفواتير الضريبية والإيصالات — مسار مبيعات كامل، دون اتصال.',
+          'mod.sales.i1': 'العملاء',
+          'mod.sales.i2': 'عرض السعر',
+          'mod.sales.i3': 'أوامر البيع',
+          'mod.sales.i4': 'قوائم التعبئة',
+          'mod.sales.i5': 'الفواتير الضريبية',
+          'mod.sales.i6': 'إيصالات العملاء',
+
+          'mod.accounting.h': 'المحاسبة',
+          'mod.accounting.count': '3 أدوات',
+          'mod.accounting.p': 'دليل الحسابات، قيد اليومية العام مع التحقق من التوازن، والمدفوعات — نظام محاسبي مزدوج حقيقي.',
+          'mod.accounting.i1': 'دليل الحسابات',
+          'mod.accounting.i2': 'قيود اليومية',
+          'mod.accounting.i3': 'المدفوعات',
+
+          'mod.reports.h': 'التقارير',
+          'mod.reports.count': '9 تقارير',
+          'mod.reports.p': 'تقييم المخزون، إقرار ضريبة القيمة المضافة، قائمة الدخل، الميزانية العمومية، كشوفات العملاء/الموردين، المخزون المنخفض، وتتبع الصلاحية.',
+          'mod.reports.i1': 'تقييم المخزون',
+          'mod.reports.i2': 'إقرار ضريبة القيمة المضافة',
+          'mod.reports.i3': 'قائمة الدخل',
+          'mod.reports.i4': 'الميزانية العمومية',
+          'mod.reports.i5': 'كشف العملاء / الموردين',
+          'mod.reports.i6': 'المخزون المنخفض والصلاحية',
+
+          'mod.system.h': 'النظام',
+          'mod.system.count': '5 أدوات',
+          'mod.system.p': 'الإدارة، معلومات الشركة، تعدد الفروع، أكواد الضرائب، والمصادقة — اضبط مرة واحدة، واستخدم للأبد.',
+          'mod.system.i1': 'الإدارة (المستخدمون، الأدوار، الصلاحيات)',
+          'mod.system.i2': 'معلومات الشركة',
+          'mod.system.i3': 'الفرع',
+          'mod.system.i4': 'الضرائب',
+          'mod.system.i5': 'المصادقة',
+
+          'gallery.eyebrow': 'لقطات شاشة',
+          'gallery.h2': 'نظام ERP حقيقي — ألقِ نظرة',
+          'gallery.p': 'شاشات فعلية من ORSPEX Core. رؤوس داكنة نظيفة، مساحات عمل فاتحة، وأنماط متسقة في كل الوحدات.',
+          'gallery.1.title': 'لوحة المعلومات وشاشة البداية',
+          'gallery.1.tag': 'الرئيسية',
+          'gallery.2.title': 'كتالوج المخزون والمنتجات',
+          'gallery.2.tag': 'المخزون',
+          'gallery.3.title': 'دليل الحسابات مع الأرصدة الحية',
+          'gallery.3.tag': 'المحاسبة',
+          'gallery.4.title': 'قيد يومية مزدوج',
+          'gallery.4.tag': 'المحاسبة',
+          'gallery.5.title': 'أكواد الضرائب وقواعد القيمة المضافة',
+          'gallery.5.tag': 'الضرائب',
+          'gallery.6.title': 'إدارة الفروع المتعددة',
+          'gallery.6.tag': 'النظام',
+          'gallery.7.title': 'بيانات العملاء مع ربط المدينين',
+          'gallery.7.tag': 'المبيعات',
+          'gallery.8.title': 'بيانات الموردين مع ربط الدائنين',
+          'gallery.8.tag': 'المشتريات',
+
+          'specs.eyebrow': 'المواصفات',
+          'specs.h2': 'يعمل أصلياً على ويندوز',
+          'specs.p': 'خفيف وأصلي ومصمم لمستخدم واحد على ويندوز. لا خوادم، لا حاويات، ولا حاجة لفتح المتصفح.',
+          'spec.platform.k': 'المنصة',
+          'spec.platform.v': 'تطبيق ويندوز أصلي لسطح المكتب',
+          'spec.users.k': 'المستخدمون',
+          'spec.users.v': 'مستخدم واحد بالتصميم',
+          'spec.storage.k': 'التخزين',
+          'spec.storage.v': 'ملف محلي',
+          'spec.net.k': 'الشبكة',
+          'spec.net.v': 'لا شيء · دون اتصال بالكامل',
+          'spec.size.k': 'حجم التثبيت',
+          'spec.size.v': 'أقل من 120 ميجابايت',
+          'spec.license.k': 'الترخيص',
+          'spec.license.v': 'دائم · بلا اشتراك',
+
+          'cta.h2': 'هل أنت مستعد لإدارة عملك دون اتصال؟',
+          'cta.p': 'حمّل ORSPEX Core لويندوز وابدأ بإدارة المخزون والفواتير والعملاء على جهازك — بلا سحابة، بلا تسجيل.',
+          'cta.download': 'حمّل لويندوز',
+
+          'footer.intro': 'حزمة برامج مستقلة تعمل دون اتصال. بلا سحابة، بلا حسابات، بلا حاجة للإنترنت — بياناتك تبقى على جهازك.',
+          'footer.status': 'مصمم للعمل دون اتصال · الخصوصية أولاً',
+          'footer.products': 'المنتجات',
+          'footer.modules': 'الوحدات',
+          'footer.resources': 'الموارد',
+          'footer.company': 'الشركة',
+          'footer.modules.erp': '🧩 تخطيط موارد المؤسسات',
+          'footer.modules.jobs': '👥 الوظائف والتوظيف',
+          'footer.modules.pdf': '📄 ضغط PDF',
+          'footer.modules.fav': '⭐ إنشاء الأيقونات',
+          'footer.modules.talent': '🔍 دليل المواهب',
+          'footer.resources.docs': '📘 الوثائق',
+          'footer.resources.guides': '🛠️ أدلة التثبيت',
+          'footer.resources.release': '🧪 ملاحظات الإصدار',
+          'footer.resources.faq': '❓ الأسئلة الشائعة',
+          'footer.resources.security': '🛡️ الأمان والخصوصية',
+          'footer.company.about': '🏢 عن ORSPEX',
+          'footer.company.contact': '✉️ اتصل بنا',
+          'footer.company.partners': '🤝 الشركاء',
+          'footer.company.press': '📰 الحقيبة الصحفية',
+          'footer.company.careers': '💼 الوظائف',
+          'footer.rights': 'جميع الحقوق محفوظة.',
+          'footer.legal.privacy': 'الخصوصية',
+          'footer.legal.terms': 'الشروط',
+          'footer.legal.license': 'الترخيص',
+          'footer.legal.status': 'الحالة',
+          'footer.version.stable': 'مستقر',
+          'footer.version.offline': 'دون اتصال'
+        },
+
+        zh: {
+          'brand.tagline': '组织 · 规划 · 服务 · 执行',
+          'badge.offline': '离线 · 无需云端',
+          'badge.offline.short': '离线',
+          'badge.online.short': '在线',
+          'badge.desktop.short': '桌面',
+          'cta.get': '获取 ORSPEX 套件',
+
+          'nav.home': '首页',
+          'nav.products': '产品',
+          'nav.core': 'ORSPEX 核心',
+          'nav.job': '求职者',
+          'nav.pdf': 'PDF 压缩器',
+          'nav.favicon': '图标生成器',
+          'nav.talent': '寻找人才',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.products': '产品',
+
+          'core.eyebrow': '独立 ERP · 单用户',
+          'core.h1a': '您的业务，',
+          'core.h1b': '完全离线。',
+          'core.lede': 'ORSPEX Core 是一款完全在您 Windows 本机运行的单用户 ERP。库存、采购、销售、会计、报表 —— 无需互联网，无需云端，无需账户。您的数据永不离开设备。',
+          'core.pill.offline': '⚡ 100% 离线',
+          'core.pill.single': '👤 单用户',
+          'core.pill.private': '🔒 隐私优先',
+          'core.pill.nofee': '💳 无需订阅',
+          'core.cta.download': '下载 Windows 版',
+          'core.cta.learn': '查看功能',
+
+          'hero.shot.title': 'ORSPEX Core · 仪表板',
+          'hero.shot.invoices': '发票',
+          'hero.shot.revenue': '收入',
+          'hero.shot.items': '商品',
+          'hero.shot.clients': '客户',
+          'hero.shot.sales': '销售',
+          'hero.shot.stock': '库存',
+          'hero.shot.expenses': '支出',
+          'hero.shot.profit': '利润',
+          'hero.shot.status': '本地数据库 · 加密',
+
+          'modules.eyebrow': '功能模块',
+          'modules.h2': '七大模块。一个离线应用。',
+          'modules.p': '业务的每个部分 —— 从库存到会计到报表 —— 都按您在应用中看到的相同方式组织。',
+
+          'mod.inventory.h': '库存',
+          'mod.inventory.count': '5 个工具',
+          'mod.inventory.p': '商品、组装、调整、库存调拨、仓库和库房 —— 每个商品都完整映射到会计科目。',
+          'mod.inventory.i1': '商品',
+          'mod.inventory.i2': '组装 / 装配',
+          'mod.inventory.i3': '调整',
+          'mod.inventory.i4': '库存调拨',
+          'mod.inventory.i5': '仓库与库房',
+
+          'mod.services.h': '服务',
+          'mod.services.count': '6 个工具',
+          'mod.services.p': '非库存项目，如运费、安装和咨询 —— 拥有专用的收入与费用科目。',
+          'mod.services.i1': '服务目录',
+          'mod.services.i2': '到岸成本分摊',
+          'mod.services.i3': '询价 / 询问',
+          'mod.services.i4': '采购订单',
+          'mod.services.i5': '销售报价',
+          'mod.services.i6': '销售订单与税务发票',
+
+          'mod.purchasing.h': '采购',
+          'mod.purchasing.count': '5 个工具',
+          'mod.purchasing.p': '供应商、询价、采购订单和供应商付款 —— 附默认应付科目映射与完整增值税支持。',
+          'mod.purchasing.i1': '供应商',
+          'mod.purchasing.i2': '询价 / 询问',
+          'mod.purchasing.i3': '采购订单',
+          'mod.purchasing.i4': '供应商付款',
+          'mod.purchasing.i5': '采购退货',
+
+          'mod.sales.h': '销售',
+          'mod.sales.count': '7 个工具',
+          'mod.sales.p': '客户、报价、订单、装箱单、税务发票和收款 —— 完整的销售流程，离线进行。',
+          'mod.sales.i1': '客户',
+          'mod.sales.i2': '报价',
+          'mod.sales.i3': '销售订单',
+          'mod.sales.i4': '装箱单',
+          'mod.sales.i5': '税务发票',
+          'mod.sales.i6': '客户收款',
+
+          'mod.accounting.h': '会计',
+          'mod.accounting.count': '3 个工具',
+          'mod.accounting.p': '会计科目表、带平衡校验的总账凭证和付款 —— 完整的复式记账系统。',
+          'mod.accounting.i1': '会计科目表',
+          'mod.accounting.i2': '日记账凭证',
+          'mod.accounting.i3': '付款',
+
+          'mod.reports.h': '报表',
+          'mod.reports.count': '9 份报表',
+          'mod.reports.p': '库存估值、增值税申报、利润表、资产负债表、应收/应付对账单、低库存与到期跟踪。',
+          'mod.reports.i1': '库存估值',
+          'mod.reports.i2': '增值税申报',
+          'mod.reports.i3': '利润表',
+          'mod.reports.i4': '资产负债表',
+          'mod.reports.i5': '应收 / 应付对账单',
+          'mod.reports.i6': '低库存与到期',
+
+          'mod.system.h': '系统',
+          'mod.system.count': '5 个工具',
+          'mod.system.p': '管理、公司信息、多分支、税码和身份验证 —— 配置一次，永久使用。',
+          'mod.system.i1': '管理（用户、角色、权限）',
+          'mod.system.i2': '公司信息',
+          'mod.system.i3': '分支',
+          'mod.system.i4': '税务',
+          'mod.system.i5': '身份验证',
+
+          'gallery.eyebrow': '截图',
+          'gallery.h2': '真实的 ERP —— 来看看',
+          'gallery.p': '来自 ORSPEX Core 的真实界面。干净的深色头部、浅色工作区，以及在所有模块中一致的布局。',
+          'gallery.1.title': '仪表板与起始界面',
+          'gallery.1.tag': '主页',
+          'gallery.2.title': '库存与商品目录',
+          'gallery.2.tag': '库存',
+          'gallery.3.title': '带实时余额的会计科目表',
+          'gallery.3.tag': '会计',
+          'gallery.4.title': '复式日记账凭证',
+          'gallery.4.tag': '会计',
+          'gallery.5.title': '税码与增值税规则',
+          'gallery.5.tag': '税务',
+          'gallery.6.title': '多分支管理',
+          'gallery.6.tag': '系统',
+          'gallery.7.title': '带应收映射的客户主数据',
+          'gallery.7.tag': '销售',
+          'gallery.8.title': '带应付映射的供应商主数据',
+          'gallery.8.tag': '采购',
+
+          'specs.eyebrow': '规格',
+          'specs.h2': '在 Windows 上原生运行',
+          'specs.p': '轻量、原生、为 Windows 单用户设计。无需服务器、无需容器、无需浏览器。',
+          'spec.platform.k': '平台',
+          'spec.platform.v': '原生 Windows 桌面应用',
+          'spec.users.k': '用户数',
+          'spec.users.v': '单用户设计',
+          'spec.storage.k': '存储',
+          'spec.storage.v': '本地文件',
+          'spec.net.k': '网络',
+          'spec.net.v': '无需 · 完全离线',
+          'spec.size.k': '安装大小',
+          'spec.size.v': '小于 120 MB',
+          'spec.license.k': '许可',
+          'spec.license.v': '永久 · 无需订阅',
+
+          'cta.h2': '准备好离线运营您的业务了吗？',
+          'cta.p': '下载 Windows 版 ORSPEX Core，在本机管理库存、发票和客户 —— 无需云端，无需注册。',
+          'cta.download': '下载 Windows 版',
+
+          'footer.intro': '一套独立、离线优先的软件套件。无云端，无账户，无需互联网 —— 数据保留在您的设备上。',
+          'footer.status': '天生离线 · 隐私优先',
+          'footer.products': '产品',
+          'footer.modules': '模块',
+          'footer.resources': '资源',
+          'footer.company': '公司',
+          'footer.modules.erp': '🧩 独立 ERP',
+          'footer.modules.jobs': '👥 招聘与求职',
+          'footer.modules.pdf': '📄 PDF 压缩',
+          'footer.modules.fav': '⭐ 图标生成',
+          'footer.modules.talent': '🔍 人才目录',
+          'footer.resources.docs': '📘 文档',
+          'footer.resources.guides': '🛠️ 安装指南',
+          'footer.resources.release': '🧪 发行说明',
+          'footer.resources.faq': '❓ 常见问题',
+          'footer.resources.security': '🛡️ 安全与隐私',
+          'footer.company.about': '🏢 关于 ORSPEX',
+          'footer.company.contact': '✉️ 联系我们',
+          'footer.company.partners': '🤝 合作伙伴',
+          'footer.company.press': '📰 媒体资料',
+          'footer.company.careers': '💼 招聘',
+          'footer.rights': '版权所有。',
+          'footer.legal.privacy': '隐私',
+          'footer.legal.terms': '条款',
+          'footer.legal.license': '许可',
+          'footer.legal.status': '状态',
+          'footer.version.stable': '稳定版',
+          'footer.version.offline': '离线'
+        }
+      };
+
+      const root = document.getElementById('html-root');
+      const buttons = document.querySelectorAll('.lang-switch button');
+
+      function setLanguage(lang) {
+        if (!translations[lang]) return;
+        root.setAttribute('lang', lang);
+
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          const key = el.getAttribute('data-i18n');
+          const value = translations[lang][key];
+          if (value !== undefined) el.textContent = value;
+        });
+
+        buttons.forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+
+        try { localStorage.setItem('orspex-lang', lang); } catch (e) {}
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setLanguage(btn.getAttribute('data-lang'));
+        });
+      });
+
+      let initial = 'en';
+      try {
+        const saved = localStorage.getItem('orspex-lang');
+        if (saved && translations[saved]) initial = saved;
+        else {
+          const nav = (navigator.language || 'en').toLowerCase();
+          if (nav.startsWith('ar')) initial = 'ar';
+          else if (nav.startsWith('zh')) initial = 'zh';
+        }
+      } catch (e) {}
+
+      setLanguage(initial);
+    })();
+  </script>
+
+</body>
+</html>

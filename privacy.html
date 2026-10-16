@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0F172A">
+  <title>ORSPEX · Privacy Statement</title>
+  <meta name="description" content="ORSPEX Privacy Statement — offline-first by design. No cloud, no accounts, no tracking. Your data stays on your device.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orspex-dark: #0F172A;
+      --orspex-blue: #2563EB;
+      --orspex-sky: #5BC0EB;
+      --orspex-green: #22C55E;
+      --orspex-mint: #6EE7A0;
+      --orspex-slate: #64748B;
+      --orspex-border: #E2E8F0;
+      --orspex-white: #FFFFFF;
+      --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      --font-arabic: 'Segoe UI', 'Tahoma', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif;
+      --font-chinese: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Noto Sans SC', sans-serif;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--orspex-white);
+      font-family: var(--font-sans);
+      color: var(--orspex-dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      transition: font-family 0.2s ease;
+    }
+
+    html[lang="ar"] body { direction: rtl; font-family: var(--font-arabic); }
+    html[lang="zh"] body { font-family: var(--font-chinese); }
+
+    /* ============================================================
+       ANIMATED BACKGROUND
+    ============================================================ */
+    .bg-anim {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none; opacity: 0.28;
+    }
+    .bg-anim svg { width: 100%; height: 100%; display: block; }
+
+    @keyframes drift-slow {
+      0% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-30px) scale(1.06); }
+      66% { transform: translate(-30px,35px) scale(0.96); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-medium {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(-45px,40px) scale(1.08); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-fast {
+      0% { transform: translate(0,0); }
+      50% { transform: translate(35px,-40px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes color-mint-sky { 0%,100%{fill:#6EE7A0;} 50%{fill:#5BC0EB;} }
+    @keyframes color-sky-blue { 0%,100%{fill:#5BC0EB;} 50%{fill:#2563EB;} }
+    @keyframes color-blue-green { 0%,100%{fill:#2563EB;} 50%{fill:#22C55E;} }
+    @keyframes color-green-mint { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes color-sky-mint { 0%,100%{fill:#5BC0EB;} 50%{fill:#6EE7A0;} }
+    @keyframes pulse-soft { 0%,100%{opacity:0.18;} 50%{opacity:0.4;} }
+    @keyframes twinkle { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+    @keyframes dash-rotate { from{stroke-dashoffset:0;} to{stroke-dashoffset:-400;} }
+    @keyframes stroke-sky-blue { 0%,100%{stroke:#5BC0EB;} 50%{stroke:#2563EB;} }
+    @keyframes stroke-green-mint { 0%,100%{stroke:#22C55E;} 50%{stroke:#6EE7A0;} }
+
+    .orb-1 { animation: drift-slow 24s ease-in-out infinite, color-mint-sky 18s ease-in-out infinite; transform-origin: 200px 200px; }
+    .orb-2 { animation: drift-medium 30s ease-in-out infinite, color-sky-blue 22s ease-in-out infinite; transform-origin: 1200px 300px; }
+    .orb-3 { animation: drift-slow 36s ease-in-out infinite, color-blue-green 26s ease-in-out infinite; transform-origin: 400px 700px; }
+    .orb-4 { animation: drift-medium 28s ease-in-out infinite, color-green-mint 20s ease-in-out infinite; transform-origin: 1100px 800px; }
+    .orb-5 { animation: drift-fast 20s ease-in-out infinite, color-sky-mint 24s ease-in-out infinite; transform-origin: 700px 400px; }
+
+    .pulse-1 { animation: pulse-soft 6s ease-in-out infinite, stroke-sky-blue 20s ease-in-out infinite; }
+    .pulse-2 { animation: pulse-soft 8s ease-in-out infinite 1s, stroke-green-mint 24s ease-in-out infinite; }
+    .pulse-3 { animation: pulse-soft 7s ease-in-out infinite 2s, stroke-sky-blue 22s ease-in-out infinite; }
+
+    .dot-1 { animation: twinkle 4s ease-in-out infinite; }
+    .dot-2 { animation: twinkle 5s ease-in-out infinite 0.5s; }
+    .dot-3 { animation: twinkle 3.5s ease-in-out infinite 1s; }
+    .dot-4 { animation: twinkle 6s ease-in-out infinite 1.5s; }
+    .dot-5 { animation: twinkle 4.5s ease-in-out infinite 2s; }
+    .dot-6 { animation: twinkle 5.5s ease-in-out infinite 0.8s; }
+    .dot-7 { animation: twinkle 4.2s ease-in-out infinite 1.2s; }
+    .dot-8 { animation: twinkle 5.8s ease-in-out infinite 0.3s; }
+
+    .ring-1 { animation: dash-rotate 60s linear infinite; transform-origin: 1300px 200px; }
+    .ring-2 { animation: dash-rotate 80s linear infinite reverse; transform-origin: 250px 850px; }
+
+    @media (prefers-reduced-motion: reduce) { .bg-anim * { animation: none !important; } }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .site-header, main, .site-footer { position: relative; z-index: 1; }
+    .site-header, .site-footer {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .wrap { width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 2.75rem; }
+    .wrap-narrow { width: 100%; max-width: 900px; margin: 0 auto; padding: 0 2.75rem; }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .site-header { width: 100%; border-bottom: 1px solid var(--orspex-border); }
+    .header-inner { padding: 1.25rem 0; display: flex; flex-direction: column; gap: 1rem; }
+
+    .header-top {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1.5rem;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 1rem;
+      flex-shrink: 0; text-decoration: none; color: inherit;
+    }
+    .brand-mark { width: 58px; height: 58px; flex-shrink: 0; }
+    .brand-text { display: flex; flex-direction: column; gap: 0.15rem; }
+    .brand-text .name {
+      font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--orspex-dark); line-height: 1;
+    }
+    .brand-text .tagline {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 2.4px;
+      color: #334155; text-transform: uppercase; white-space: nowrap;
+    }
+    html[lang="zh"] .brand-text .tagline { letter-spacing: 4px; text-transform: none; font-weight: 500; }
+    html[lang="ar"] .brand-text .tagline { letter-spacing: 1px; text-transform: none; font-weight: 500; }
+
+    .header-actions { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+
+    .offline-badge {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #ECFDF5; color: #065F46;
+      font-size: 0.82rem; font-weight: 500;
+      padding: 0.5rem 1rem; border-radius: 60px;
+      border: 1px solid #A7F3D0; letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .offline-badge::before { content: "⚡"; font-size: 0.95rem; }
+
+    .btn-cta {
+      background: var(--orspex-dark); color: white;
+      font-size: 0.9rem; font-weight: 500;
+      padding: 0.7rem 1.4rem; border-radius: 60px;
+      border: 1px solid var(--orspex-dark); cursor: pointer;
+      letter-spacing: 0.3px; display: inline-flex;
+      align-items: center; gap: 0.5rem;
+      transition: background 0.15s, transform 0.15s;
+      white-space: nowrap; font-family: inherit;
+      text-decoration: none;
+    }
+    .btn-cta:hover { background: #1E293B; transform: translateY(-1px); }
+    .btn-cta span:first-child { font-size: 1rem; line-height: 1; }
+
+    .lang-switch {
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.28rem;
+    }
+    .lang-switch button {
+      background: transparent; border: none;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      color: #475569; padding: 0.4rem 0.75rem;
+      border-radius: 60px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.3px; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.4rem; line-height: 1;
+    }
+    .lang-switch button .flag { font-size: 1.05rem; line-height: 1; }
+    .lang-switch button:hover { color: var(--orspex-dark); }
+    .lang-switch button.active { background: var(--orspex-dark); color: white; }
+
+    .header-nav-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1rem;
+    }
+
+    .nav-links {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.25rem 0.3rem; list-style: none;
+    }
+    .nav-links > li { position: relative; }
+    .nav-links > li > a, .nav-links > li > button {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: inherit; font-size: 0.95rem; font-weight: 500;
+      color: #1E293B; text-decoration: none;
+      padding: 0.6rem 1.1rem; border-radius: 60px;
+      border: none; background: transparent; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap; line-height: 1.15;
+    }
+    .nav-links > li > a:hover, .nav-links > li > button:hover {
+      background: #F1F5F9; color: var(--orspex-blue);
+    }
+    .nav-links > li > a.current { background: #EFF6FF; color: var(--orspex-blue); }
+
+    .caret { font-size: 0.7rem; opacity: 0.7; transform: translateY(1px); }
+    .dropdown { position: relative; }
+    .dropdown-panel {
+      position: absolute; top: calc(100% + 8px); left: 0;
+      min-width: 300px; background: var(--orspex-white);
+      border-radius: 12px; border: 1px solid var(--orspex-border);
+      box-shadow: 0 12px 28px -6px rgba(15,23,42,0.12);
+      padding: 0.6rem; display: none; flex-direction: column;
+      gap: 0.15rem; z-index: 100;
+    }
+    html[lang="ar"] .dropdown-panel { right: 0; left: auto; }
+    .dropdown:hover .dropdown-panel,
+    .dropdown:focus-within .dropdown-panel { display: flex; }
+    .dropdown-panel a {
+      display: flex; flex-direction: column; gap: 0.1rem;
+      padding: 0.7rem 1rem; border-radius: 8px;
+      text-decoration: none; color: var(--orspex-dark);
+      font-size: 0.92rem; font-weight: 500;
+      transition: background 0.12s; line-height: 1.35;
+    }
+    .dropdown-panel a:hover { background: #F1F5F9; }
+    .dropdown-panel a small { font-size: 0.76rem; font-weight: 400; color: var(--orspex-slate); }
+    .dropdown-panel .divider { height: 1px; background: var(--orspex-border); margin: 0.3rem 0.6rem; }
+
+    .menu-toggle-checkbox { display: none; }
+    .menu-toggle-label {
+      display: none; align-items: center; justify-content: center;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.65rem 1.15rem;
+      font-size: 0.92rem; font-weight: 500;
+      color: var(--orspex-dark); cursor: pointer;
+      gap: 0.5rem; user-select: none; white-space: nowrap;
+    }
+    .menu-toggle-label span { font-size: 1.05rem; line-height: 1; }
+
+    /* ============================================================
+       LEGAL PAGE HEADER
+    ============================================================ */
+    main { flex: 1; padding: 4rem 0; }
+
+    .breadcrumb {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--orspex-slate); margin-bottom: 1.5rem;
+    }
+    .breadcrumb a { color: var(--orspex-slate); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--orspex-blue); }
+    .breadcrumb .sep { opacity: 0.5; }
+    .breadcrumb .current { color: var(--orspex-dark); font-weight: 500; }
+
+    .legal-hero {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--orspex-border);
+    }
+
+    .legal-hero .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 3px; color: var(--orspex-blue);
+      background: #EFF6FF; padding: 0.35rem 0.95rem;
+      border-radius: 999px; margin-bottom: 1.25rem; text-transform: uppercase;
+    }
+    html[lang="ar"] .legal-hero .eyebrow,
+    html[lang="zh"] .legal-hero .eyebrow { text-transform: none; letter-spacing: 2px; }
+
+    .legal-hero h1 {
+      font-size: clamp(1.9rem, 4vw, 2.75rem);
+      font-weight: 700; letter-spacing: -0.8px;
+      line-height: 1.15; margin-bottom: 1rem;
+    }
+    html[lang="ar"] .legal-hero h1 { letter-spacing: 0; line-height: 1.4; }
+    html[lang="zh"] .legal-hero h1 { letter-spacing: 0.5px; line-height: 1.3; }
+
+    .legal-hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      font-size: 0.85rem;
+      color: var(--orspex-slate);
+    }
+    .legal-hero .meta strong {
+      color: var(--orspex-dark);
+      font-weight: 600;
+    }
+
+    /* TL;DR summary box */
+    .legal-summary {
+      background: linear-gradient(135deg, #EFF6FF 0%, #ECFDF5 100%);
+      border: 1px solid #BFDBFE;
+      border-radius: 16px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 3rem;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+    .legal-summary .icon {
+      font-size: 1.75rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+    .legal-summary .body { flex: 1; }
+    .legal-summary h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--orspex-dark);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.2px;
+    }
+    .legal-summary p {
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.65;
+    }
+
+    /* Legal body content */
+    .legal-body {
+      max-width: 720px;
+    }
+
+    .legal-section {
+      margin-bottom: 2.5rem;
+      scroll-margin-top: 2rem;
+    }
+
+    .legal-section h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--orspex-dark);
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--orspex-border);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      line-height: 1.3;
+    }
+    .legal-section h2 .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: #EFF6FF;
+      color: var(--orspex-blue);
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    html[lang="ar"] .legal-section h2 .num,
+    html[lang="zh"] .legal-section h2 .num { font-size: 0.82rem; }
+
+    .legal-section h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--orspex-dark);
+      margin: 1.25rem 0 0.5rem;
+      letter-spacing: -0.1px;
+    }
+
+    .legal-section p {
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.75;
+      margin-bottom: 0.9rem;
+    }
+    html[lang="ar"] .legal-section p,
+    html[lang="zh"] .legal-section p { line-height: 1.95; }
+
+    .legal-section ul {
+      list-style: none;
+      margin: 0.75rem 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .legal-section ul li {
+      position: relative;
+      padding-inline-start: 1.35rem;
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.7;
+    }
+    .legal-section ul li::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0.7em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--orspex-blue);
+      opacity: 0.7;
+    }
+    html[lang="ar"] .legal-section ul li::before { background: var(--orspex-green); }
+
+    .legal-section strong { color: var(--orspex-dark); font-weight: 600; }
+
+    .legal-section a {
+      color: var(--orspex-blue);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+    .legal-section a:hover { border-bottom-color: var(--orspex-blue); }
+
+    /* Highlight card for "we don't collect" style statements */
+    .legal-highlight {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-inline-start: 4px solid var(--orspex-green);
+      border-radius: 12px;
+      padding: 1.15rem 1.35rem;
+      margin: 1rem 0 1.25rem;
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.7;
+    }
+    .legal-highlight strong { color: var(--orspex-dark); }
+
+    /* Table of contents */
+    .toc {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 14px;
+      padding: 1.35rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .toc h3 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orspex-slate);
+      margin-bottom: 0.9rem;
+    }
+    html[lang="ar"] .toc h3,
+    html[lang="zh"] .toc h3 { text-transform: none; letter-spacing: 1px; }
+
+    .toc ol {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.4rem 1.25rem;
+      counter-reset: toc;
+    }
+    .toc ol li {
+      counter-increment: toc;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .toc ol li::before {
+      content: counter(toc, decimal-leading-zero);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--orspex-blue);
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+    .toc ol li a {
+      color: #334155;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .toc ol li a:hover { color: var(--orspex-blue); }
+
+    /* Last updated + contact callout */
+    .legal-footer-note {
+      margin-top: 3rem;
+      padding: 1.75rem 1.5rem;
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 16px;
+      text-align: center;
+    }
+    .legal-footer-note p {
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+    }
+    .legal-footer-note p:last-child { margin-bottom: 0; }
+    .legal-footer-note a {
+      color: var(--orspex-blue);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .legal-footer-note a:hover { text-decoration: underline; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .site-footer {
+      width: 100%; border-top: 1px solid var(--orspex-border); margin-top: auto;
+    }
+    .footer-inner {
+      padding: 2.5rem 0 1.5rem;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .footer-intro {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+    }
+    .footer-intro p {
+      font-size: 0.9rem; color: var(--orspex-slate);
+      line-height: 1.55; max-width: 640px;
+    }
+    .footer-status {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #EFF6FF; color: #1E40AF;
+      font-size: 0.78rem; font-weight: 500;
+      padding: 0.4rem 0.9rem; border-radius: 60px;
+      border: 1px solid #BFDBFE; white-space: nowrap;
+    }
+    .footer-status::before { content: "🔒"; font-size: 0.85rem; }
+
+    .footer-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem 2.5rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 2rem;
+    }
+    .footer-col h4 {
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--orspex-dark);
+      margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    html[lang="ar"] .footer-col h4,
+    html[lang="zh"] .footer-col h4 { text-transform: none; letter-spacing: 1px; }
+    .footer-col h4::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-blue); flex-shrink: 0;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col ul li a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; color: #334155; text-decoration: none;
+      padding: 0.2rem 0; transition: color 0.15s, transform 0.15s;
+    }
+    .footer-col ul li a:hover { color: var(--orspex-blue); transform: translateX(2px); }
+    html[lang="ar"] .footer-col ul li a:hover { transform: translateX(-2px); }
+    .footer-col ul li a small {
+      font-size: 0.66rem; color: var(--orspex-slate);
+      background: #F1F5F9; padding: 0.1rem 0.4rem;
+      border-radius: 4px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    html[lang="ar"] .footer-col ul li a small,
+    html[lang="zh"] .footer-col ul li a small { text-transform: none; letter-spacing: 0.2px; }
+    .footer-col ul li a small.offline { background: #ECFDF5; color: #047857; }
+    .footer-col ul li a small.online { background: #EFF6FF; color: #1D4ED8; }
+    .footer-col ul li a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .footer-bottom {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1.4rem;
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--orspex-slate); }
+    .footer-copy strong { color: var(--orspex-dark); font-weight: 600; }
+    .footer-legal {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.5rem 1.25rem; list-style: none;
+    }
+    .footer-legal a {
+      font-size: 0.82rem; color: var(--orspex-slate);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-legal a:hover { color: var(--orspex-blue); }
+    .footer-legal a.active { color: var(--orspex-blue); font-weight: 600; }
+    .footer-version {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
+      color: #475569; background: #F1F5F9;
+      padding: 0.3rem 0.7rem; border-radius: 40px;
+      border: 1px solid var(--orspex-border);
+    }
+    .footer-version::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-green);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18); flex-shrink: 0;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1000px) {
+      .wrap, .wrap-narrow { padding: 0 1.5rem; }
+
+      .header-nav-row { flex-direction: column; align-items: stretch; }
+      .menu-toggle-label { display: inline-flex; align-self: flex-start; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        gap: 0.3rem; padding-top: 0.6rem;
+      }
+      .menu-toggle-checkbox:checked ~ .nav-links { display: flex; }
+      .nav-links > li > a, .nav-links > li > button {
+        justify-content: space-between; width: 100%;
+        padding: 0.8rem 1.05rem; border-radius: 10px; background: #F8FAFC;
+      }
+      .dropdown-panel {
+        position: static; display: flex; box-shadow: none;
+        border: none; background: transparent;
+        padding: 0.25rem 0 0.25rem 1rem; min-width: auto;
+        border-left: 3px solid var(--orspex-sky);
+        border-radius: 0; margin-top: 0.25rem; margin-left: 0.5rem;
+      }
+      html[lang="ar"] .dropdown-panel {
+        border-left: none; border-right: 3px solid var(--orspex-sky);
+        padding: 0.25rem 1rem 0.25rem 0;
+        margin-left: 0; margin-right: 0.5rem;
+      }
+      .dropdown-panel a { padding: 0.6rem 0.8rem; background: transparent; }
+      .header-actions { width: 100%; justify-content: space-between; }
+
+      .footer-columns { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2rem; }
+    }
+
+    @media (max-width: 640px) {
+      .wrap, .wrap-narrow { padding: 0 1rem; }
+
+      .header-inner { padding: 1rem 0; gap: 0.85rem; }
+      .brand { gap: 0.75rem; }
+      .brand-mark { width: 46px; height: 46px; }
+      .brand-text .name { font-size: 1.3rem; }
+      .brand-text .tagline { font-size: 0.62rem; letter-spacing: 1.8px; }
+
+      .header-actions { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+      .offline-badge, .btn-cta { justify-content: center; }
+      .lang-switch { align-self: center; }
+
+      main { padding: 2.5rem 0; }
+
+      .legal-summary { flex-direction: column; gap: 0.75rem; padding: 1.25rem 1.25rem; }
+      .legal-section h2 { font-size: 1.1rem; }
+      .legal-section p, .legal-section ul li { font-size: 0.92rem; }
+
+      .footer-inner { padding: 1.75rem 0 1.25rem; gap: 1.5rem; }
+      .footer-intro { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .footer-intro p { font-size: 0.86rem; line-height: 1.5; }
+
+      .footer-columns {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem 1rem; padding-top: 1.25rem;
+      }
+      .footer-col h4 { font-size: 0.68rem; letter-spacing: 1.5px; margin-bottom: 0.65rem; }
+      .footer-col ul { gap: 0.4rem; }
+      .footer-col ul li a { font-size: 0.82rem; gap: 0.35rem; }
+      .footer-col ul li a small { font-size: 0.58rem; padding: 0.08rem 0.32rem; letter-spacing: 0.2px; }
+
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding-top: 1.1rem; }
+      .footer-copy { font-size: 0.76rem; }
+      .footer-legal { gap: 0.4rem 0.9rem; }
+      .footer-legal a { font-size: 0.76rem; }
+      .footer-version { font-size: 0.66rem; padding: 0.25rem 0.6rem; }
+    }
+
+    @media (max-width: 400px) {
+      .footer-columns { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       ANIMATED BACKGROUND
+  ============================================================ -->
+  <div class="bg-anim" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"
+         preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#0F172A" stroke-width="0.5" opacity="0.015"/>
+        </pattern>
+        <radialGradient id="fade-soft" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="white" stop-opacity="0.45"/>
+          <stop offset="55%" stop-color="white" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <rect width="1600" height="900" fill="url(#grid)"/>
+
+      <g class="orb-1"><circle cx="200" cy="200" r="220" fill="#6EE7A0" opacity="0.35"/><circle cx="200" cy="200" r="220" fill="url(#fade-soft)"/></g>
+      <g class="orb-2"><circle cx="1300" cy="220" r="260" fill="#5BC0EB" opacity="0.3"/><circle cx="1300" cy="220" r="260" fill="url(#fade-soft)"/></g>
+      <g class="orb-3"><circle cx="320" cy="720" r="240" fill="#2563EB" opacity="0.28"/><circle cx="320" cy="720" r="240" fill="url(#fade-soft)"/></g>
+      <g class="orb-4"><circle cx="1180" cy="760" r="230" fill="#22C55E" opacity="0.3"/><circle cx="1180" cy="760" r="230" fill="url(#fade-soft)"/></g>
+      <g class="orb-5"><circle cx="820" cy="440" r="150" fill="#5BC0EB" opacity="0.28"/><circle cx="820" cy="440" r="150" fill="url(#fade-soft)"/></g>
+
+      <circle class="pulse-1" cx="500" cy="480" r="140" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.25"/>
+      <circle class="pulse-2" cx="1080" cy="380" r="180" fill="none" stroke="#22C55E" stroke-width="1" opacity="0.22"/>
+      <circle class="pulse-3" cx="760" cy="620" r="110" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.22"/>
+
+      <circle class="ring-1" cx="1300" cy="200" r="200" fill="none" stroke="#2563EB" stroke-width="0.8" stroke-dasharray="6 14" opacity="0.22"/>
+      <circle class="ring-2" cx="250" cy="850" r="220" fill="none" stroke="#5BC0EB" stroke-width="0.8" stroke-dasharray="8 18" opacity="0.2"/>
+
+      <circle class="dot-1" cx="340" cy="140" r="2.5" fill="#2563EB"/>
+      <circle class="dot-2" cx="900" cy="120" r="2" fill="#5BC0EB"/>
+      <circle class="dot-3" cx="1250" cy="480" r="2.5" fill="#22C55E"/>
+      <circle class="dot-4" cx="1520" cy="700" r="2" fill="#6EE7A0"/>
+      <circle class="dot-5" cx="600" cy="820" r="2.5" fill="#2563EB"/>
+      <circle class="dot-6" cx="120" cy="560" r="2" fill="#5BC0EB"/>
+      <circle class="dot-7" cx="1000" cy="780" r="2" fill="#22C55E"/>
+      <circle class="dot-8" cx="700" cy="240" r="2.5" fill="#2563EB"/>
+    </svg>
+  </div>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header" aria-label="ORSPEX main header">
+    <div class="wrap header-inner">
+
+      <div class="header-top">
+        <a class="brand" href="#" aria-label="ORSPEX home">
+          <svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"
+               role="img" aria-label="ORSPEX mark">
+            <circle cx="300" cy="300" r="280" fill="none" stroke="#6EE7A0" stroke-width="18"/>
+            <circle cx="300" cy="300" r="200" fill="none" stroke="#5BC0EB" stroke-width="16"/>
+            <circle cx="300" cy="300" r="160" fill="#2563EB"/>
+            <circle cx="300" cy="300" r="90" fill="#0F172A"/>
+            <circle cx="300" cy="100" r="22" fill="#5BC0EB"/>
+            <circle cx="300" cy="500" r="22" fill="#5BC0EB"/>
+            <circle cx="100" cy="300" r="22" fill="#22C55E"/>
+            <circle cx="500" cy="300" r="22" fill="#22C55E"/>
+          </svg>
+          <div class="brand-text">
+            <span class="name">ORSPEX</span>
+            <span class="tagline" data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button type="button" data-lang="en" class="active" aria-label="English">
+              <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+            </button>
+            <button type="button" data-lang="ar" aria-label="العربية">
+              <span class="flag" aria-hidden="true">🇸🇦</span><span>عربي</span>
+            </button>
+            <button type="button" data-lang="zh" aria-label="中文">
+              <span class="flag" aria-hidden="true">🇨🇳</span><span>中文</span>
+            </button>
+          </div>
+
+          <span class="offline-badge" data-i18n="badge.offline">offline · no cloud</span>
+          <a class="btn-cta" href="#download">
+            <span>⬇</span> <span data-i18n="cta.get">get ORSPEX suite</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="header-nav-row">
+        <input type="checkbox" id="orspex-menu-toggle" class="menu-toggle-checkbox" aria-hidden="true">
+        <label for="orspex-menu-toggle" class="menu-toggle-label">
+          <span>☰</span> <span data-i18n="nav.products">Products</span>
+        </label>
+
+        <ul class="nav-links" role="menubar">
+          <li role="none"><a href="#" role="menuitem">🧩 <span data-i18n="nav.core">ORSPEX Core</span></a></li>
+          <li role="none"><a href="#" role="menuitem">👥 <span data-i18n="nav.job">Job Seeker</span></a></li>
+
+          <li class="dropdown" role="none">
+            <button type="button" role="menuitem" aria-haspopup="true">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span> <span class="caret">▼</span>
+            </button>
+            <div class="dropdown-panel" role="menu">
+              <a href="#" role="menuitem"><span>🌐 <span data-i18n="nav.pdf.online">Online Compressor</span></span><small data-i18n="nav.pdf.online.desc">compress huge PDFs in browser</small></a>
+              <div class="divider"></div>
+              <a href="#" role="menuitem"><span>💻 <span data-i18n="nav.pdf.offline">Offline / Desktop</span></span><small data-i18n="nav.pdf.offline.desc">standalone desktop tool</small></a>
+            </div>
+          </li>
+
+          <li class="dropdown" role="none">
+            <button type="button" role="menuitem" aria-haspopup="true">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <span class="caret">▼</span>
+            </button>
+            <div class="dropdown-panel" role="menu">
+              <a href="#" role="menuitem"><span>🌐 <span data-i18n="nav.favicon.online">Online Maker</span></span><small data-i18n="nav.favicon.online.desc">designer tool, works offline</small></a>
+              <div class="divider"></div>
+              <a href="#" role="menuitem"><span>💻 <span data-i18n="nav.favicon.offline">Offline / Desktop</span></span><small data-i18n="nav.favicon.offline.desc">compress &amp; generate favicons</small></a>
+            </div>
+          </li>
+
+          <li role="none"><a href="#" role="menuitem">🔍 <span data-i18n="nav.talent">Find Talent</span></a></li>
+        </ul>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN — Privacy Statement
+  ============================================================ -->
+  <main>
+    <div class="wrap-narrow">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="#" data-i18n="crumb.home">ORSPEX</a>
+        <span class="sep">/</span>
+        <a href="#" data-i18n="crumb.legal">Legal</a>
+        <span class="sep">/</span>
+        <span class="current" data-i18n="crumb.privacy">Privacy</span>
+      </nav>
+
+      <header class="legal-hero">
+        <span class="eyebrow" data-i18n="privacy.eyebrow">Legal · Privacy</span>
+        <h1 data-i18n="privacy.h1">Privacy Statement</h1>
+        <div class="meta">
+          <span><strong data-i18n="privacy.meta.effective">Effective</strong> · 1 January 2026</span>
+          <span><strong data-i18n="privacy.meta.updated">Last updated</strong> · 1 January 2026</span>
+          <span><strong data-i18n="privacy.meta.version">Version</strong> · 1.0</span>
+        </div>
+      </header>
+
+      <!-- TL;DR summary -->
+      <div class="legal-summary">
+        <div class="icon">🔒</div>
+        <div class="body">
+          <h2 data-i18n="privacy.tldr.h">The short version</h2>
+          <p data-i18n="privacy.tldr.p">
+            ORSPEX Core is a stand-alone, offline-first application. It does not connect to the
+            internet, does not require an account, and does not transmit your data anywhere.
+            Everything you enter stays on your device — in a local encrypted file that you own
+            and control.
+          </p>
+        </div>
+      </div>
+
+      <!-- Table of contents -->
+      <nav class="toc" aria-label="Contents">
+        <h3 data-i18n="privacy.toc.h">On this page</h3>
+        <ol>
+          <li><a href="#s1" data-i18n="privacy.toc.1">Overview</a></li>
+          <li><a href="#s2" data-i18n="privacy.toc.2">Information we do not collect</a></li>
+          <li><a href="#s3" data-i18n="privacy.toc.3">Information you create locally</a></li>
+          <li><a href="#s4" data-i18n="privacy.toc.4">Local security</a></li>
+          <li><a href="#s5" data-i18n="privacy.toc.5">Backups &amp; portability</a></li>
+          <li><a href="#s6" data-i18n="privacy.toc.6">This website</a></li>
+          <li><a href="#s7" data-i18n="privacy.toc.7">Your rights</a></li>
+          <li><a href="#s8" data-i18n="privacy.toc.8">Changes to this statement</a></li>
+          <li><a href="#s9" data-i18n="privacy.toc.9">Contact us</a></li>
+        </ol>
+      </nav>
+
+      <article class="legal-body">
+
+        <!-- 1. Overview -->
+        <section class="legal-section" id="s1">
+          <h2><span class="num">01</span> <span data-i18n="privacy.s1.h">Overview</span></h2>
+          <p data-i18n="privacy.s1.p1">
+            This Privacy Statement explains how ORSPEX ("we", "us", "our") handles information in
+            connection with the ORSPEX software suite, including ORSPEX Core, and our website.
+          </p>
+          <p data-i18n="privacy.s1.p2">
+            We built ORSPEX on a single principle: <strong>your data belongs to you</strong>.
+            ORSPEX Core is a stand-alone desktop application. It runs entirely on your own
+            computer, and it does not send any data to us or to any third party.
+          </p>
+        </section>
+
+        <!-- 2. We do not collect -->
+        <section class="legal-section" id="s2">
+          <h2><span class="num">02</span> <span data-i18n="privacy.s2.h">Information we do not collect</span></h2>
+          <p data-i18n="privacy.s2.p1">
+            To be direct: we do not collect any personal information from users of ORSPEX Core.
+            The application does not have the ability to send data anywhere — because it has no
+            network access and no cloud component.
+          </p>
+
+          <div class="legal-highlight">
+            <strong data-i18n="privacy.s2.hl.h">We do not collect:</strong>
+            <ul>
+              <li data-i18n="privacy.s2.hl.1">Your name, email address, or contact details</li>
+              <li data-i18n="privacy.s2.hl.2">Your company, customers, suppliers, or any business records</li>
+              <li data-i18n="privacy.s2.hl.3">Invoices, journal entries, inventory, or financial data</li>
+              <li data-i18n="privacy.s2.hl.4">Usage analytics, telemetry, or crash reports</li>
+              <li data-i18n="privacy.s2.hl.5">Device identifiers, IP addresses, or location data</li>
+              <li data-i18n="privacy.s2.hl.6">Cookies, advertising IDs, or tracking pixels</li>
+            </ul>
+          </div>
+
+          <p data-i18n="privacy.s2.p2">
+            There is no account, no sign-up, no newsletter subscription, and no telemetry switch
+            to disable — because none of these exist in the application.
+          </p>
+        </section>
+
+        <!-- 3. What you create locally -->
+        <section class="legal-section" id="s3">
+          <h2><span class="num">03</span> <span data-i18n="privacy.s3.h">Information you create locally</span></h2>
+          <p data-i18n="privacy.s3.p1">
+            Everything you enter into ORSPEX Core — company information, customers, suppliers,
+            products, invoices, journal entries, tax codes, reports, and any other business
+            record — is stored locally on your computer.
+          </p>
+          <p data-i18n="privacy.s3.p2">
+            This data is yours. It is not transmitted to us, and we never see it. It is stored
+            in a single local file that you can back up, move, or delete at any time.
+          </p>
+          <p data-i18n="privacy.s3.p3">
+            If you uninstall ORSPEX Core, your data file remains on your device until you delete
+            it yourself.
+          </p>
+        </section>
+
+        <!-- 4. Local security -->
+        <section class="legal-section" id="s4">
+          <h2><span class="num">04</span> <span data-i18n="privacy.s4.h">Local security</span></h2>
+          <p data-i18n="privacy.s4.p1">
+            Your data file is encrypted at rest. Access is controlled by your Windows user
+            account and any password or access controls you set on your machine.
+          </p>
+          <p data-i18n="privacy.s4.p2">
+            Because ORSPEX Core is single-user and offline, it has a much smaller attack surface
+            than cloud ERPs. There are no cloud credentials to leak, no shared multi-tenant
+            database, and no remote endpoint to breach.
+          </p>
+          <p data-i18n="privacy.s4.p3">
+            The most important security measure is the security of your own device: keep Windows
+            updated, use a strong account password, and keep your data file in a safe location.
+          </p>
+        </section>
+
+        <!-- 5. Backups & portability -->
+        <section class="legal-section" id="s5">
+          <h2><span class="num">05</span> <span data-i18n="privacy.s5.h">Backups &amp; portability</span></h2>
+          <p data-i18n="privacy.s5.p1">
+            You are in full control of your data. To back up your entire business, simply copy
+            your data file to another location — a USB drive, an external disk, or your own
+            private backup storage.
+          </p>
+          <p data-i18n="privacy.s5.p2">
+            We do not operate any backup service, and we do not have access to any copy of your
+            data. Backups are your responsibility, and we recommend making them regularly.
+          </p>
+          <p data-i18n="privacy.s5.p3">
+            If you choose to store your data file in a cloud-synced folder (such as OneDrive,
+            Dropbox, or Google Drive), please be aware that this is your decision and that the
+            privacy practices of that provider apply. We do not require or recommend this.
+          </p>
+        </section>
+
+        <!-- 6. This website -->
+        <section class="legal-section" id="s6">
+          <h2><span class="num">06</span> <span data-i18n="privacy.s6.h">This website</span></h2>
+          <p data-i18n="privacy.s6.p1">
+            This website is designed to be as simple as the application. We do not use
+            analytics tools, advertising networks, tracking pixels, or third-party cookies.
+          </p>
+          <p data-i18n="privacy.s6.p2">
+            When you visit this site, your browser may store your language preference locally
+            (using standard browser storage) so that the site remembers your choice on your
+            next visit. This stays on your device and is not sent to us.
+          </p>
+          <p data-i18n="privacy.s6.p3">
+            If you contact us by email, we will use your email address only to reply to your
+            message. We do not add you to mailing lists and we do not share your address with
+            anyone.
+          </p>
+        </section>
+
+        <!-- 7. Your rights -->
+        <section class="legal-section" id="s7">
+          <h2><span class="num">07</span> <span data-i18n="privacy.s7.h">Your rights</span></h2>
+          <p data-i18n="privacy.s7.p1">
+            Because we do not collect your personal data, most data-subject rights — such as
+            access, correction, deletion, or portability — are already satisfied by design:
+            you have full and exclusive access to your own data at all times.
+          </p>
+          <p data-i18n="privacy.s7.p2">
+            If you believe we have somehow received information about you and wish to exercise
+            a legal right under a privacy law such as the GDPR, the UAE PDPL, or the PIPL, you
+            may contact us using the details below, and we will respond promptly.
+          </p>
+        </section>
+
+        <!-- 8. Changes -->
+        <section class="legal-section" id="s8">
+          <h2><span class="num">08</span> <span data-i18n="privacy.s8.h">Changes to this statement</span></h2>
+          <p data-i18n="privacy.s8.p1">
+            If we ever change this Privacy Statement, we will update the version number and the
+            "last updated" date at the top of this page. Material changes will be highlighted on
+            our website.
+          </p>
+          <p data-i18n="privacy.s8.p2">
+            Our core commitment will not change: ORSPEX Core is offline-first, and your data
+            stays on your device.
+          </p>
+        </section>
+
+        <!-- 9. Contact -->
+        <section class="legal-section" id="s9">
+          <h2><span class="num">09</span> <span data-i18n="privacy.s9.h">Contact us</span></h2>
+          <p data-i18n="privacy.s9.p1">
+            If you have any questions about this Privacy Statement or about how ORSPEX handles
+            data, please reach out.
+          </p>
+          <ul>
+            <li><strong data-i18n="privacy.s9.email.lbl">Email:</strong> <a href="mailto:privacy@orspex.com">privacy@orspex.com</a></li>
+            <li><strong data-i18n="privacy.s9.postal.lbl">Postal:</strong> <span data-i18n="privacy.s9.postal.v">ORSPEX, Electra Street, Abu Dhabi, United Arab Emirates</span></li>
+          </ul>
+        </section>
+
+      </article>
+
+      <!-- Footer note -->
+      <div class="legal-footer-note">
+        <p data-i18n="privacy.note.p">
+          By using ORSPEX Core, you acknowledge that you have read and understood this Privacy
+          Statement.
+        </p>
+        <p>
+          <a href="#" data-i18n="privacy.note.terms">View Terms of Use</a>
+          ·
+          <a href="#" data-i18n="privacy.note.license">View License</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer" aria-label="ORSPEX footer">
+    <div class="wrap footer-inner">
+
+      <div class="footer-intro">
+        <p data-i18n="footer.intro">
+          A stand-alone, offline-first software suite. No cloud, no accounts, no internet
+          required — your data stays on your device.
+        </p>
+        <span class="footer-status" data-i18n="footer.status">offline by design · privacy first</span>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h4 data-i18n="footer.products">Products</h4>
+          <ul>
+            <li><a href="#">🧩 <span data-i18n="nav.core">ORSPEX Core</span> <small class="offline" data-i18n="badge.offline.short">offline</small></a></li>
+            <li><a href="#">👥 <span data-i18n="nav.job">Job Seeker</span> <small class="offline" data-i18n="badge.offline.short">offline</small></a></li>
+            <li><a href="#">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="#">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+            <li><a href="#">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="#">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.modules">Modules</h4>
+          <ul>
+            <li><a href="#" data-i18n="footer.modules.erp">🧩 Stand-alone ERP</a></li>
+            <li><a href="#" data-i18n="footer.modules.jobs">👥 Jobs &amp; Hiring</a></li>
+            <li><a href="#" data-i18n="footer.modules.pdf">📄 PDF Compression</a></li>
+            <li><a href="#" data-i18n="footer.modules.fav">⭐ Favicon Generation</a></li>
+            <li><a href="#" data-i18n="footer.modules.talent">🔍 Talent Directory</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.resources">Resources</h4>
+          <ul>
+            <li><a href="#" data-i18n="footer.resources.docs">📘 Documentation</a></li>
+            <li><a href="#" data-i18n="footer.resources.guides">🛠️ Install guides</a></li>
+            <li><a href="#" data-i18n="footer.resources.release">🧪 Release notes</a></li>
+            <li><a href="#" data-i18n="footer.resources.faq">❓ FAQ</a></li>
+            <li><a href="#" data-i18n="footer.resources.security">🛡️ Security &amp; privacy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.company">Company</h4>
+          <ul>
+            <li><a href="#" data-i18n="footer.company.about">🏢 About ORSPEX</a></li>
+            <li><a href="#" data-i18n="footer.company.contact">✉️ Contact</a></li>
+            <li><a href="#" data-i18n="footer.company.partners">🤝 Partners</a></li>
+            <li><a href="#" data-i18n="footer.company.press">📰 Press kit</a></li>
+            <li><a href="#" data-i18n="footer.company.careers">💼 Careers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          © <strong>ORSPEX</strong> · <span data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>. <span data-i18n="footer.rights">All rights reserved.</span>
+        </div>
+        <ul class="footer-legal">
+          <li><a href="#" class="active" data-i18n="footer.legal.privacy">Privacy</a></li>
+          <li><a href="#" data-i18n="footer.legal.terms">Terms</a></li>
+          <li><a href="#" data-i18n="footer.legal.license">License</a></li>
+          <li><a href="#" data-i18n="footer.legal.status">Status</a></li>
+        </ul>
+        <span class="footer-version">v1.0.0 · <span data-i18n="footer.version.stable">stable</span> · <span data-i18n="footer.version.offline">offline</span></span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       i18n
+  ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      const translations = {
+        en: {
+          'brand.tagline': 'Organization · Planning · Services · Execution',
+          'badge.offline': 'offline · no cloud',
+          'badge.offline.short': 'offline',
+          'badge.online.short': 'online',
+          'badge.desktop.short': 'desktop',
+          'cta.get': 'get ORSPEX suite',
+
+          'nav.products': 'Products',
+          'nav.core': 'ORSPEX Core',
+          'nav.job': 'Job Seeker',
+          'nav.pdf': 'PDF Compressor',
+          'nav.pdf.online': 'Online Compressor',
+          'nav.pdf.online.desc': 'compress huge PDFs in browser',
+          'nav.pdf.offline': 'Offline / Desktop',
+          'nav.pdf.offline.desc': 'standalone desktop tool',
+          'nav.favicon': 'Favicon Maker',
+          'nav.favicon.online': 'Online Maker',
+          'nav.favicon.online.desc': 'designer tool, works offline',
+          'nav.favicon.offline': 'Offline / Desktop',
+          'nav.favicon.offline.desc': 'compress & generate favicons',
+          'nav.talent': 'Find Talent',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.legal': 'Legal',
+          'crumb.privacy': 'Privacy',
+
+          'privacy.eyebrow': 'Legal · Privacy',
+          'privacy.h1': 'Privacy Statement',
+          'privacy.meta.effective': 'Effective',
+          'privacy.meta.updated': 'Last updated',
+          'privacy.meta.version': 'Version',
+
+          'privacy.tldr.h': 'The short version',
+          'privacy.tldr.p': 'ORSPEX Core is a stand-alone, offline-first application. It does not connect to the internet, does not require an account, and does not transmit your data anywhere. Everything you enter stays on your device — in a local encrypted file that you own and control.',
+
+          'privacy.toc.h': 'On this page',
+          'privacy.toc.1': 'Overview',
+          'privacy.toc.2': 'Information we do not collect',
+          'privacy.toc.3': 'Information you create locally',
+          'privacy.toc.4': 'Local security',
+          'privacy.toc.5': 'Backups & portability',
+          'privacy.toc.6': 'This website',
+          'privacy.toc.7': 'Your rights',
+          'privacy.toc.8': 'Changes to this statement',
+          'privacy.toc.9': 'Contact us',
+
+          'privacy.s1.h': 'Overview',
+          'privacy.s1.p1': 'This Privacy Statement explains how ORSPEX ("we", "us", "our") handles information in connection with the ORSPEX software suite, including ORSPEX Core, and our website.',
+          'privacy.s1.p2': 'We built ORSPEX on a single principle: your data belongs to you. ORSPEX Core is a stand-alone desktop application. It runs entirely on your own computer, and it does not send any data to us or to any third party.',
+
+          'privacy.s2.h': 'Information we do not collect',
+          'privacy.s2.p1': 'To be direct: we do not collect any personal information from users of ORSPEX Core. The application does not have the ability to send data anywhere — because it has no network access and no cloud component.',
+          'privacy.s2.hl.h': 'We do not collect:',
+          'privacy.s2.hl.1': 'Your name, email address, or contact details',
+          'privacy.s2.hl.2': 'Your company, customers, suppliers, or any business records',
+          'privacy.s2.hl.3': 'Invoices, journal entries, inventory, or financial data',
+          'privacy.s2.hl.4': 'Usage analytics, telemetry, or crash reports',
+          'privacy.s2.hl.5': 'Device identifiers, IP addresses, or location data',
+          'privacy.s2.hl.6': 'Cookies, advertising IDs, or tracking pixels',
+          'privacy.s2.p2': 'There is no account, no sign-up, no newsletter subscription, and no telemetry switch to disable — because none of these exist in the application.',
+
+          'privacy.s3.h': 'Information you create locally',
+          'privacy.s3.p1': 'Everything you enter into ORSPEX Core — company information, customers, suppliers, products, invoices, journal entries, tax codes, reports, and any other business record — is stored locally on your computer.',
+          'privacy.s3.p2': 'This data is yours. It is not transmitted to us, and we never see it. It is stored in a single local file that you can back up, move, or delete at any time.',
+          'privacy.s3.p3': 'If you uninstall ORSPEX Core, your data file remains on your device until you delete it yourself.',
+
+          'privacy.s4.h': 'Local security',
+          'privacy.s4.p1': 'Your data file is encrypted at rest. Access is controlled by your Windows user account and any password or access controls you set on your machine.',
+          'privacy.s4.p2': 'Because ORSPEX Core is single-user and offline, it has a much smaller attack surface than cloud ERPs. There are no cloud credentials to leak, no shared multi-tenant database, and no remote endpoint to breach.',
+          'privacy.s4.p3': 'The most important security measure is the security of your own device: keep Windows updated, use a strong account password, and keep your data file in a safe location.',
+
+          'privacy.s5.h': 'Backups & portability',
+          'privacy.s5.p1': 'You are in full control of your data. To back up your entire business, simply copy your data file to another location — a USB drive, an external disk, or your own private backup storage.',
+          'privacy.s5.p2': 'We do not operate any backup service, and we do not have access to any copy of your data. Backups are your responsibility, and we recommend making them regularly.',
+          'privacy.s5.p3': 'If you choose to store your data file in a cloud-synced folder (such as OneDrive, Dropbox, or Google Drive), please be aware that this is your decision and that the privacy practices of that provider apply. We do not require or recommend this.',
+
+          'privacy.s6.h': 'This website',
+          'privacy.s6.p1': 'This website is designed to be as simple as the application. We do not use analytics tools, advertising networks, tracking pixels, or third-party cookies.',
+          'privacy.s6.p2': 'When you visit this site, your browser may store your language preference locally (using standard browser storage) so that the site remembers your choice on your next visit. This stays on your device and is not sent to us.',
+          'privacy.s6.p3': 'If you contact us by email, we will use your email address only to reply to your message. We do not add you to mailing lists and we do not share your address with anyone.',
+
+          'privacy.s7.h': 'Your rights',
+          'privacy.s7.p1': 'Because we do not collect your personal data, most data-subject rights — such as access, correction, deletion, or portability — are already satisfied by design: you have full and exclusive access to your own data at all times.',
+          'privacy.s7.p2': 'If you believe we have somehow received information about you and wish to exercise a legal right under a privacy law such as the GDPR, the UAE PDPL, or the PIPL, you may contact us using the details below, and we will respond promptly.',
+
+          'privacy.s8.h': 'Changes to this statement',
+          'privacy.s8.p1': 'If we ever change this Privacy Statement, we will update the version number and the "last updated" date at the top of this page. Material changes will be highlighted on our website.',
+          'privacy.s8.p2': 'Our core commitment will not change: ORSPEX Core is offline-first, and your data stays on your device.',
+
+          'privacy.s9.h': 'Contact us',
+          'privacy.s9.p1': 'If you have any questions about this Privacy Statement or about how ORSPEX handles data, please reach out.',
+          'privacy.s9.email.lbl': 'Email:',
+          'privacy.s9.postal.lbl': 'Postal:',
+          'privacy.s9.postal.v': 'ORSPEX, Electra Street, Abu Dhabi, United Arab Emirates',
+
+          'privacy.note.p': 'By using ORSPEX Core, you acknowledge that you have read and understood this Privacy Statement.',
+          'privacy.note.terms': 'View Terms of Use',
+          'privacy.note.license': 'View License',
+
+          'footer.intro': 'A stand-alone, offline-first software suite. No cloud, no accounts, no internet required — your data stays on your device.',
+          'footer.status': 'offline by design · privacy first',
+          'footer.products': 'Products',
+          'footer.modules': 'Modules',
+          'footer.resources': 'Resources',
+          'footer.company': 'Company',
+          'footer.modules.erp': '🧩 Stand-alone ERP',
+          'footer.modules.jobs': '👥 Jobs & Hiring',
+          'footer.modules.pdf': '📄 PDF Compression',
+          'footer.modules.fav': '⭐ Favicon Generation',
+          'footer.modules.talent': '🔍 Talent Directory',
+          'footer.resources.docs': '📘 Documentation',
+          'footer.resources.guides': '🛠️ Install guides',
+          'footer.resources.release': '🧪 Release notes',
+          'footer.resources.faq': '❓ FAQ',
+          'footer.resources.security': '🛡️ Security & privacy',
+          'footer.company.about': '🏢 About ORSPEX',
+          'footer.company.contact': '✉️ Contact',
+          'footer.company.partners': '🤝 Partners',
+          'footer.company.press': '📰 Press kit',
+          'footer.company.careers': '💼 Careers',
+          'footer.rights': 'All rights reserved.',
+          'footer.legal.privacy': 'Privacy',
+          'footer.legal.terms': 'Terms',
+          'footer.legal.license': 'License',
+          'footer.legal.status': 'Status',
+          'footer.version.stable': 'stable',
+          'footer.version.offline': 'offline'
+        },
+
+        ar: {
+          'brand.tagline': 'التنظيم · التخطيط · الخدمات · التنفيذ',
+          'badge.offline': 'يعمل دون اتصال · بدون سحابة',
+          'badge.offline.short': 'دون اتصال',
+          'badge.online.short': 'عبر الإنترنت',
+          'badge.desktop.short': 'سطح المكتب',
+          'cta.get': 'احصل على حزمة ORSPEX',
+
+          'nav.products': 'المنتجات',
+          'nav.core': 'نظام ORSPEX الأساسي',
+          'nav.job': 'الباحث عن عمل',
+          'nav.pdf': 'ضاغط PDF',
+          'nav.pdf.online': 'الضاغط عبر الإنترنت',
+          'nav.pdf.online.desc': 'ضغط ملفات PDF الكبيرة في المتصفح',
+          'nav.pdf.offline': 'دون اتصال / سطح المكتب',
+          'nav.pdf.offline.desc': 'أداة سطح مكتب مستقلة',
+          'nav.favicon': 'صانع الأيقونات',
+          'nav.favicon.online': 'الصانع عبر الإنترنت',
+          'nav.favicon.online.desc': 'أداة مصمم تعمل دون اتصال',
+          'nav.favicon.offline': 'دون اتصال / سطح المكتب',
+          'nav.favicon.offline.desc': 'ضغط وإنشاء الأيقونات',
+          'nav.talent': 'ابحث عن موهبة',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.legal': 'القانونية',
+          'crumb.privacy': 'الخصوصية',
+
+          'privacy.eyebrow': 'قانوني · الخصوصية',
+          'privacy.h1': 'بيان الخصوصية',
+          'privacy.meta.effective': 'ساري المفعول',
+          'privacy.meta.updated': 'آخر تحديث',
+          'privacy.meta.version': 'الإصدار',
+
+          'privacy.tldr.h': 'الملخص السريع',
+          'privacy.tldr.p': 'ORSPEX Core تطبيق مستقل يعمل دون اتصال أولاً. لا يتصل بالإنترنت، ولا يحتاج إلى حساب، ولا يرسل بياناتك إلى أي مكان. كل ما تُدخله يبقى على جهازك — في ملف محلي مشفّر تملكه وتتحكم به.',
+
+          'privacy.toc.h': 'في هذه الصفحة',
+          'privacy.toc.1': 'نظرة عامة',
+          'privacy.toc.2': 'بيانات لا نجمعها',
+          'privacy.toc.3': 'بيانات تُنشئها محلياً',
+          'privacy.toc.4': 'الأمان المحلي',
+          'privacy.toc.5': 'النسخ الاحتياطي وقابلية النقل',
+          'privacy.toc.6': 'هذا الموقع',
+          'privacy.toc.7': 'حقوقك',
+          'privacy.toc.8': 'تغييرات هذا البيان',
+          'privacy.toc.9': 'اتصل بنا',
+
+          'privacy.s1.h': 'نظرة عامة',
+          'privacy.s1.p1': 'يوضح بيان الخصوصية هذا كيفية تعامل ORSPEX ("نحن" أو "لنا") مع المعلومات المتعلقة بحزمة برامج ORSPEX، بما في ذلك ORSPEX Core، وموقعنا الإلكتروني.',
+          'privacy.s1.p2': 'بنينا ORSPEX على مبدأ واحد: بياناتك ملك لك. ORSPEX Core تطبيق مكتبي مستقل يعمل بالكامل على جهاز الكمبيوتر الخاص بك، ولا يرسل أي بيانات إلينا أو إلى أي طرف ثالث.',
+
+          'privacy.s2.h': 'بيانات لا نجمعها',
+          'privacy.s2.p1': 'بصراحة: نحن لا نجمع أي معلومات شخصية من مستخدمي ORSPEX Core. التطبيق لا يملك القدرة على إرسال البيانات إلى أي مكان — لأنه لا يتمتع بأي وصول إلى الشبكة ولا يحتوي على أي مكون سحابي.',
+          'privacy.s2.hl.h': 'لا نجمع:',
+          'privacy.s2.hl.1': 'اسمك أو بريدك الإلكتروني أو بيانات الاتصال بك',
+          'privacy.s2.hl.2': 'شركتك أو عملاءك أو مورديك أو أي سجلات تجارية',
+          'privacy.s2.hl.3': 'الفواتير أو قيود اليومية أو المخزون أو البيانات المالية',
+          'privacy.s2.hl.4': 'تحليلات الاستخدام أو القياسات عن بُعد أو تقارير الأعطال',
+          'privacy.s2.hl.5': 'معرّفات الجهاز أو عناوين IP أو بيانات الموقع',
+          'privacy.s2.hl.6': 'ملفات تعريف الارتباط أو معرّفات الإعلانات أو بكسل التتبع',
+          'privacy.s2.p2': 'لا يوجد حساب، لا تسجيل، لا اشتراك في نشرات بريدية، ولا مفتاح لتعطيل القياس عن بُعد — لأن أياً من ذلك غير موجود في التطبيق.',
+
+          'privacy.s3.h': 'بيانات تُنشئها محلياً',
+          'privacy.s3.p1': 'كل ما تُدخله في ORSPEX Core — معلومات الشركة، العملاء، الموردون، المنتجات، الفواتير، قيود اليومية، أكواد الضرائب، التقارير، وأي سجل تجاري آخر — يُخزَّن محلياً على جهاز الكمبيوتر الخاص بك.',
+          'privacy.s3.p2': 'هذه البيانات ملك لك. لا تُرسَل إلينا، ولا نراها أبداً. تُخزَّن في ملف محلي واحد يمكنك نسخه احتياطياً أو نقله أو حذفه في أي وقت.',
+          'privacy.s3.p3': 'إذا قمت بإلغاء تثبيت ORSPEX Core، سيبقى ملف بياناتك على جهازك حتى تحذفه بنفسك.',
+
+          'privacy.s4.h': 'الأمان المحلي',
+          'privacy.s4.p1': 'ملف بياناتك مشفّر عند التخزين. يُتحكم في الوصول عبر حساب مستخدم ويندوز وأي كلمة مرور أو ضوابط وصول تُعيّنها على جهازك.',
+          'privacy.s4.p2': 'لأن ORSPEX Core أحادي المستخدم ويعمل دون اتصال، فإن سطح الهجوم أصغر بكثير من أنظمة ERP السحابية. لا توجد بيانات اعتماد سحابية يمكن تسريبها، ولا قاعدة بيانات مشتركة متعددة المستأجرين، ولا نقطة نهاية بعيدة يمكن اختراقها.',
+          'privacy.s4.p3': 'أهم إجراء أمني هو أمان جهازك نفسه: حافظ على تحديث ويندوز، واستخدم كلمة مرور قوية للحساب، واحتفظ بملف بياناتك في موقع آمن.',
+
+          'privacy.s5.h': 'النسخ الاحتياطي وقابلية النقل',
+          'privacy.s5.p1': 'أنت تتحكم بالكامل في بياناتك. لإجراء نسخ احتياطي لعملك بالكامل، ما عليك سوى نسخ ملف بياناتك إلى موقع آخر — محرك أقراص USB، أو قرص خارجي، أو مساحة نسخ احتياطي خاصة بك.',
+          'privacy.s5.p2': 'نحن لا نُشغّل أي خدمة نسخ احتياطي، ولا نملك الوصول إلى أي نسخة من بياناتك. النسخ الاحتياطي مسؤوليتك، ونوصي بإجرائه بانتظام.',
+          'privacy.s5.p3': 'إذا اخترت تخزين ملف بياناتك في مجلد متزامن مع السحابة (مثل OneDrive أو Dropbox أو Google Drive)، فيرجى العلم أن هذا قرارك وأن ممارسات خصوصية مزوّد الخدمة تُطبَّق. نحن لا نشترط ذلك ولا نوصي به.',
+
+          'privacy.s6.h': 'هذا الموقع',
+          'privacy.s6.p1': 'تم تصميم هذا الموقع ليكون بسيطاً مثل التطبيق نفسه. لا نستخدم أدوات التحليلات أو شبكات الإعلانات أو بكسل التتبع أو ملفات تعريف الارتباط من أطراف ثالثة.',
+          'privacy.s6.p2': 'عند زيارتك لهذا الموقع، قد يخزّن متصفحك تفضيل اللغة محلياً (باستخدام تخزين المتصفح القياسي) ليتذكر الموقع اختيارك في زيارتك التالية. يبقى ذلك على جهازك ولا يُرسَل إلينا.',
+          'privacy.s6.p3': 'إذا اتصلت بنا عبر البريد الإلكتروني، فسنستخدم عنوان بريدك الإلكتروني للرد على رسالتك فقط. لا نضيفك إلى قوائم بريدية ولا نشارك عنوانك مع أي جهة.',
+
+          'privacy.s7.h': 'حقوقك',
+          'privacy.s7.p1': 'لأننا لا نجمع بياناتك الشخصية، فإن معظم حقوق أصحاب البيانات — مثل الوصول أو التصحيح أو الحذف أو قابلية النقل — مضمونة بالتصميم: لديك وصول كامل وحصري إلى بياناتك في جميع الأوقات.',
+          'privacy.s7.p2': 'إذا كنت تعتقد أننا تلقّينا معلومات عنك بأي شكل وترغب في ممارسة حق قانوني بموجب قانون خصوصية مثل GDPR أو قانون حماية البيانات الشخصية الإماراتي أو PIPL، يمكنك الاتصال بنا عبر التفاصيل أدناه وسنرد عليك سريعاً.',
+
+          'privacy.s8.h': 'تغييرات هذا البيان',
+          'privacy.s8.p1': 'إذا قمنا بتغيير بيان الخصوصية هذا في أي وقت، فسنحدّث رقم الإصدار وتاريخ "آخر تحديث" في أعلى هذه الصفحة. سيتم إبراز التغييرات الجوهرية على موقعنا الإلكتروني.',
+          'privacy.s8.p2': 'التزامنا الأساسي لن يتغير: ORSPEX Core يعمل دون اتصال أولاً، وبياناتك تبقى على جهازك.',
+
+          'privacy.s9.h': 'اتصل بنا',
+          'privacy.s9.p1': 'إذا كانت لديك أي أسئلة حول بيان الخصوصية هذا أو حول كيفية تعامل ORSPEX مع البيانات، فيرجى التواصل معنا.',
+          'privacy.s9.email.lbl': 'البريد الإلكتروني:',
+          'privacy.s9.postal.lbl': 'البريد:',
+          'privacy.s9.postal.v': 'ORSPEX، شارع إلكترا، أبوظبي، الإمارات العربية المتحدة',
+
+          'privacy.note.p': 'باستخدامك ORSPEX Core، فإنك تقر بأنك قد قرأت هذا البيان وفهمته.',
+          'privacy.note.terms': 'عرض شروط الاستخدام',
+          'privacy.note.license': 'عرض الترخيص',
+
+          'footer.intro': 'حزمة برامج مستقلة تعمل دون اتصال. بلا سحابة، بلا حسابات، بلا حاجة للإنترنت — بياناتك تبقى على جهازك.',
+          'footer.status': 'مصمم للعمل دون اتصال · الخصوصية أولاً',
+          'footer.products': 'المنتجات',
+          'footer.modules': 'الوحدات',
+          'footer.resources': 'الموارد',
+          'footer.company': 'الشركة',
+          'footer.modules.erp': '🧩 تخطيط موارد المؤسسات',
+          'footer.modules.jobs': '👥 الوظائف والتوظيف',
+          'footer.modules.pdf': '📄 ضغط PDF',
+          'footer.modules.fav': '⭐ إنشاء الأيقونات',
+          'footer.modules.talent': '🔍 دليل المواهب',
+          'footer.resources.docs': '📘 الوثائق',
+          'footer.resources.guides': '🛠️ أدلة التثبيت',
+          'footer.resources.release': '🧪 ملاحظات الإصدار',
+          'footer.resources.faq': '❓ الأسئلة الشائعة',
+          'footer.resources.security': '🛡️ الأمان والخصوصية',
+          'footer.company.about': '🏢 عن ORSPEX',
+          'footer.company.contact': '✉️ اتصل بنا',
+          'footer.company.partners': '🤝 الشركاء',
+          'footer.company.press': '📰 الحقيبة الصحفية',
+          'footer.company.careers': '💼 الوظائف',
+          'footer.rights': 'جميع الحقوق محفوظة.',
+          'footer.legal.privacy': 'الخصوصية',
+          'footer.legal.terms': 'الشروط',
+          'footer.legal.license': 'الترخيص',
+          'footer.legal.status': 'الحالة',
+          'footer.version.stable': 'مستقر',
+          'footer.version.offline': 'دون اتصال'
+        },
+
+        zh: {
+          'brand.tagline': '组织 · 规划 · 服务 · 执行',
+          'badge.offline': '离线 · 无需云端',
+          'badge.offline.short': '离线',
+          'badge.online.short': '在线',
+          'badge.desktop.short': '桌面',
+          'cta.get': '获取 ORSPEX 套件',
+
+          'nav.products': '产品',
+          'nav.core': 'ORSPEX 核心',
+          'nav.job': '求职者',
+          'nav.pdf': 'PDF 压缩器',
+          'nav.pdf.online': '在线压缩器',
+          'nav.pdf.online.desc': '在浏览器中压缩大型 PDF',
+          'nav.pdf.offline': '离线 / 桌面版',
+          'nav.pdf.offline.desc': '独立桌面工具',
+          'nav.favicon': '图标生成器',
+          'nav.favicon.online': '在线生成器',
+          'nav.favicon.online.desc': '设计师工具，可离线使用',
+          'nav.favicon.offline': '离线 / 桌面版',
+          'nav.favicon.offline.desc': '压缩并生成图标',
+          'nav.talent': '寻找人才',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.legal': '法律',
+          'crumb.privacy': '隐私',
+
+          'privacy.eyebrow': '法律 · 隐私',
+          'privacy.h1': '隐私声明',
+          'privacy.meta.effective': '生效日期',
+          'privacy.meta.updated': '最后更新',
+          'privacy.meta.version': '版本',
+
+          'privacy.tldr.h': '简短说明',
+          'privacy.tldr.p': 'ORSPEX Core 是一款独立的、离线优先的应用程序。它不连接互联网，不需要账户，也不会将您的数据传输到任何地方。您输入的所有内容都保留在您的设备上 —— 存储在一个由您拥有和控制的本地加密文件中。',
+
+          'privacy.toc.h': '本页内容',
+          'privacy.toc.1': '概述',
+          'privacy.toc.2': '我们不收集的信息',
+          'privacy.toc.3': '您在本地创建的信息',
+          'privacy.toc.4': '本地安全',
+          'privacy.toc.5': '备份与可移植性',
+          'privacy.toc.6': '本网站',
+          'privacy.toc.7': '您的权利',
+          'privacy.toc.8': '本声明的变更',
+          'privacy.toc.9': '联系我们',
+
+          'privacy.s1.h': '概述',
+          'privacy.s1.p1': '本隐私声明说明 ORSPEX（"我们"）如何处理与 ORSPEX 软件套件（包括 ORSPEX Core）以及我们的网站相关的信息。',
+          'privacy.s1.p2': '我们基于一个原则构建 ORSPEX：您的数据属于您。ORSPEX Core 是一款独立的桌面应用程序，完全在您自己的电脑上运行，不会向我们或任何第三方发送任何数据。',
+
+          'privacy.s2.h': '我们不收集的信息',
+          'privacy.s2.p1': '直接说明：我们不从 ORSPEX Core 用户收集任何个人信息。该应用程序根本没有能力向任何地方发送数据 —— 因为它没有网络访问权限，也没有任何云端组件。',
+          'privacy.s2.hl.h': '我们不收集：',
+          'privacy.s2.hl.1': '您的姓名、电子邮件地址或联系方式',
+          'privacy.s2.hl.2': '您的公司、客户、供应商或任何业务记录',
+          'privacy.s2.hl.3': '发票、日记账凭证、库存或财务数据',
+          'privacy.s2.hl.4': '使用分析、遥测或崩溃报告',
+          'privacy.s2.hl.5': '设备标识符、IP 地址或位置数据',
+          'privacy.s2.hl.6': 'Cookie、广告 ID 或跟踪像素',
+          'privacy.s2.p2': '没有账户、没有注册、没有邮件订阅，也没有需要关闭的遥测开关 —— 因为这些在应用程序中都不存在。',
+
+          'privacy.s3.h': '您在本地创建的信息',
+          'privacy.s3.p1': '您在 ORSPEX Core 中输入的所有内容 —— 公司信息、客户、供应商、商品、发票、日记账凭证、税码、报表以及任何其他业务记录 —— 都存储在您本地的电脑上。',
+          'privacy.s3.p2': '这些数据属于您。它不会传输给我们，我们也从不会看到它。它存储在单个本地文件中，您可以随时备份、移动或删除。',
+          'privacy.s3.p3': '如果您卸载 ORSPEX Core，您的数据文件会保留在您的设备上，直到您自己删除它。',
+
+          'privacy.s4.h': '本地安全',
+          'privacy.s4.p1': '您的数据文件在静态时被加密。访问由您的 Windows 用户账户以及您在设备上设置的任何密码或访问控制来管理。',
+          'privacy.s4.p2': '由于 ORSPEX Core 是单用户且离线的，其攻击面比云端 ERP 小得多。没有可以泄露的云端凭据，没有共享的多租户数据库，也没有可以被入侵的远程端点。',
+          'privacy.s4.p3': '最重要的安全措施是您自己设备的安全：保持 Windows 更新、使用强账户密码，并将您的数据文件保存在安全位置。',
+
+          'privacy.s5.h': '备份与可移植性',
+          'privacy.s5.p1': '您完全掌控自己的数据。要备份您的整个业务，只需将数据文件复制到其他位置 —— U 盘、外置磁盘或您自己的私有备份存储。',
+          'privacy.s5.p2': '我们不运营任何备份服务，也无法访问您数据的任何副本。备份是您的责任，我们建议您定期进行。',
+          'privacy.s5.p3': '如果您选择将数据文件存储在云同步文件夹（如 OneDrive、Dropbox 或 Google Drive）中，请注意这是您的决定，该服务提供商的隐私实践将适用。我们不要求也不推荐这样做。',
+
+          'privacy.s6.h': '本网站',
+          'privacy.s6.p1': '本网站设计与应用本身一样简单。我们不使用分析工具、广告网络、跟踪像素或第三方 Cookie。',
+          'privacy.s6.p2': '当您访问本网站时，您的浏览器可能会在本地存储您的语言偏好（使用标准浏览器存储），以便在您下次访问时记住您的选择。该信息保留在您的设备上，不会发送给我们。',
+          'privacy.s6.p3': '如果您通过电子邮件与我们联系，我们只会使用您的电子邮件地址来回复您的消息。我们不会将您加入邮件列表，也不会与任何人分享您的地址。',
+
+          'privacy.s7.h': '您的权利',
+          'privacy.s7.p1': '由于我们不收集您的个人数据，大多数数据主体权利 —— 如访问、更正、删除或可移植性 —— 已经在设计上得到满足：您始终对自己的数据拥有完全且专属的访问权限。',
+          'privacy.s7.p2': '如果您认为我们以某种方式收到了您的信息，并希望根据 GDPR、阿联酋 PDPL 或 PIPL 等隐私法行使某项法律权利，您可以通过以下方式联系我们，我们会尽快回复。',
+
+          'privacy.s8.h': '本声明的变更',
+          'privacy.s8.p1': '如果我们更改本隐私声明，我们将更新本页顶部的版本号和"最后更新"日期。重大变更将在我们的网站上突出显示。',
+          'privacy.s8.p2': '我们的核心承诺不会改变：ORSPEX Core 是离线优先的，您的数据保留在您的设备上。',
+
+          'privacy.s9.h': '联系我们',
+          'privacy.s9.p1': '如果您对本隐私声明或 ORSPEX 如何处理数据有任何疑问，请与我们联系。',
+          'privacy.s9.email.lbl': '电子邮件：',
+          'privacy.s9.postal.lbl': '邮寄地址：',
+          'privacy.s9.postal.v': 'ORSPEX，Electra Street，阿布扎比，阿拉伯联合酋长国',
+
+          'privacy.note.p': '使用 ORSPEX Core 即表示您确认已阅读并理解本隐私声明。',
+          'privacy.note.terms': '查看使用条款',
+          'privacy.note.license': '查看许可协议',
+
+          'footer.intro': '一套独立、离线优先的软件套件。无云端，无账户，无需互联网 —— 数据保留在您的设备上。',
+          'footer.status': '天生离线 · 隐私优先',
+          'footer.products': '产品',
+          'footer.modules': '模块',
+          'footer.resources': '资源',
+          'footer.company': '公司',
+          'footer.modules.erp': '🧩 独立 ERP',
+          'footer.modules.jobs': '👥 招聘与求职',
+          'footer.modules.pdf': '📄 PDF 压缩',
+          'footer.modules.fav': '⭐ 图标生成',
+          'footer.modules.talent': '🔍 人才目录',
+          'footer.resources.docs': '📘 文档',
+          'footer.resources.guides': '🛠️ 安装指南',
+          'footer.resources.release': '🧪 发行说明',
+          'footer.resources.faq': '❓ 常见问题',
+          'footer.resources.security': '🛡️ 安全与隐私',
+          'footer.company.about': '🏢 关于 ORSPEX',
+          'footer.company.contact': '✉️ 联系我们',
+          'footer.company.partners': '🤝 合作伙伴',
+          'footer.company.press': '📰 媒体资料',
+          'footer.company.careers': '💼 招聘',
+          'footer.rights': '版权所有。',
+          'footer.legal.privacy': '隐私',
+          'footer.legal.terms': '条款',
+          'footer.legal.license': '许可',
+          'footer.legal.status': '状态',
+          'footer.version.stable': '稳定版',
+          'footer.version.offline': '离线'
+        }
+      };
+
+      const root = document.getElementById('html-root');
+      const buttons = document.querySelectorAll('.lang-switch button');
+
+      function setLanguage(lang) {
+        if (!translations[lang]) return;
+        root.setAttribute('lang', lang);
+
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          const key = el.getAttribute('data-i18n');
+          const value = translations[lang][key];
+          if (value !== undefined) el.textContent = value;
+        });
+
+        buttons.forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+
+        try { localStorage.setItem('orspex-lang', lang); } catch (e) {}
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setLanguage(btn.getAttribute('data-lang'));
+        });
+      });
+
+      let initial = 'en';
+      try {
+        const saved = localStorage.getItem('orspex-lang');
+        if (saved && translations[saved]) initial = saved;
+        else {
+          const nav = (navigator.language || 'en').toLowerCase();
+          if (nav.startsWith('ar')) initial = 'ar';
+          else if (nav.startsWith('zh')) initial = 'zh';
+        }
+      } catch (e) {}
+
+      setLanguage(initial);
+    })();
+  </script>
+
+</body>
+</html>

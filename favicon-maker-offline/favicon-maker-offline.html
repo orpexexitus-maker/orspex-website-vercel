@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0F172A">
+  <title>Favicon Maker · Offline Windows App · ORSPEX</title>
+  <meta name="description" content="Native Windows executable for the ORSPEX Favicon Generator. 713 KB, no dependencies, no install, no signup. Generate favicon.ico, PNGs and site.webmanifest fully offline.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orspex-dark: #0F172A;
+      --orspex-blue: #2563EB;
+      --orspex-sky: #5BC0EB;
+      --orspex-green: #22C55E;
+      --orspex-mint: #6EE7A0;
+      --orspex-slate: #64748B;
+      --orspex-border: #E2E8F0;
+      --orspex-white: #FFFFFF;
+      --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      --font-arabic: 'Segoe UI', 'Tahoma', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif;
+      --font-chinese: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', 'Consolas', 'Menlo', 'Courier New', monospace;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--orspex-white);
+      font-family: var(--font-sans);
+      color: var(--orspex-dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      transition: font-family 0.2s ease;
+    }
+
+    html[lang="ar"] body { direction: rtl; font-family: var(--font-arabic); }
+    html[lang="zh"] body { font-family: var(--font-chinese); }
+
+    /* ============================================================
+       ANIMATED BACKGROUND
+    ============================================================ */
+    .bg-anim {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none; opacity: 0.28;
+    }
+    .bg-anim svg { width: 100%; height: 100%; display: block; }
+
+    @keyframes drift-slow {
+      0% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-30px) scale(1.06); }
+      66% { transform: translate(-30px,35px) scale(0.96); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-medium {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(-45px,40px) scale(1.08); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-fast {
+      0% { transform: translate(0,0); }
+      50% { transform: translate(35px,-40px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes color-mint-sky { 0%,100%{fill:#6EE7A0;} 50%{fill:#5BC0EB;} }
+    @keyframes color-sky-blue { 0%,100%{fill:#5BC0EB;} 50%{fill:#2563EB;} }
+    @keyframes color-blue-green { 0%,100%{fill:#2563EB;} 50%{fill:#22C55E;} }
+    @keyframes color-green-mint { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes color-sky-mint { 0%,100%{fill:#5BC0EB;} 50%{fill:#6EE7A0;} }
+    @keyframes pulse-soft { 0%,100%{opacity:0.18;} 50%{opacity:0.4;} }
+    @keyframes twinkle { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+    @keyframes dash-rotate { from{stroke-dashoffset:0;} to{stroke-dashoffset:-400;} }
+    @keyframes stroke-sky-blue { 0%,100%{stroke:#5BC0EB;} 50%{stroke:#2563EB;} }
+    @keyframes stroke-green-mint { 0%,100%{stroke:#22C55E;} 50%{stroke:#6EE7A0;} }
+    @keyframes bar-grow {
+      0% { transform: scaleY(0.3); opacity: 0.15; }
+      40% { transform: scaleY(1); opacity: 0.5; }
+      70% { transform: scaleY(1); opacity: 0.5; }
+      100% { transform: scaleY(0.3); opacity: 0.15; }
+    }
+    @keyframes bar-color { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes line-draw {
+      0% { stroke-dashoffset: 800; }
+      50% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -800; }
+    }
+    @keyframes float-y {
+      0%,100% { transform: translateY(0); opacity: 0.28; }
+      50% { transform: translateY(-18px); opacity: 0.5; }
+    }
+    @keyframes coin-pulse {
+      0%,100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.05); }
+    }
+    @keyframes tick-fade { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+
+    .orb-1 { animation: drift-slow 24s ease-in-out infinite, color-mint-sky 18s ease-in-out infinite; transform-origin: 200px 200px; }
+    .orb-2 { animation: drift-medium 30s ease-in-out infinite, color-sky-blue 22s ease-in-out infinite; transform-origin: 1200px 300px; }
+    .orb-3 { animation: drift-slow 36s ease-in-out infinite, color-blue-green 26s ease-in-out infinite; transform-origin: 400px 700px; }
+    .orb-4 { animation: drift-medium 28s ease-in-out infinite, color-green-mint 20s ease-in-out infinite; transform-origin: 1100px 800px; }
+    .orb-5 { animation: drift-fast 20s ease-in-out infinite, color-sky-mint 24s ease-in-out infinite; transform-origin: 700px 400px; }
+
+    .pulse-1 { animation: pulse-soft 6s ease-in-out infinite, stroke-sky-blue 20s ease-in-out infinite; }
+    .pulse-2 { animation: pulse-soft 8s ease-in-out infinite 1s, stroke-green-mint 24s ease-in-out infinite; }
+    .pulse-3 { animation: pulse-soft 7s ease-in-out infinite 2s, stroke-sky-blue 22s ease-in-out infinite; }
+
+    .dot-1 { animation: twinkle 4s ease-in-out infinite; }
+    .dot-2 { animation: twinkle 5s ease-in-out infinite 0.5s; }
+    .dot-3 { animation: twinkle 3.5s ease-in-out infinite 1s; }
+    .dot-4 { animation: twinkle 6s ease-in-out infinite 1.5s; }
+    .dot-5 { animation: twinkle 4.5s ease-in-out infinite 2s; }
+    .dot-6 { animation: twinkle 5.5s ease-in-out infinite 0.8s; }
+    .dot-7 { animation: twinkle 4.2s ease-in-out infinite 1.2s; }
+    .dot-8 { animation: twinkle 5.8s ease-in-out infinite 0.3s; }
+
+    .ring-1 { animation: dash-rotate 60s linear infinite; transform-origin: 1300px 200px; }
+    .ring-2 { animation: dash-rotate 80s linear infinite reverse; transform-origin: 250px 850px; }
+
+    .bar-1 { animation: bar-grow 9s ease-in-out infinite, bar-color 12s ease-in-out infinite; transform-origin: 1000px 640px; }
+    .bar-2 { animation: bar-grow 9s ease-in-out infinite 0.6s, bar-color 12s ease-in-out infinite 0.6s; transform-origin: 1060px 640px; }
+    .bar-3 { animation: bar-grow 9s ease-in-out infinite 1.2s, bar-color 12s ease-in-out infinite 1.2s; transform-origin: 1120px 640px; }
+    .bar-4 { animation: bar-grow 9s ease-in-out infinite 1.8s, bar-color 12s ease-in-out infinite 1.8s; transform-origin: 1180px 640px; }
+    .bar-5 { animation: bar-grow 9s ease-in-out infinite 2.4s, bar-color 12s ease-in-out infinite 2.4s; transform-origin: 1240px 640px; }
+
+    .trend-line { animation: line-draw 14s ease-in-out infinite; }
+    .currency { animation: float-y 8s ease-in-out infinite; transform-origin: 260px 640px; }
+    .coin { animation: coin-pulse 5s ease-in-out infinite; transform-origin: 260px 640px; }
+
+    .tick-1 { animation: tick-fade 6s ease-in-out infinite; }
+    .tick-2 { animation: tick-fade 7s ease-in-out infinite 0.5s; }
+    .tick-3 { animation: tick-fade 5s ease-in-out infinite 1s; }
+    .tick-4 { animation: tick-fade 6.5s ease-in-out infinite 1.5s; }
+
+    @media (prefers-reduced-motion: reduce) { .bg-anim * { animation: none !important; } }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .site-header, main, .site-footer { position: relative; z-index: 1; }
+    .site-header, .site-footer {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .wrap { width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 2.75rem; }
+    .wrap-narrow { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 2.75rem; }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .site-header { width: 100%; border-bottom: 1px solid var(--orspex-border); }
+    .header-inner { padding: 1.25rem 0; display: flex; flex-direction: column; gap: 1rem; }
+
+    .header-top {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1.5rem;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 1rem;
+      flex-shrink: 0; text-decoration: none; color: inherit;
+    }
+    .brand-mark { width: 58px; height: 58px; flex-shrink: 0; }
+    .brand-text { display: flex; flex-direction: column; gap: 0.15rem; }
+    .brand-text .name {
+      font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--orspex-dark); line-height: 1;
+    }
+    .brand-text .tagline {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 2.4px;
+      color: #334155; text-transform: uppercase; white-space: nowrap;
+    }
+    html[lang="zh"] .brand-text .tagline { letter-spacing: 4px; text-transform: none; font-weight: 500; }
+    html[lang="ar"] .brand-text .tagline { letter-spacing: 1px; text-transform: none; font-weight: 500; }
+
+    .header-actions { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+
+    .offline-badge {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #ECFDF5; color: #065F46;
+      font-size: 0.82rem; font-weight: 500;
+      padding: 0.5rem 1rem; border-radius: 60px;
+      border: 1px solid #A7F3D0; letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .offline-badge::before { content: "⚡"; font-size: 0.95rem; }
+
+    .btn-cta {
+      background: var(--orspex-dark); color: white;
+      font-size: 0.9rem; font-weight: 500;
+      padding: 0.7rem 1.4rem; border-radius: 60px;
+      border: 1px solid var(--orspex-dark); cursor: pointer;
+      letter-spacing: 0.3px; display: inline-flex;
+      align-items: center; gap: 0.5rem;
+      transition: background 0.15s, transform 0.15s;
+      white-space: nowrap; font-family: inherit;
+      text-decoration: none;
+    }
+    .btn-cta:hover { background: #1E293B; transform: translateY(-1px); }
+    .btn-cta span:first-child { font-size: 1rem; line-height: 1; }
+
+    .lang-switch {
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.28rem;
+    }
+    .lang-switch button {
+      background: transparent; border: none;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      color: #475569; padding: 0.4rem 0.75rem;
+      border-radius: 60px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.3px; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.4rem; line-height: 1;
+    }
+    .lang-switch button .flag { font-size: 1.05rem; line-height: 1; }
+    .lang-switch button:hover { color: var(--orspex-dark); }
+    .lang-switch button.active { background: var(--orspex-dark); color: white; }
+
+    .header-nav-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1rem;
+    }
+
+    .nav-links {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.25rem 0.3rem; list-style: none;
+    }
+    .nav-links > li { position: relative; }
+    .nav-links > li > a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: inherit; font-size: 0.95rem; font-weight: 500;
+      color: #1E293B; text-decoration: none;
+      padding: 0.6rem 1.1rem; border-radius: 60px;
+      border: none; background: transparent; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap; line-height: 1.15;
+    }
+    .nav-links > li > a:hover {
+      background: #F1F5F9; color: var(--orspex-blue);
+    }
+    .nav-links > li > a.current { background: #EFF6FF; color: var(--orspex-blue); }
+
+    .nav-links > li > a small {
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.4px; text-transform: uppercase;
+      padding: 0.15rem 0.45rem; border-radius: 40px;
+      background: #F1F5F9; color: #475569;
+      margin-left: 0.15rem;
+    }
+    html[lang="ar"] .nav-links > li > a small,
+    html[lang="zh"] .nav-links > li > a small { text-transform: none; letter-spacing: 0.2px; }
+    .nav-links > li > a small.offline { background: #ECFDF5; color: #047857; }
+    .nav-links > li > a small.online  { background: #EFF6FF; color: #1D4ED8; }
+    .nav-links > li > a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .menu-toggle-checkbox { display: none; }
+    .menu-toggle-label {
+      display: none; align-items: center; justify-content: center;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.65rem 1.15rem;
+      font-size: 0.92rem; font-weight: 500;
+      color: var(--orspex-dark); cursor: pointer;
+      gap: 0.5rem; user-select: none; white-space: nowrap;
+    }
+    .menu-toggle-label span { font-size: 1.05rem; line-height: 1; }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    main { flex: 1; padding: 4rem 0 0; }
+    .product-hero { padding-bottom: 3rem; }
+
+    .breadcrumb {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--orspex-slate); margin-bottom: 1.5rem;
+    }
+    .breadcrumb a { color: var(--orspex-slate); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--orspex-blue); }
+    .breadcrumb .sep { opacity: 0.5; }
+    .breadcrumb .current { color: var(--orspex-dark); font-weight: 500; }
+
+    .hero-grid {
+      display: grid; grid-template-columns: 1.1fr 1fr;
+      gap: 3.5rem; align-items: center;
+    }
+
+    .hero-text .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 3px; color: var(--orspex-blue);
+      background: #EFF6FF; padding: 0.35rem 0.95rem;
+      border-radius: 999px; margin-bottom: 1.25rem; text-transform: uppercase;
+    }
+    html[lang="ar"] .hero-text .eyebrow,
+    html[lang="zh"] .hero-text .eyebrow { text-transform: none; letter-spacing: 2px; }
+
+    .hero-text h1 {
+      font-size: clamp(2rem, 4.4vw, 3rem);
+      font-weight: 700; letter-spacing: -1px;
+      line-height: 1.15; margin-bottom: 1.25rem;
+    }
+    html[lang="ar"] .hero-text h1 { letter-spacing: 0; line-height: 1.4; }
+    html[lang="zh"] .hero-text h1 { letter-spacing: 0.5px; line-height: 1.3; }
+
+    .hero-text h1 .accent {
+      background: linear-gradient(90deg, var(--orspex-blue), var(--orspex-green));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .hero-text .lede {
+      font-size: 1.08rem; color: var(--orspex-slate);
+      line-height: 1.65; margin-bottom: 1.75rem; max-width: 560px;
+    }
+    html[lang="ar"] .hero-text .lede,
+    html[lang="zh"] .hero-text .lede { line-height: 1.9; }
+
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.75rem; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px;
+      padding: 0.42rem 0.9rem; border-radius: 60px;
+      background: #F1F5F9; color: #334155;
+      border: 1px solid var(--orspex-border); white-space: nowrap;
+    }
+    .pill.offline { background: #ECFDF5; color: #047857; border-color: #A7F3D0; }
+    .pill.single { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+    .pill.private { background: #F5F3FF; color: #6D28D9; border-color: #DDD6FE; }
+    .pill.no-fee { background: #FEF3C7; color: #B45309; border-color: #FDE68A; }
+    .pill.tiny { background: #E0F2FE; color: #0369A1; border-color: #BAE6FD; }
+
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      background: var(--orspex-dark); color: white;
+      font-size: 1rem; font-weight: 500;
+      padding: 0.9rem 1.75rem; border-radius: 60px;
+      border: 1px solid var(--orspex-dark); cursor: pointer;
+      text-decoration: none; transition: background 0.15s, transform 0.15s;
+      font-family: inherit; white-space: nowrap;
+    }
+    .btn-primary:hover { background: #1E293B; transform: translateY(-1px); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      background: transparent; color: var(--orspex-dark);
+      font-size: 1rem; font-weight: 500;
+      padding: 0.9rem 1.75rem; border-radius: 60px;
+      border: 1px solid var(--orspex-border); cursor: pointer;
+      text-decoration: none; transition: background 0.15s, border-color 0.15s;
+      font-family: inherit; white-space: nowrap;
+    }
+    .btn-secondary:hover { background: #F8FAFC; border-color: #CBD5E1; }
+
+    /* ---------- Product visual (terminal-style) ---------- */
+    .hero-visual { display: flex; align-items: center; justify-content: center; }
+
+    .product-shot {
+      width: 100%; max-width: 520px;
+      border-radius: 20px;
+      border: 1px solid var(--orspex-border);
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      box-shadow: 0 24px 42px -12px rgba(15,23,42,0.35), 0 8px 16px -8px rgba(15,23,42,0.15);
+      position: relative; overflow: hidden;
+      padding: 1.25rem 1.25rem 1.5rem;
+      display: flex; flex-direction: column; gap: 1rem;
+      color: #E2E8F0;
+    }
+    .product-shot::before {
+      content: ""; position: absolute; top: 0.9rem; left: 1.25rem;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #EF4444; box-shadow: 18px 0 0 #F59E0B, 36px 0 0 #10B981;
+    }
+    .shot-title {
+      margin-top: 0.9rem;
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: #94A3B8;
+      font-family: var(--font-mono);
+    }
+    .shot-terminal {
+      background: #020617;
+      border: 1px solid #1E293B;
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.9;
+      color: #A5F3FC;
+      text-align: left;
+      direction: ltr;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .shot-terminal .prompt { color: #6EE7A0; }
+    .shot-terminal .comment { color: #64748B; }
+    .shot-terminal .filename { color: #FDE68A; }
+    .shot-terminal .arrow { color: #5BC0EB; }
+
+    .shot-badges {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+    }
+    .shot-badge {
+      font-size: 0.66rem; font-weight: 600;
+      letter-spacing: 0.3px;
+      padding: 0.3rem 0.65rem; border-radius: 40px;
+      background: rgba(110, 231, 160, 0.12);
+      color: #6EE7A0;
+      border: 1px solid rgba(110, 231, 160, 0.25);
+    }
+    .shot-badge.sky {
+      background: rgba(91, 192, 235, 0.12);
+      color: #5BC0EB;
+      border-color: rgba(91, 192, 235, 0.25);
+    }
+    .shot-badge.amber {
+      background: rgba(253, 230, 138, 0.12);
+      color: #FDE68A;
+      border-color: rgba(253, 230, 138, 0.25);
+    }
+
+    /* ============================================================
+       SECTION HEAD (shared)
+    ============================================================ */
+    .section-head {
+      text-align: center; max-width: 720px; margin: 0 auto 3rem;
+    }
+    .section-head .eyebrow {
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 3px; color: var(--orspex-blue);
+      background: #EFF6FF; padding: 0.35rem 0.95rem;
+      border-radius: 999px; margin-bottom: 1rem; text-transform: uppercase;
+    }
+    html[lang="ar"] .section-head .eyebrow,
+    html[lang="zh"] .section-head .eyebrow { text-transform: none; letter-spacing: 2px; }
+
+    .section-head h2 {
+      font-size: clamp(1.6rem, 3.2vw, 2.15rem);
+      font-weight: 700; letter-spacing: -0.6px;
+      margin-bottom: 0.75rem; line-height: 1.2;
+    }
+    .section-head p { font-size: 1rem; color: var(--orspex-slate); line-height: 1.65; }
+
+    /* ============================================================
+       FEATURES GRID
+    ============================================================ */
+    .features {
+      padding: 4rem 0;
+      border-top: 1px solid var(--orspex-border);
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 18px;
+      padding: 1.75rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent, var(--orspex-blue));
+      opacity: 0.9;
+    }
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px -10px rgba(15,23,42,0.12);
+      border-color: #CBD5E1;
+    }
+    .feature-card.c1 { --accent: #22C55E; }
+    .feature-card.c2 { --accent: #2563EB; }
+    .feature-card.c3 { --accent: #8B5CF6; }
+    .feature-card.c4 { --accent: #F59E0B; }
+    .feature-card.c5 { --accent: #06B6D4; }
+    .feature-card.c6 { --accent: #EC4899; }
+
+    .feature-icon {
+      width: 46px; height: 46px; flex-shrink: 0;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.35rem;
+      background: color-mix(in srgb, var(--accent) 12%, white);
+      color: var(--accent);
+    }
+    .feature-card h3 {
+      font-size: 1.05rem; font-weight: 600;
+      letter-spacing: -0.2px; color: var(--orspex-dark);
+    }
+    .feature-card p {
+      font-size: 0.92rem; color: var(--orspex-slate); line-height: 1.6;
+    }
+
+    /* ============================================================
+       WHAT IT GENERATES
+    ============================================================ */
+    .generates {
+      padding: 4rem 0;
+      border-top: 1px solid var(--orspex-border);
+    }
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .file-item {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      display: flex; align-items: center; gap: 0.85rem;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .file-item:hover { border-color: var(--orspex-blue); transform: translateY(-2px); }
+    .file-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: #EFF6FF; color: var(--orspex-blue);
+      font-size: 1rem; font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .file-meta { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+    .file-meta .name {
+      font-family: var(--font-mono); font-size: 0.82rem;
+      font-weight: 600; color: var(--orspex-dark);
+      word-break: break-all;
+    }
+    .file-meta .desc {
+      font-size: 0.72rem; color: var(--orspex-slate);
+    }
+
+    /* ============================================================
+       TECH SPECS
+    ============================================================ */
+    .specs { padding: 4rem 0; border-top: 1px solid var(--orspex-border); }
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .spec-item {
+      background: white; border: 1px solid var(--orspex-border);
+      border-radius: 14px; padding: 1.25rem 1.15rem;
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .spec-item .k {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--orspex-slate);
+    }
+    html[lang="ar"] .spec-item .k,
+    html[lang="zh"] .spec-item .k { text-transform: none; letter-spacing: 0.5px; }
+    .spec-item .v {
+      font-size: 1.15rem; font-weight: 600;
+      color: var(--orspex-dark); letter-spacing: -0.3px;
+    }
+    .spec-item .v small {
+      display: block; font-size: 0.78rem; font-weight: 400;
+      color: var(--orspex-slate); margin-top: 0.2rem; letter-spacing: 0;
+    }
+
+    /* ============================================================
+       HOW TO USE (steps)
+    ============================================================ */
+    .howto { padding: 4rem 0; border-top: 1px solid var(--orspex-border); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      counter-reset: step;
+    }
+    .step {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 14px;
+      padding: 1.5rem 1.35rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+      position: relative;
+    }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute; top: -14px; left: 1.35rem;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--orspex-dark); color: white;
+      font-weight: 700; font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 10px -2px rgba(15,23,42,0.25);
+    }
+    .step h4 {
+      font-size: 0.98rem; font-weight: 600;
+      color: var(--orspex-dark); margin-top: 0.35rem;
+    }
+    .step p { font-size: 0.88rem; color: var(--orspex-slate); line-height: 1.55; }
+
+    /* ============================================================
+       CTA BAND
+    ============================================================ */
+    .cta-band {
+      padding: 4rem 0;
+      border-top: 1px solid var(--orspex-border);
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .cta-inner {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 2rem;
+    }
+    .cta-copy h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700; letter-spacing: -0.6px; margin-bottom: 0.5rem;
+    }
+    .cta-copy p {
+      font-size: 1rem; color: var(--orspex-slate);
+      max-width: 600px; line-height: 1.6;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .site-footer {
+      width: 100%; border-top: 1px solid var(--orspex-border); margin-top: auto;
+    }
+    .footer-inner {
+      padding: 2.5rem 0 1.5rem;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .footer-intro {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+    }
+    .footer-intro p {
+      font-size: 0.9rem; color: var(--orspex-slate);
+      line-height: 1.55; max-width: 640px;
+    }
+    .footer-status {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #EFF6FF; color: #1E40AF;
+      font-size: 0.78rem; font-weight: 500;
+      padding: 0.4rem 0.9rem; border-radius: 60px;
+      border: 1px solid #BFDBFE; white-space: nowrap;
+    }
+    .footer-status::before { content: "🔒"; font-size: 0.85rem; }
+
+    .footer-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem 2.5rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 2rem;
+    }
+    .footer-col h4 {
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--orspex-dark);
+      margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    html[lang="ar"] .footer-col h4,
+    html[lang="zh"] .footer-col h4 { text-transform: none; letter-spacing: 1px; }
+    .footer-col h4::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-blue); flex-shrink: 0;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col ul li a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; color: #334155; text-decoration: none;
+      padding: 0.2rem 0; transition: color 0.15s, transform 0.15s;
+    }
+    .footer-col ul li a:hover { color: var(--orspex-blue); transform: translateX(2px); }
+    html[lang="ar"] .footer-col ul li a:hover { transform: translateX(-2px); }
+    .footer-col ul li a small {
+      font-size: 0.66rem; color: var(--orspex-slate);
+      background: #F1F5F9; padding: 0.1rem 0.4rem;
+      border-radius: 4px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    html[lang="ar"] .footer-col ul li a small,
+    html[lang="zh"] .footer-col ul li a small { text-transform: none; letter-spacing: 0.2px; }
+    .footer-col ul li a small.offline { background: #ECFDF5; color: #047857; }
+    .footer-col ul li a small.online  { background: #EFF6FF; color: #1D4ED8; }
+    .footer-col ul li a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .footer-bottom {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1.4rem;
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--orspex-slate); }
+    .footer-copy strong { color: var(--orspex-dark); font-weight: 600; }
+    .footer-legal {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.5rem 1.25rem; list-style: none;
+    }
+    .footer-legal a {
+      font-size: 0.82rem; color: var(--orspex-slate);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-legal a:hover { color: var(--orspex-blue); }
+    .footer-version {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
+      color: #475569; background: #F1F5F9;
+      padding: 0.3rem 0.7rem; border-radius: 40px;
+      border: 1px solid var(--orspex-border);
+    }
+    .footer-version::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-green);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18); flex-shrink: 0;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1000px) {
+      .wrap, .wrap-narrow { padding: 0 1.5rem; }
+
+      .header-nav-row { flex-direction: column; align-items: stretch; }
+      .menu-toggle-label { display: inline-flex; align-self: flex-start; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        gap: 0.3rem; padding-top: 0.6rem;
+      }
+      .menu-toggle-checkbox:checked ~ .nav-links { display: flex; }
+      .nav-links > li > a {
+        justify-content: space-between; width: 100%;
+        padding: 0.8rem 1.05rem; border-radius: 10px; background: #F8FAFC;
+      }
+      .nav-links > li > a small { margin-left: auto; }
+      .header-actions { width: 100%; justify-content: space-between; }
+
+      .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .hero-visual { order: -1; }
+
+      .footer-columns { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2rem; }
+    }
+
+    @media (max-width: 640px) {
+      .wrap, .wrap-narrow { padding: 0 1rem; }
+
+      .header-inner { padding: 1rem 0; gap: 0.85rem; }
+      .brand { gap: 0.75rem; }
+      .brand-mark { width: 46px; height: 46px; }
+      .brand-text .name { font-size: 1.3rem; }
+      .brand-text .tagline { font-size: 0.62rem; letter-spacing: 1.8px; }
+
+      .header-actions { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+      .offline-badge, .btn-cta { justify-content: center; }
+      .lang-switch { align-self: center; }
+
+      main { padding: 2.5rem 0 0; }
+      .product-hero { padding-bottom: 2rem; }
+      .features, .generates, .specs, .howto, .cta-band { padding: 3rem 0; }
+
+      .hero-cta { width: 100%; }
+      .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+
+      .footer-inner { padding: 1.75rem 0 1.25rem; gap: 1.5rem; }
+      .footer-intro { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .footer-intro p { font-size: 0.86rem; line-height: 1.5; }
+
+      .footer-columns {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem 1rem; padding-top: 1.25rem;
+      }
+      .footer-col h4 { font-size: 0.68rem; letter-spacing: 1.5px; margin-bottom: 0.65rem; }
+      .footer-col ul { gap: 0.4rem; }
+      .footer-col ul li a { font-size: 0.82rem; gap: 0.35rem; }
+      .footer-col ul li a small { font-size: 0.58rem; padding: 0.08rem 0.32rem; letter-spacing: 0.2px; }
+
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding-top: 1.1rem; }
+      .footer-copy { font-size: 0.76rem; }
+      .footer-legal { gap: 0.4rem 0.9rem; }
+      .footer-legal a { font-size: 0.76rem; }
+      .footer-version { font-size: 0.66rem; padding: 0.25rem 0.6rem; }
+
+      .cta-inner { flex-direction: column; align-items: stretch; }
+
+      .step::before { left: 1rem; }
+    }
+
+    @media (max-width: 400px) {
+      .footer-columns { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       ANIMATED BACKGROUND
+  ============================================================ -->
+  <div class="bg-anim" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"
+         preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#0F172A" stroke-width="0.5" opacity="0.015"/>
+        </pattern>
+        <radialGradient id="fade-soft" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="white" stop-opacity="0.45"/>
+          <stop offset="55%" stop-color="white" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <rect width="1600" height="900" fill="url(#grid)"/>
+
+      <g class="orb-1"><circle cx="200" cy="200" r="220" fill="#6EE7A0" opacity="0.35"/><circle cx="200" cy="200" r="220" fill="url(#fade-soft)"/></g>
+      <g class="orb-2"><circle cx="1300" cy="220" r="260" fill="#5BC0EB" opacity="0.3"/><circle cx="1300" cy="220" r="260" fill="url(#fade-soft)"/></g>
+      <g class="orb-3"><circle cx="320" cy="720" r="240" fill="#2563EB" opacity="0.28"/><circle cx="320" cy="720" r="240" fill="url(#fade-soft)"/></g>
+      <g class="orb-4"><circle cx="1180" cy="760" r="230" fill="#22C55E" opacity="0.3"/><circle cx="1180" cy="760" r="230" fill="url(#fade-soft)"/></g>
+      <g class="orb-5"><circle cx="820" cy="440" r="150" fill="#5BC0EB" opacity="0.28"/><circle cx="820" cy="440" r="150" fill="url(#fade-soft)"/></g>
+
+      <circle class="pulse-1" cx="500" cy="480" r="140" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.25"/>
+      <circle class="pulse-2" cx="1080" cy="380" r="180" fill="none" stroke="#22C55E" stroke-width="1" opacity="0.22"/>
+      <circle class="pulse-3" cx="760" cy="620" r="110" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.22"/>
+
+      <circle class="ring-1" cx="1300" cy="200" r="200" fill="none" stroke="#2563EB" stroke-width="0.8" stroke-dasharray="6 14" opacity="0.22"/>
+      <circle class="ring-2" cx="250" cy="850" r="220" fill="none" stroke="#5BC0EB" stroke-width="0.8" stroke-dasharray="8 18" opacity="0.2"/>
+
+      <circle class="dot-1" cx="340" cy="140" r="2.5" fill="#2563EB"/>
+      <circle class="dot-2" cx="900" cy="120" r="2" fill="#5BC0EB"/>
+      <circle class="dot-3" cx="1250" cy="480" r="2.5" fill="#22C55E"/>
+      <circle class="dot-4" cx="1520" cy="700" r="2" fill="#6EE7A0"/>
+      <circle class="dot-5" cx="600" cy="820" r="2.5" fill="#2563EB"/>
+      <circle class="dot-6" cx="120" cy="560" r="2" fill="#5BC0EB"/>
+      <circle class="dot-7" cx="1000" cy="780" r="2" fill="#22C55E"/>
+      <circle class="dot-8" cx="700" cy="240" r="2.5" fill="#2563EB"/>
+
+      <g opacity="0.6">
+        <line x1="980" y1="640" x2="1290" y2="640" stroke="#0F172A" stroke-width="0.6" opacity="0.15"/>
+        <rect class="bar-1" x="995" y="540" width="22" height="100" rx="3" fill="#22C55E"/>
+        <rect class="bar-2" x="1055" y="500" width="22" height="140" rx="3" fill="#22C55E"/>
+        <rect class="bar-3" x="1115" y="460" width="22" height="180" rx="3" fill="#22C55E"/>
+        <rect class="bar-4" x="1175" y="430" width="22" height="210" rx="3" fill="#22C55E"/>
+        <rect class="bar-5" x="1235" y="390" width="22" height="250" rx="3" fill="#22C55E"/>
+        <path class="trend-line" d="M 1006 530 L 1066 480 L 1126 440 L 1186 400 L 1246 355"
+              fill="none" stroke="#2563EB" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="800" opacity="0.5"/>
+        <circle cx="1246" cy="355" r="3" fill="#2563EB" opacity="0.5"/>
+      </g>
+
+      <g class="coin" opacity="0.4">
+        <circle cx="260" cy="640" r="42" fill="none" stroke="#22C55E" stroke-width="1.4"/>
+        <circle cx="260" cy="640" r="34" fill="none" stroke="#6EE7A0" stroke-width="0.8" stroke-dasharray="3 6"/>
+      </g>
+      <text class="currency" x="260" y="660" text-anchor="middle"
+            font-family="'Inter', system-ui, sans-serif" font-size="48"
+            font-weight="600" fill="#22C55E" opacity="0.35">$</text>
+
+      <g opacity="0.35">
+        <line class="tick-1" x1="1360" y1="600" x2="1360" y2="650" stroke="#22C55E" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-1" x="1355" y="615" width="10" height="20" rx="1.5" fill="#22C55E" opacity="0.7"/>
+        <line class="tick-2" x1="1390" y1="590" x2="1390" y2="655" stroke="#2563EB" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-2" x="1385" y="608" width="10" height="24" rx="1.5" fill="#2563EB" opacity="0.7"/>
+        <line class="tick-3" x1="1420" y1="575" x2="1420" y2="645" stroke="#22C55E" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-3" x="1415" y="595" width="10" height="22" rx="1.5" fill="#22C55E" opacity="0.7"/>
+        <line class="tick-4" x1="1450" y1="560" x2="1450" y2="630" stroke="#6EE7A0" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-4" x="1445" y="580" width="10" height="26" rx="1.5" fill="#6EE7A0" opacity="0.7"/>
+      </g>
+
+      <text x="930" y="430" text-anchor="middle"
+            font-family="'Inter', system-ui, sans-serif" font-size="36"
+            font-weight="500" fill="#5BC0EB" opacity="0.18">%</text>
+    </svg>
+  </div>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header" aria-label="ORSPEX main header">
+    <div class="wrap header-inner">
+
+      <div class="header-top">
+        <a class="brand" href="../index.html" aria-label="ORSPEX home">
+          <svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"
+               role="img" aria-label="ORSPEX mark">
+            <circle cx="300" cy="300" r="280" fill="none" stroke="#6EE7A0" stroke-width="18"/>
+            <circle cx="300" cy="300" r="200" fill="none" stroke="#5BC0EB" stroke-width="16"/>
+            <circle cx="300" cy="300" r="160" fill="#2563EB"/>
+            <circle cx="300" cy="300" r="90" fill="#0F172A"/>
+            <circle cx="300" cy="100" r="22" fill="#5BC0EB"/>
+            <circle cx="300" cy="500" r="22" fill="#5BC0EB"/>
+            <circle cx="100" cy="300" r="22" fill="#22C55E"/>
+            <circle cx="500" cy="300" r="22" fill="#22C55E"/>
+          </svg>
+          <div class="brand-text">
+            <span class="name">ORSPEX</span>
+            <span class="tagline" data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button type="button" data-lang="en" class="active" aria-label="English">
+              <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+            </button>
+            <button type="button" data-lang="ar" aria-label="العربية">
+              <span class="flag" aria-hidden="true">🇸🇦</span><span>عربي</span>
+            </button>
+            <button type="button" data-lang="zh" aria-label="中文">
+              <span class="flag" aria-hidden="true">🇨🇳</span><span>中文</span>
+            </button>
+          </div>
+
+          <span class="offline-badge" data-i18n="badge.offline">offline · no cloud</span>
+          <a class="btn-cta" href="https://github.com/orpexexitus-maker/favicon-maker/raw/main/dist/favicon-maker.exe">
+            <span>⬇</span> <span data-i18n="cta.download">download .exe</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="header-nav-row">
+        <input type="checkbox" id="orspex-menu-toggle" class="menu-toggle-checkbox" aria-hidden="true">
+        <label for="orspex-menu-toggle" class="menu-toggle-label">
+          <span>☰</span> <span data-i18n="nav.products">Products</span>
+        </label>
+
+        <ul class="nav-links">
+          <li>
+            <a href="../index.html">
+              🏠 <span data-i18n="nav.home">Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="../orspex-core/orspex-core.html">
+              🧩 <span data-i18n="nav.core">ORSPEX Core</span>
+              <small class="offline" data-i18n="badge.offline.short">offline</small>
+            </a>
+          </li>
+          <li>
+            <a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener">
+              👥 <span data-i18n="nav.job">Job Seeker</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+          <li>
+            <a href="../pdf-compressor/pdf-compressor.html">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+          <li>
+            <a href="../pdf-compressor-offline/pdf-compressor-offline.html">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span>
+              <small class="desktop" data-i18n="badge.desktop.short">desktop</small>
+            </a>
+          </li>
+          <li>
+            <a href="../favicon-maker/favicon-maker.html">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+          <li>
+            <a href="favicon-maker-offline.html" class="current">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span>
+              <small class="desktop" data-i18n="badge.desktop.short">desktop</small>
+            </a>
+          </li>
+          <li>
+            <a href="https://orspex-jobs-seeking.vercel.app/jobs" target="_blank" rel="noopener">
+              🔍 <span data-i18n="nav.talent">Find Talent</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN
+  ============================================================ -->
+  <main>
+
+    <!-- ---------- HERO ---------- -->
+    <section class="product-hero">
+      <div class="wrap">
+
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="../index.html" data-i18n="crumb.home">ORSPEX</a>
+          <span class="sep">/</span>
+          <a href="../index.html" data-i18n="crumb.products">Products</a>
+          <span class="sep">/</span>
+          <span class="current" data-i18n="crumb.current">Favicon Maker · Offline</span>
+        </nav>
+
+        <div class="hero-grid">
+
+          <div class="hero-text">
+            <span class="eyebrow" data-i18n="offline.eyebrow">Native Windows app · v0.1.0</span>
+
+            <h1>
+              <span data-i18n="offline.h1a">Generate favicons</span>
+              <span class="accent" data-i18n="offline.h1b">fully offline.</span>
+            </h1>
+
+            <p class="lede" data-i18n="offline.lede">
+              A tiny 713 KB Windows executable that turns any image into a complete
+              favicon set — favicon.ico, every PNG variant, and a site.webmanifest.
+              No install. No signup. No internet. Just double-click and go.
+            </p>
+
+            <div class="hero-badges">
+              <span class="pill offline" data-i18n="offline.pill.offline">⚡ 100% offline</span>
+              <span class="pill tiny" data-i18n="offline.pill.tiny">📦 713 KB binary</span>
+              <span class="pill single" data-i18n="offline.pill.nodeps">🚫 No dependencies</span>
+              <span class="pill private" data-i18n="offline.pill.private">🔒 Private by design</span>
+              <span class="pill no-fee" data-i18n="offline.pill.nofee">💳 Free forever</span>
+            </div>
+
+            <div class="hero-cta">
+              <a class="btn-primary" href="https://github.com/orpexexitus-maker/favicon-maker/raw/main/dist/favicon-maker.exe">
+                <span>⬇</span> <span data-i18n="offline.cta.download">Download for Windows</span>
+              </a>
+              <a class="btn-secondary" href="https://github.com/orpexexitus-maker/favicon-maker" target="_blank" rel="noopener">
+                <span data-i18n="offline.cta.source">View source on GitHub</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-hidden="true">
+            <div class="product-shot">
+              <div class="shot-title">favicon-maker.exe</div>
+              <div class="shot-terminal"><span class="comment">// Drag &amp; drop an image → get a full set</span>
+<span class="prompt">C:\Users\you&gt;</span> favicon-maker.exe
+
+  ▸ Reading image .......... <span class="arrow">OK</span>
+  ▸ Center-cropping ........ <span class="arrow">OK</span>
+  ▸ Generating 16×16 ....... <span class="arrow">OK</span>
+  ▸ Generating 32×32 ....... <span class="arrow">OK</span>
+  ▸ Generating 48×48 ....... <span class="arrow">OK</span>
+  ▸ Generating 180×180 ..... <span class="arrow">OK</span>
+  ▸ Generating 192×192 ..... <span class="arrow">OK</span>
+  ▸ Generating 512×512 ..... <span class="arrow">OK</span>
+  ▸ Building favicon.ico ... <span class="arrow">OK</span>
+  ▸ Writing site.webmanifest  <span class="arrow">OK</span>
+
+<span class="prompt">✓ Done.</span>  9 files → <span class="filename">favicons.zip</span></div>
+              <div class="shot-badges">
+                <span class="shot-badge">Rust</span>
+                <span class="shot-badge sky">WebView GUI</span>
+                <span class="shot-badge amber">713 KB</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- FEATURES ---------- -->
+    <section class="features">
+      <div class="wrap-narrow">
+
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="features.eyebrow">Why you'll love it</span>
+          <h2 data-i18n="features.h2">Small binary. Big wins.</h2>
+          <p data-i18n="features.p">
+            Everything a favicon generator should be — and nothing it shouldn't.
+            No telemetry, no background services, no installer wizard.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+
+          <div class="feature-card c1">
+            <div class="feature-icon">🔒</div>
+            <h3 data-i18n="feat.private.h">100% private</h3>
+            <p data-i18n="feat.private.p">Runs entirely on your PC. Your images are never uploaded anywhere — not even to us.</p>
+          </div>
+
+          <div class="feature-card c2">
+            <div class="feature-icon">📦</div>
+            <h3 data-i18n="feat.tiny.h">Tiny 713 KB binary</h3>
+            <p data-i18n="feat.tiny.p">No .NET, no Java, no Python. One self-contained .exe that runs on Windows 10 and 11 out of the box.</p>
+          </div>
+
+          <div class="feature-card c3">
+            <div class="feature-icon">🎨</div>
+            <h3 data-i18n="feat.color.h">Custom background</h3>
+            <p data-i18n="feat.color.p">Keep it transparent, or drop in any hex color. Great for logos on light or dark themes.</p>
+          </div>
+
+          <div class="feature-card c4">
+            <div class="feature-icon">🖼️</div>
+            <h3 data-i18n="feat.crop.h">Auto center-crop</h3>
+            <p data-i18n="feat.crop.p">Non-square images are intelligently center-cropped so your icon always looks balanced.</p>
+          </div>
+
+          <div class="feature-card c5">
+            <div class="feature-icon">📁</div>
+            <h3 data-i18n="feat.zip.h">One ZIP export</h3>
+            <p data-i18n="feat.zip.p">Everything is bundled into a single <code>favicons.zip</code> — drop it into your site root and you're done.</p>
+          </div>
+
+          <div class="feature-card c6">
+            <div class="feature-icon">🆓</div>
+            <h3 data-i18n="feat.free.h">Free forever</h3>
+            <p data-i18n="feat.free.p">No sign-up, no watermark, no "pro" tier. Built for the ORSPEX family of offline tools.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- WHAT IT GENERATES ---------- -->
+    <section class="generates">
+      <div class="wrap-narrow">
+
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="gen.eyebrow">What you get</span>
+          <h2 data-i18n="gen.h2">A complete favicon set, in one click</h2>
+          <p data-i18n="gen.p">Nine files, every size you'll actually need. Everything the browser and mobile OSes ask for.</p>
+        </div>
+
+        <div class="file-grid">
+
+          <div class="file-item">
+            <div class="file-icon">.ico</div>
+            <div class="file-meta">
+              <span class="name">favicon.ico</span>
+              <span class="desc" data-i18n="file.ico">16, 32 and 48 embedded</span>
+            </div>
+          </div>
+
+          <div class="file-item">
+            <div class="file-icon">16</div>
+            <div class="file-meta">
+              <span class="name">favicon-16x16.png</span>
+              <span class="desc" data-i18n="file.16">Classic browser tab icon</span>
+            </div>
+          </div>
+
+          <div class="file-item">
+            <div class="file-icon">32</div>
+            <div class="file-meta">
+              <span class="name">favicon-32x32.png</span>
+              <span class="desc" data-i18n="file.32">High-DPI browser tabs</span>
+            </div>
+          </div>
+
+          <div class="file-item">
+            <div class="file-icon">48</div>
+            <div class="file-meta">
+              <span class="name">favicon-48x48.png</span>
+              <span class="desc" data-i18n="file.48">Windows site shortcuts</span>
+            </div>
+          </div>
+
+          <div class="file-item">
+            <div class="file-icon">180</div>
+            <div class="file-meta">
+              <span class="name">apple-touch-icon.png</span>
+              <span class="desc" data-i18n="file.180">iOS home-screen icon</span>
+            </div>
+          </div>
+
+          <div class="file-item">
+            <div class="file-icon">192</div>
+            <div class="file-meta">
+              <span class="name">android-chrome-192x192.png</span>
+              <span class="desc" data-i18n="file.192">Android home icon</span>
+            </div>
+          </div>
+
+          <div class="file-item">
+            <div class="file-icon">512</div>
+            <div class="file-meta">
+              <span class="name">android-chrome-512x512.png</span>
+              <span class="desc" data-i18n="file.512">PWA splash / high-res</span>
+            </div>
+          </div>
+
+          <div class="file-item">
+            <div class="file-icon">{ }</div>
+            <div class="file-meta">
+              <span class="name">site.webmanifest</span>
+              <span class="desc" data-i18n="file.manifest">PWA manifest stub</span>
+            </div>
+          </div>
+
+          <div class="file-item">
+            <div class="file-icon">.txt</div>
+            <div class="file-meta">
+              <span class="name">README.txt</span>
+              <span class="desc" data-i18n="file.readme">Drop-in instructions</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- HOW TO USE ---------- -->
+    <section class="howto">
+      <div class="wrap-narrow">
+
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="howto.eyebrow">How it works</span>
+          <h2 data-i18n="howto.h2">Four steps. Ten seconds.</h2>
+          <p data-i18n="howto.p">From download to done — no installer, no admin rights, no configuration.</p>
+        </div>
+
+        <div class="steps">
+
+          <div class="step">
+            <h4 data-i18n="step1.h">Download the .exe</h4>
+            <p data-i18n="step1.p">Grab <code>favicon-maker.exe</code> from GitHub. It's about 713 KB — smaller than a photo.</p>
+          </div>
+
+          <div class="step">
+            <h4 data-i18n="step2.h">Save anywhere</h4>
+            <p data-i18n="step2.p">Desktop, Downloads, a USB stick — wherever. It runs in place without installing anything.</p>
+          </div>
+
+          <div class="step">
+            <h4 data-i18n="step3.h">Double-click to run</h4>
+            <p data-i18n="step3.p">A small native window opens. Windows may show a SmartScreen prompt the first time — click "More info → Run anyway".</p>
+          </div>
+
+          <div class="step">
+            <h4 data-i18n="step4.h">Drop an image → export</h4>
+            <p data-i18n="step4.p">Drag your image, pick a background color, hit generate, save the ZIP. Done.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- SPECS ---------- -->
+    <section class="specs">
+      <div class="wrap-narrow">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="specs.eyebrow">Technical</span>
+          <h2 data-i18n="specs.h2">Built for Windows, from the ground up</h2>
+          <p data-i18n="specs.p">Tiny, native, and dependency-free — because that's how a real offline tool should be.</p>
+        </div>
+
+        <div class="specs-grid">
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.platform.k">Platform</span>
+            <span class="v">Windows 10 / 11
+              <small data-i18n="spec.platform.v">64-bit · native</small>
+            </span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.lang.k">Language</span>
+            <span class="v">Rust
+              <small data-i18n="spec.lang.v">MSVC toolchain</small>
+            </span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.gui.k">GUI</span>
+            <span class="v">WebView
+              <small data-i18n="spec.gui.v">Native Windows shell</small>
+            </span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.size.k">Binary size</span>
+            <span class="v">713 KB
+              <small data-i18n="spec.size.v">Fully self-contained</small>
+            </span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.deps.k">Dependencies</span>
+            <span class="v" data-i18n="spec.deps.v">None</span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.net.k">Network</span>
+            <span class="v" data-i18n="spec.net.v">None · fully offline</span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.license.k">License</span>
+            <span class="v" data-i18n="spec.license.v">Free · open source</span>
+          </div>
+          <div class="spec-item">
+            <span class="k" data-i18n="spec.version.k">Version</span>
+            <span class="v">v0.1.0
+              <small data-i18n="spec.version.v">Initial release</small>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- CTA BAND ---------- -->
+    <section class="cta-band">
+      <div class="wrap-narrow">
+        <div class="cta-inner">
+          <div class="cta-copy">
+            <h2 data-i18n="cta.h2">Ready to generate favicons offline?</h2>
+            <p data-i18n="cta.p">Download the 713 KB Windows executable and never touch an online favicon tool again. No signup, no upload, no cloud.</p>
+          </div>
+          <div class="hero-cta">
+            <a class="btn-primary" href="https://github.com/orpexexitus-maker/favicon-maker/raw/main/dist/favicon-maker.exe">
+              <span>⬇</span> <span data-i18n="cta.download">Download for Windows</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer" aria-label="ORSPEX footer">
+    <div class="wrap footer-inner">
+
+      <div class="footer-intro">
+        <p data-i18n="footer.intro">
+          A stand-alone, offline-first software suite. No cloud, no accounts, no internet
+          required — your data stays on your device.
+        </p>
+        <span class="footer-status" data-i18n="footer.status">offline by design · privacy first</span>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h4 data-i18n="footer.products">Products</h4>
+          <ul>
+            <li><a href="../orspex-core/orspex-core.html">🧩 <span data-i18n="nav.core">ORSPEX Core</span> <small class="offline" data-i18n="badge.offline.short">offline</small></a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener">👥 <span data-i18n="nav.job">Job Seeker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="../pdf-compressor/pdf-compressor.html">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="../pdf-compressor-offline/pdf-compressor-offline.html">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+            <li><a href="../favicon-maker/favicon-maker.html">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="favicon-maker-offline.html">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.modules">Modules</h4>
+          <ul>
+            <li><a href="../orspex-core/orspex-core.html" data-i18n="footer.modules.erp">🧩 Stand-alone ERP</a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener" data-i18n="footer.modules.jobs">👥 Jobs &amp; Hiring</a></li>
+            <li><a href="../pdf-compressor/pdf-compressor.html" data-i18n="footer.modules.pdf">📄 PDF Compression</a></li>
+            <li><a href="../favicon-maker/favicon-maker.html" data-i18n="footer.modules.fav">⭐ Favicon Generation</a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/jobs" target="_blank" rel="noopener" data-i18n="footer.modules.talent">🔍 Talent Directory</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.resources">Resources</h4>
+          <ul>
+            <li><a href="https://github.com/orpexexitus-maker/favicon-maker/raw/main/dist/favicon-maker.exe" data-i18n="footer.resources.download">⬇️ Download offline (.exe)</a></li>
+            <li><a href="https://github.com/orpexexitus-maker/favicon-maker" target="_blank" rel="noopener" data-i18n="footer.resources.docs">📘 Documentation</a></li>
+            <li><a href="https://github.com/orpexexitus-maker/favicon-maker" target="_blank" rel="noopener" data-i18n="footer.resources.guides">🛠️ Source &amp; build guide</a></li>
+            <li><a href="../status.html" data-i18n="footer.resources.release">🧪 Release notes</a></li>
+            <li><a href="../privacy.html" data-i18n="footer.resources.security">🛡️ Security &amp; privacy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.company">Company</h4>
+          <ul>
+            <li><a href="../index.html" data-i18n="footer.company.about">🏢 About ORSPEX</a></li>
+            <li><a href="mailto:info@orspex.com" data-i18n="footer.company.contact">✉️ Contact</a></li>
+            <li><a href="../index.html" data-i18n="footer.company.partners">🤝 Partners</a></li>
+            <li><a href="../index.html" data-i18n="footer.company.press">📰 Press kit</a></li>
+            <li><a href="../index.html" data-i18n="footer.company.careers">💼 Careers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          © <strong>ORSPEX</strong> · <span data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>. <span data-i18n="footer.rights">All rights reserved.</span>
+        </div>
+        <ul class="footer-legal">
+          <li><a href="../privacy.html" data-i18n="footer.legal.privacy">Privacy</a></li>
+          <li><a href="../terms.html" data-i18n="footer.legal.terms">Terms</a></li>
+          <li><a href="../license.html" data-i18n="footer.legal.license">License</a></li>
+          <li><a href="../status.html" data-i18n="footer.legal.status">Status</a></li>
+        </ul>
+        <span class="footer-version">v0.1.0 · <span data-i18n="footer.version.stable">stable</span> · <span data-i18n="footer.version.desktop">desktop</span></span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       i18n
+  ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      const translations = {
+        en: {
+          'brand.tagline': 'Organization · Planning · Services · Execution',
+          'badge.offline': 'offline · no cloud',
+          'badge.offline.short': 'offline',
+          'badge.online.short': 'online',
+          'badge.desktop.short': 'desktop',
+          'cta.download': 'download .exe',
+
+          'nav.home': 'Home',
+          'nav.products': 'Products',
+          'nav.core': 'ORSPEX Core',
+          'nav.job': 'Job Seeker',
+          'nav.pdf': 'PDF Compressor',
+          'nav.favicon': 'Favicon Maker',
+          'nav.talent': 'Find Talent',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.products': 'Products',
+          'crumb.current': 'Favicon Maker · Offline',
+
+          'offline.eyebrow': 'Native Windows app · v0.1.0',
+          'offline.h1a': 'Generate favicons',
+          'offline.h1b': 'fully offline.',
+          'offline.lede': 'A tiny 713 KB Windows executable that turns any image into a complete favicon set — favicon.ico, every PNG variant, and a site.webmanifest. No install. No signup. No internet. Just double-click and go.',
+          'offline.pill.offline': '⚡ 100% offline',
+          'offline.pill.tiny': '📦 713 KB binary',
+          'offline.pill.nodeps': '🚫 No dependencies',
+          'offline.pill.private': '🔒 Private by design',
+          'offline.pill.nofee': '💳 Free forever',
+          'offline.cta.download': 'Download for Windows',
+          'offline.cta.source': 'View source on GitHub',
+
+          'features.eyebrow': "Why you'll love it",
+          'features.h2': 'Small binary. Big wins.',
+          'features.p': "Everything a favicon generator should be — and nothing it shouldn't. No telemetry, no background services, no installer wizard.",
+
+          'feat.private.h': '100% private',
+          'feat.private.p': 'Runs entirely on your PC. Your images are never uploaded anywhere — not even to us.',
+          'feat.tiny.h': 'Tiny 713 KB binary',
+          'feat.tiny.p': 'No .NET, no Java, no Python. One self-contained .exe that runs on Windows 10 and 11 out of the box.',
+          'feat.color.h': 'Custom background',
+          'feat.color.p': 'Keep it transparent, or drop in any hex color. Great for logos on light or dark themes.',
+          'feat.crop.h': 'Auto center-crop',
+          'feat.crop.p': 'Non-square images are intelligently center-cropped so your icon always looks balanced.',
+          'feat.zip.h': 'One ZIP export',
+          'feat.zip.p': 'Everything is bundled into a single favicons.zip — drop it into your site root and you\'re done.',
+          'feat.free.h': 'Free forever',
+          'feat.free.p': 'No sign-up, no watermark, no "pro" tier. Built for the ORSPEX family of offline tools.',
+
+          'gen.eyebrow': 'What you get',
+          'gen.h2': 'A complete favicon set, in one click',
+          'gen.p': "Nine files, every size you'll actually need. Everything the browser and mobile OSes ask for.",
+
+          'file.ico': '16, 32 and 48 embedded',
+          'file.16': 'Classic browser tab icon',
+          'file.32': 'High-DPI browser tabs',
+          'file.48': 'Windows site shortcuts',
+          'file.180': 'iOS home-screen icon',
+          'file.192': 'Android home icon',
+          'file.512': 'PWA splash / high-res',
+          'file.manifest': 'PWA manifest stub',
+          'file.readme': 'Drop-in instructions',
+
+          'howto.eyebrow': 'How it works',
+          'howto.h2': 'Four steps. Ten seconds.',
+          'howto.p': 'From download to done — no installer, no admin rights, no configuration.',
+          'step1.h': 'Download the .exe',
+          'step1.p': "Grab favicon-maker.exe from GitHub. It's about 713 KB — smaller than a photo.",
+          'step2.h': 'Save anywhere',
+          'step2.p': 'Desktop, Downloads, a USB stick — wherever. It runs in place without installing anything.',
+          'step3.h': 'Double-click to run',
+          'step3.p': 'A small native window opens. Windows may show a SmartScreen prompt the first time — click "More info → Run anyway".',
+          'step4.h': 'Drop an image → export',
+          'step4.p': 'Drag your image, pick a background color, hit generate, save the ZIP. Done.',
+
+          'specs.eyebrow': 'Technical',
+          'specs.h2': 'Built for Windows, from the ground up',
+          'specs.p': "Tiny, native, and dependency-free — because that's how a real offline tool should be.",
+          'spec.platform.k': 'Platform',
+          'spec.platform.v': '64-bit · native',
+          'spec.lang.k': 'Language',
+          'spec.lang.v': 'MSVC toolchain',
+          'spec.gui.k': 'GUI',
+          'spec.gui.v': 'Native Windows shell',
+          'spec.size.k': 'Binary size',
+          'spec.size.v': 'Fully self-contained',
+          'spec.deps.k': 'Dependencies',
+          'spec.deps.v': 'None',
+          'spec.net.k': 'Network',
+          'spec.net.v': 'None · fully offline',
+          'spec.license.k': 'License',
+          'spec.license.v': 'Free · open source',
+          'spec.version.k': 'Version',
+          'spec.version.v': 'Initial release',
+
+          'cta.h2': 'Ready to generate favicons offline?',
+          'cta.p': 'Download the 713 KB Windows executable and never touch an online favicon tool again. No signup, no upload, no cloud.',
+
+          'footer.intro': 'A stand-alone, offline-first software suite. No cloud, no accounts, no internet required — your data stays on your device.',
+          'footer.status': 'offline by design · privacy first',
+          'footer.products': 'Products',
+          'footer.modules': 'Modules',
+          'footer.resources': 'Resources',
+          'footer.company': 'Company',
+          'footer.modules.erp': '🧩 Stand-alone ERP',
+          'footer.modules.jobs': '👥 Jobs & Hiring',
+          'footer.modules.pdf': '📄 PDF Compression',
+          'footer.modules.fav': '⭐ Favicon Generation',
+          'footer.modules.talent': '🔍 Talent Directory',
+          'footer.resources.download': '⬇️ Download offline (.exe)',
+          'footer.resources.docs': '📘 Documentation',
+          'footer.resources.guides': '🛠️ Source & build guide',
+          'footer.resources.release': '🧪 Release notes',
+          'footer.resources.security': '🛡️ Security & privacy',
+          'footer.company.about': '🏢 About ORSPEX',
+          'footer.company.contact': '✉️ Contact',
+          'footer.company.partners': '🤝 Partners',
+          'footer.company.press': '📰 Press kit',
+          'footer.company.careers': '💼 Careers',
+          'footer.rights': 'All rights reserved.',
+          'footer.legal.privacy': 'Privacy',
+          'footer.legal.terms': 'Terms',
+          'footer.legal.license': 'License',
+          'footer.legal.status': 'Status',
+          'footer.version.stable': 'stable',
+          'footer.version.desktop': 'desktop'
+        },
+
+        ar: {
+          'brand.tagline': 'التنظيم · التخطيط · الخدمات · التنفيذ',
+          'badge.offline': 'يعمل دون اتصال · بدون سحابة',
+          'badge.offline.short': 'دون اتصال',
+          'badge.online.short': 'عبر الإنترنت',
+          'badge.desktop.short': 'سطح المكتب',
+          'cta.download': 'تحميل ملف .exe',
+
+          'nav.home': 'الرئيسية',
+          'nav.products': 'المنتجات',
+          'nav.core': 'نظام ORSPEX الأساسي',
+          'nav.job': 'الباحث عن عمل',
+          'nav.pdf': 'ضاغط PDF',
+          'nav.favicon': 'صانع الأيقونات',
+          'nav.talent': 'ابحث عن موهبة',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.products': 'المنتجات',
+          'crumb.current': 'صانع الأيقونات · دون اتصال',
+
+          'offline.eyebrow': 'تطبيق ويندوز أصلي · الإصدار 0.1.0',
+          'offline.h1a': 'أنشئ الأيقونات',
+          'offline.h1b': 'دون اتصال بالكامل.',
+          'offline.lede': 'ملف تنفيذي صغير لويندوز بحجم 713 كيلوبايت يحوّل أي صورة إلى مجموعة أيقونات كاملة — favicon.ico وجميع نسخ PNG وملف site.webmanifest. بلا تثبيت. بلا تسجيل. بلا إنترنت. فقط انقر مرتين وابدأ.',
+          'offline.pill.offline': '⚡ دون اتصال 100%',
+          'offline.pill.tiny': '📦 ملف بحجم 713 كيلوبايت',
+          'offline.pill.nodeps': '🚫 بلا متطلبات',
+          'offline.pill.private': '🔒 خصوصية بالتصميم',
+          'offline.pill.nofee': '💳 مجاني للأبد',
+          'offline.cta.download': 'حمّل لويندوز',
+          'offline.cta.source': 'اطلع على الكود على GitHub',
+
+          'features.eyebrow': 'لماذا ستحبه',
+          'features.h2': 'ملف صغير. فوائد كبيرة.',
+          'features.p': 'كل ما يجب أن يوفره مولّد الأيقونات — ولا شيء زائد. بلا تتبّع، بلا خدمات خلفية، بلا معالج تثبيت.',
+
+          'feat.private.h': 'خصوصية 100%',
+          'feat.private.p': 'يعمل بالكامل على جهازك. لا تُرفع صورك إلى أي مكان — ولا حتى إلينا.',
+          'feat.tiny.h': 'ملف صغير 713 كيلوبايت',
+          'feat.tiny.p': 'بلا .NET أو Java أو Python. ملف .exe واحد مستقل يعمل على ويندوز 10 و11 مباشرة.',
+          'feat.color.h': 'خلفية مخصّصة',
+          'feat.color.p': 'اتركها شفافة أو اختر أي لون. مثالي للشعارات على الثيمات الفاتحة أو الداكنة.',
+          'feat.crop.h': 'اقتصاص تلقائي',
+          'feat.crop.p': 'يتم اقتصاص الصور غير المربعة تلقائياً بحيث تبدو أيقونتك متوازنة دائماً.',
+          'feat.zip.h': 'تصدير ZIP واحد',
+          'feat.zip.p': 'يتم تجميع كل شيء في ملف favicons.zip واحد — ضعه في جذر موقعك وانتهيت.',
+          'feat.free.h': 'مجاني للأبد',
+          'feat.free.p': 'بلا تسجيل، بلا علامة مائية، بلا نسخة "احترافية". مبني لعائلة أدوات ORSPEX دون اتصال.',
+
+          'gen.eyebrow': 'ما ستحصل عليه',
+          'gen.h2': 'مجموعة أيقونات كاملة بنقرة واحدة',
+          'gen.p': 'تسعة ملفات وكل المقاسات التي تحتاجها فعلاً. كل ما يطلبه المتصفح وأنظمة الجوال.',
+
+          'file.ico': 'مدمجة 16 و32 و48',
+          'file.16': 'أيقونة تبويب المتصفح الكلاسيكية',
+          'file.32': 'تبويبات عالية الدقة',
+          'file.48': 'اختصارات موقع ويندوز',
+          'file.180': 'أيقونة الشاشة الرئيسية في iOS',
+          'file.192': 'أيقونة أندرويد الرئيسية',
+          'file.512': 'شاشة PWA / دقة عالية',
+          'file.manifest': 'قالب manifest لتطبيقات الويب',
+          'file.readme': 'تعليمات الاستخدام',
+
+          'howto.eyebrow': 'كيف يعمل',
+          'howto.h2': 'أربع خطوات. عشر ثوانٍ.',
+          'howto.p': 'من التنزيل إلى الإنجاز — بلا مثبّت، بلا صلاحيات مدير، بلا إعدادات.',
+          'step1.h': 'حمّل الملف .exe',
+          'step1.p': 'حمّل favicon-maker.exe من GitHub. حجمه حوالي 713 كيلوبايت — أصغر من صورة.',
+          'step2.h': 'احفظه في أي مكان',
+          'step2.p': 'سطح المكتب، التنزيلات، أو ذاكرة USB — يعمل في مكانه دون تثبيت.',
+          'step3.h': 'انقر مرتين للتشغيل',
+          'step3.p': 'تُفتح نافذة أصلية صغيرة. قد يعرض ويندوز تحذير SmartScreen في المرة الأولى — اضغط "مزيد من المعلومات ← تشغيل على أي حال".',
+          'step4.h': 'أفلت صورة ← تصدير',
+          'step4.p': 'اسحب صورتك، اختر لون الخلفية، اضغط إنشاء، احفظ ملف ZIP. انتهيت.',
+
+          'specs.eyebrow': 'المواصفات التقنية',
+          'specs.h2': 'مبني لويندوز من الأساس',
+          'specs.p': 'صغير وأصلي وبلا تبعيات — لأن هكذا يجب أن تكون أداة حقيقية دون اتصال.',
+          'spec.platform.k': 'المنصة',
+          'spec.platform.v': '64 بت · أصلي',
+          'spec.lang.k': 'اللغة',
+          'spec.lang.v': 'سلسلة MSVC',
+          'spec.gui.k': 'الواجهة',
+          'spec.gui.v': 'واجهة ويندوز أصلية',
+          'spec.size.k': 'حجم الملف',
+          'spec.size.v': 'مستقل بالكامل',
+          'spec.deps.k': 'المتطلبات',
+          'spec.deps.v': 'لا يوجد',
+          'spec.net.k': 'الشبكة',
+          'spec.net.v': 'لا شيء · دون اتصال بالكامل',
+          'spec.license.k': 'الترخيص',
+          'spec.license.v': 'مجاني · مفتوح المصدر',
+          'spec.version.k': 'الإصدار',
+          'spec.version.v': 'الإصدار الأولي',
+
+          'cta.h2': 'هل أنت مستعد لإنشاء الأيقونات دون اتصال؟',
+          'cta.p': 'حمّل ملف ويندوز بحجم 713 كيلوبايت ولا تستخدم أداة أيقونات عبر الإنترنت مرة أخرى. بلا تسجيل، بلا رفع، بلا سحابة.',
+
+          'footer.intro': 'حزمة برامج مستقلة تعمل دون اتصال. بلا سحابة، بلا حسابات، بلا حاجة للإنترنت — بياناتك تبقى على جهازك.',
+          'footer.status': 'مصمم للعمل دون اتصال · الخصوصية أولاً',
+          'footer.products': 'المنتجات',
+          'footer.modules': 'الوحدات',
+          'footer.resources': 'الموارد',
+          'footer.company': 'الشركة',
+          'footer.modules.erp': '🧩 تخطيط موارد المؤسسات',
+          'footer.modules.jobs': '👥 الوظائف والتوظيف',
+          'footer.modules.pdf': '📄 ضغط PDF',
+          'footer.modules.fav': '⭐ إنشاء الأيقونات',
+          'footer.modules.talent': '🔍 دليل المواهب',
+          'footer.resources.download': '⬇️ تحميل النسخة دون اتصال (.exe)',
+          'footer.resources.docs': '📘 الوثائق',
+          'footer.resources.guides': '🛠️ الكود ودليل البناء',
+          'footer.resources.release': '🧪 ملاحظات الإصدار',
+          'footer.resources.security': '🛡️ الأمان والخصوصية',
+          'footer.company.about': '🏢 عن ORSPEX',
+          'footer.company.contact': '✉️ اتصل بنا',
+          'footer.company.partners': '🤝 الشركاء',
+          'footer.company.press': '📰 الحقيبة الصحفية',
+          'footer.company.careers': '💼 الوظائف',
+          'footer.rights': 'جميع الحقوق محفوظة.',
+          'footer.legal.privacy': 'الخصوصية',
+          'footer.legal.terms': 'الشروط',
+          'footer.legal.license': 'الترخيص',
+          'footer.legal.status': 'الحالة',
+          'footer.version.stable': 'مستقر',
+          'footer.version.desktop': 'سطح المكتب'
+        },
+
+        zh: {
+          'brand.tagline': '组织 · 规划 · 服务 · 执行',
+          'badge.offline': '离线 · 无需云端',
+          'badge.offline.short': '离线',
+          'badge.online.short': '在线',
+          'badge.desktop.short': '桌面',
+          'cta.download': '下载 .exe',
+
+          'nav.home': '首页',
+          'nav.products': '产品',
+          'nav.core': 'ORSPEX 核心',
+          'nav.job': '求职者',
+          'nav.pdf': 'PDF 压缩器',
+          'nav.favicon': '图标生成器',
+          'nav.talent': '寻找人才',
+
+          'crumb.home': 'ORSPEX',
+          'crumb.products': '产品',
+          'crumb.current': '图标生成器 · 离线版',
+
+          'offline.eyebrow': '原生 Windows 应用 · v0.1.0',
+          'offline.h1a': '生成图标，',
+          'offline.h1b': '完全离线。',
+          'offline.lede': '一个仅 713 KB 的 Windows 可执行文件，可将任意图片转换为完整的图标集 —— favicon.ico、所有 PNG 版本和 site.webmanifest。无需安装，无需注册，无需联网。双击即用。',
+          'offline.pill.offline': '⚡ 100% 离线',
+          'offline.pill.tiny': '📦 713 KB 二进制',
+          'offline.pill.nodeps': '🚫 无依赖',
+          'offline.pill.private': '🔒 隐私优先',
+          'offline.pill.nofee': '💳 永久免费',
+          'offline.cta.download': '下载 Windows 版',
+          'offline.cta.source': '在 GitHub 查看源码',
+
+          'features.eyebrow': '为何值得拥有',
+          'features.h2': '小巧二进制，大有作为。',
+          'features.p': '一个图标生成器应有的全部 —— 也不多一分。无遥测，无后台服务，无安装向导。',
+
+          'feat.private.h': '100% 私密',
+          'feat.private.p': '完全在您的电脑上运行。图片永不上传 —— 连我们也不会看到。',
+          'feat.tiny.h': '小巧的 713 KB',
+          'feat.tiny.p': '无需 .NET、Java、Python。一个自包含 .exe，在 Windows 10 和 11 上开箱即用。',
+          'feat.color.h': '自定义背景',
+          'feat.color.p': '可保持透明，也可使用任意十六进制颜色。适合深浅主题下的 Logo。',
+          'feat.crop.h': '自动居中裁剪',
+          'feat.crop.p': '非正方形图片会自动居中裁剪，让图标始终保持平衡美观。',
+          'feat.zip.h': '一次导出 ZIP',
+          'feat.zip.p': '所有文件打包为一个 favicons.zip —— 放入网站根目录即可完成。',
+          'feat.free.h': '永久免费',
+          'feat.free.p': '无需注册、无水印、无"专业版"。为 ORSPEX 离线工具家族而生。',
+
+          'gen.eyebrow': '您将获得',
+          'gen.h2': '一键生成完整图标集',
+          'gen.p': '九个文件，覆盖所有实际需要的尺寸 —— 浏览器和移动系统所需一应俱全。',
+
+          'file.ico': '内嵌 16、32 和 48',
+          'file.16': '经典浏览器标签图标',
+          'file.32': '高 DPI 浏览器标签',
+          'file.48': 'Windows 站点快捷方式',
+          'file.180': 'iOS 主屏图标',
+          'file.192': 'Android 主屏图标',
+          'file.512': 'PWA 主屏图标 / 高分辨率图标',
+          'file.manifest': '渐进式 Web 应用清单模板',
+          'file.readme': '使用说明',
+
+          'howto.eyebrow': '使用方法',
+          'howto.h2': '四步完成，十秒搞定。',
+          'howto.p': '从下载到完成——无需安装程序、管理员权限或配置。',
+          'step1.h': '下载 .exe 文件',
+          'step1.p': '从 GitHub 下载 favicon-maker.exe。文件约 713 KB，比一张照片还小。',
+          'step2.h': '保存到任意位置',
+          'step2.p': '桌面、下载文件夹或 USB 盘均可。无需安装，直接运行。',
+          'step3.h': '双击运行',
+          'step3.p': '一个小型原生窗口将会打开。首次运行时，Windows 可能显示 SmartScreen 提示——点击“更多信息 → 仍要运行”。',
+          'step4.h': '拖入图片 → 导出',
+          'step4.p': '拖入图片，选择背景颜色，点击生成，然后保存 ZIP 文件。完成。',
+
+          'specs.eyebrow': '技术规格',
+          'specs.h2': '专为 Windows 原生构建',
+          'specs.p': '轻巧、原生、无依赖——真正的离线工具就应该如此。',
+          'spec.platform.k': '平台',
+          'spec.platform.v': '64 位 · 原生',
+          'spec.lang.k': '语言',
+          'spec.lang.v': 'MSVC 工具链',
+          'spec.gui.k': '界面',
+          'spec.gui.v': '原生 Windows 界面',
+          'spec.size.k': '文件大小',
+          'spec.size.v': '完全独立',
+          'spec.deps.k': '依赖项',
+          'spec.deps.v': '无',
+          'spec.net.k': '网络',
+          'spec.net.v': '无需网络 · 完全离线',
+          'spec.license.k': '许可证',
+          'spec.license.v': '免费 · 开源',
+          'spec.version.k': '版本',
+          'spec.version.v': '初始版本',
+
+          'cta.h2': '准备好离线生成图标了吗？',
+          'cta.p': '下载 713 KB 的 Windows 可执行文件，从此无需使用在线图标工具。无需注册、上传或云服务。',
+
+          'footer.intro': '独立、离线优先的软件套件。无需云端、无需账户、无需互联网——您的数据始终保留在自己的设备上。',
+          'footer.status': '专为离线设计 · 隐私优先',
+          'footer.products': '产品',
+          'footer.modules': '模块',
+          'footer.resources': '资源',
+          'footer.company': '公司',
+          'footer.modules.erp': '🧩 独立 ERP',
+          'footer.modules.jobs': '👥 求职与招聘',
+          'footer.modules.pdf': '📄 PDF 压缩',
+          'footer.modules.fav': '⭐ 图标生成',
+          'footer.modules.talent': '🔍 人才目录',
+          'footer.resources.download': '⬇️ 下载离线版 (.exe)',
+          'footer.resources.docs': '📘 文档',
+          'footer.resources.guides': '🛠️ 源代码与构建指南',
+          'footer.resources.release': '🧪 版本说明',
+          'footer.resources.security': '🛡️ 安全与隐私',
+          'footer.company.about': '🏢 关于 ORSPEX',
+          'footer.company.contact': '✉️ 联系我们',
+          'footer.company.partners': '🤝 合作伙伴',
+          'footer.company.press': '📰 媒体资料',
+          'footer.company.careers': '💼 招聘',
+          'footer.rights': '版权所有。',
+          'footer.legal.privacy': '隐私',
+          'footer.legal.terms': '条款',
+          'footer.legal.license': '许可证',
+          'footer.legal.status': '状态',
+          'footer.version.stable': '稳定版',
+          'footer.version.desktop': '桌面版'
+        }
+      };
+
+      function setLanguage(language) {
+        if (!Object.prototype.hasOwnProperty.call(translations, language)) {
+          language = 'en';
+        }
+
+        const root = document.getElementById('html-root');
+        root.lang = language;
+        root.dir = language === 'ar' ? 'rtl' : 'ltr';
+
+        document.querySelectorAll('[data-i18n]').forEach(function (element) {
+          const key = element.getAttribute('data-i18n');
+          const value = translations[language][key];
+          if (typeof value === 'string') {
+            element.textContent = value;
+          }
+        });
+
+        document.querySelectorAll('[data-lang]').forEach(function (button) {
+          const active = button.getAttribute('data-lang') === language;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+
+        try {
+          document.title = {
+            en: 'Favicon Maker · Offline Windows App · ORSPEX',
+            ar: 'صانع الأيقونات · تطبيق ويندوز دون اتصال · ORSPEX',
+            zh: '图标生成器 · 离线 Windows 应用 · ORSPEX'
+          }[language];
+        } catch (error) {
+          /* Keep the page usable if title updates are unavailable. */
+        }
+      }
+
+      document.querySelectorAll('[data-lang]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          setLanguage(button.getAttribute('data-lang'));
+        });
+      });
+
+      const menuToggle = document.getElementById('orspex-menu-toggle');
+      const menuLabel = document.querySelector('.menu-toggle-label');
+      if (menuToggle && menuLabel) {
+        menuToggle.addEventListener('change', function () {
+          menuLabel.setAttribute('aria-expanded', menuToggle.checked ? 'true' : 'false');
+        });
+      }
+
+      setLanguage('en');
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+/* TEAM */
+    Developer: ORSPEX
+    Site: https://orspex-website.verce.app/
+    Contact: orpexexitus@gmail.com
+
+/* SITE */
+    Last update: 2026/10/16
+    Language: English, العربية, 中文
+    Doctype: HTML5
+    IDE: Visual Studio Code
+    Standards: HTML5, CSS3
+
+/* PHILOSOPHY */
+    Offline-first. Privacy by design.
+    No cloud. No accounts. No telemetry.

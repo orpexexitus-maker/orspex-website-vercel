@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0F172A">
+  <title>Favicon Generator · ORSPEX</title>
+  <meta name="description" content="Generate favicon.ico, PNG icons, and site.webmanifest from any image — free, private, in your browser.">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orspex-dark: #0F172A;
+      --orspex-blue: #2563EB;
+      --orspex-sky: #5BC0EB;
+      --orspex-green: #22C55E;
+      --orspex-mint: #6EE7A0;
+      --orspex-slate: #64748B;
+      --orspex-border: #E2E8F0;
+      --orspex-white: #FFFFFF;
+      --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      --font-arabic: 'Segoe UI', 'Tahoma', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif;
+      --font-chinese: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Noto Sans SC', sans-serif;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--orspex-white);
+      font-family: var(--font-sans);
+      color: var(--orspex-dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      transition: font-family 0.2s ease;
+    }
+
+    html[lang="ar"] body { direction: rtl; font-family: var(--font-arabic); }
+    html[lang="zh"] body { font-family: var(--font-chinese); }
+
+    /* ============================================================
+       ANIMATED BACKGROUND
+    ============================================================ */
+    .bg-anim {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none; opacity: 0.28;
+    }
+    .bg-anim svg { width: 100%; height: 100%; display: block; }
+
+    @keyframes drift-slow {
+      0% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-30px) scale(1.06); }
+      66% { transform: translate(-30px,35px) scale(0.96); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-medium {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(-45px,40px) scale(1.08); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-fast {
+      0% { transform: translate(0,0); }
+      50% { transform: translate(35px,-40px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes color-mint-sky { 0%,100%{fill:#6EE7A0;} 50%{fill:#5BC0EB;} }
+    @keyframes color-sky-blue { 0%,100%{fill:#5BC0EB;} 50%{fill:#2563EB;} }
+    @keyframes color-blue-green { 0%,100%{fill:#2563EB;} 50%{fill:#22C55E;} }
+    @keyframes color-green-mint { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes color-sky-mint { 0%,100%{fill:#5BC0EB;} 50%{fill:#6EE7A0;} }
+    @keyframes pulse-soft { 0%,100%{opacity:0.18;} 50%{opacity:0.4;} }
+    @keyframes twinkle { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+    @keyframes dash-rotate { from{stroke-dashoffset:0;} to{stroke-dashoffset:-400;} }
+    @keyframes stroke-sky-blue { 0%,100%{stroke:#5BC0EB;} 50%{stroke:#2563EB;} }
+    @keyframes stroke-green-mint { 0%,100%{stroke:#22C55E;} 50%{stroke:#6EE7A0;} }
+    @keyframes bar-grow {
+      0% { transform: scaleY(0.3); opacity: 0.15; }
+      40% { transform: scaleY(1); opacity: 0.5; }
+      70% { transform: scaleY(1); opacity: 0.5; }
+      100% { transform: scaleY(0.3); opacity: 0.15; }
+    }
+    @keyframes bar-color { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes line-draw {
+      0% { stroke-dashoffset: 800; }
+      50% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -800; }
+    }
+    @keyframes float-y {
+      0%,100% { transform: translateY(0); opacity: 0.28; }
+      50% { transform: translateY(-18px); opacity: 0.5; }
+    }
+    @keyframes coin-pulse {
+      0%,100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.05); }
+    }
+    @keyframes tick-fade { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+
+    .orb-1 { animation: drift-slow 24s ease-in-out infinite, color-mint-sky 18s ease-in-out infinite; transform-origin: 200px 200px; }
+    .orb-2 { animation: drift-medium 30s ease-in-out infinite, color-sky-blue 22s ease-in-out infinite; transform-origin: 1200px 300px; }
+    .orb-3 { animation: drift-slow 36s ease-in-out infinite, color-blue-green 26s ease-in-out infinite; transform-origin: 400px 700px; }
+    .orb-4 { animation: drift-medium 28s ease-in-out infinite, color-green-mint 20s ease-in-out infinite; transform-origin: 1100px 800px; }
+    .orb-5 { animation: drift-fast 20s ease-in-out infinite, color-sky-mint 24s ease-in-out infinite; transform-origin: 700px 400px; }
+
+    .pulse-1 { animation: pulse-soft 6s ease-in-out infinite, stroke-sky-blue 20s ease-in-out infinite; }
+    .pulse-2 { animation: pulse-soft 8s ease-in-out infinite 1s, stroke-green-mint 24s ease-in-out infinite; }
+    .pulse-3 { animation: pulse-soft 7s ease-in-out infinite 2s, stroke-sky-blue 22s ease-in-out infinite; }
+
+    .dot-1 { animation: twinkle 4s ease-in-out infinite; }
+    .dot-2 { animation: twinkle 5s ease-in-out infinite 0.5s; }
+    .dot-3 { animation: twinkle 3.5s ease-in-out infinite 1s; }
+    .dot-4 { animation: twinkle 6s ease-in-out infinite 1.5s; }
+    .dot-5 { animation: twinkle 4.5s ease-in-out infinite 2s; }
+    .dot-6 { animation: twinkle 5.5s ease-in-out infinite 0.8s; }
+    .dot-7 { animation: twinkle 4.2s ease-in-out infinite 1.2s; }
+    .dot-8 { animation: twinkle 5.8s ease-in-out infinite 0.3s; }
+
+    .ring-1 { animation: dash-rotate 60s linear infinite; transform-origin: 1300px 200px; }
+    .ring-2 { animation: dash-rotate 80s linear infinite reverse; transform-origin: 250px 850px; }
+
+    .bar-1 { animation: bar-grow 9s ease-in-out infinite, bar-color 12s ease-in-out infinite; transform-origin: 1000px 640px; }
+    .bar-2 { animation: bar-grow 9s ease-in-out infinite 0.6s, bar-color 12s ease-in-out infinite 0.6s; transform-origin: 1060px 640px; }
+    .bar-3 { animation: bar-grow 9s ease-in-out infinite 1.2s, bar-color 12s ease-in-out infinite 1.2s; transform-origin: 1120px 640px; }
+    .bar-4 { animation: bar-grow 9s ease-in-out infinite 1.8s, bar-color 12s ease-in-out infinite 1.8s; transform-origin: 1180px 640px; }
+    .bar-5 { animation: bar-grow 9s ease-in-out infinite 2.4s, bar-color 12s ease-in-out infinite 2.4s; transform-origin: 1240px 640px; }
+
+    .trend-line { animation: line-draw 14s ease-in-out infinite; }
+    .currency { animation: float-y 8s ease-in-out infinite; transform-origin: 260px 640px; }
+    .coin { animation: coin-pulse 5s ease-in-out infinite; transform-origin: 260px 640px; }
+
+    .tick-1 { animation: tick-fade 6s ease-in-out infinite; }
+    .tick-2 { animation: tick-fade 7s ease-in-out infinite 0.5s; }
+    .tick-3 { animation: tick-fade 5s ease-in-out infinite 1s; }
+    .tick-4 { animation: tick-fade 6.5s ease-in-out infinite 1.5s; }
+
+    @media (prefers-reduced-motion: reduce) { .bg-anim * { animation: none !important; } }
+
+    /* ============================================================
+       CONTENT LAYERS
+    ============================================================ */
+    .site-header, main, .site-footer { position: relative; z-index: 1; }
+    .site-header, .site-footer {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .wrap { width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 2.75rem; }
+    .wrap-narrow { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 2.75rem; }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .site-header { width: 100%; border-bottom: 1px solid var(--orspex-border); }
+    .header-inner { padding: 1.25rem 0; display: flex; flex-direction: column; gap: 1rem; }
+
+    .header-top {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1.5rem;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 1rem;
+      flex-shrink: 0; text-decoration: none; color: inherit;
+    }
+    .brand-mark { width: 58px; height: 58px; flex-shrink: 0; }
+    .brand-text { display: flex; flex-direction: column; gap: 0.15rem; }
+    .brand-text .name {
+      font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--orspex-dark); line-height: 1;
+    }
+    .brand-text .tagline {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 2.4px;
+      color: #334155; text-transform: uppercase; white-space: nowrap;
+    }
+    html[lang="zh"] .brand-text .tagline { letter-spacing: 4px; text-transform: none; font-weight: 500; }
+    html[lang="ar"] .brand-text .tagline { letter-spacing: 1px; text-transform: none; font-weight: 500; }
+
+    .header-actions { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+
+    .offline-badge {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #ECFDF5; color: #065F46;
+      font-size: 0.82rem; font-weight: 500;
+      padding: 0.5rem 1rem; border-radius: 60px;
+      border: 1px solid #A7F3D0; letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .offline-badge::before { content: "⚡"; font-size: 0.95rem; }
+
+    .btn-cta {
+      background: var(--orspex-dark); color: white;
+      font-size: 0.9rem; font-weight: 500;
+      padding: 0.7rem 1.4rem; border-radius: 60px;
+      border: 1px solid var(--orspex-dark); cursor: pointer;
+      letter-spacing: 0.3px; display: inline-flex;
+      align-items: center; gap: 0.5rem;
+      transition: background 0.15s, transform 0.15s;
+      white-space: nowrap; font-family: inherit;
+      text-decoration: none;
+    }
+    .btn-cta:hover { background: #1E293B; transform: translateY(-1px); }
+    .btn-cta span:first-child { font-size: 1rem; line-height: 1; }
+
+    .lang-switch {
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.28rem;
+    }
+    .lang-switch button {
+      background: transparent; border: none;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      color: #475569; padding: 0.4rem 0.75rem;
+      border-radius: 60px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.3px; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.4rem; line-height: 1;
+    }
+    .lang-switch button .flag { font-size: 1.05rem; line-height: 1; }
+    .lang-switch button:hover { color: var(--orspex-dark); }
+    .lang-switch button.active { background: var(--orspex-dark); color: white; }
+
+    .header-nav-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1rem;
+    }
+
+    .nav-links {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.25rem 0.3rem; list-style: none;
+    }
+    .nav-links > li { position: relative; }
+    .nav-links > li > a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: inherit; font-size: 0.95rem; font-weight: 500;
+      color: #1E293B; text-decoration: none;
+      padding: 0.6rem 1.1rem; border-radius: 60px;
+      border: none; background: transparent; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap; line-height: 1.15;
+    }
+    .nav-links > li > a:hover {
+      background: #F1F5F9; color: var(--orspex-blue);
+    }
+    .nav-links > li > a.current { background: #EFF6FF; color: var(--orspex-blue); }
+
+    .nav-links > li > a small {
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.4px; text-transform: uppercase;
+      padding: 0.15rem 0.45rem; border-radius: 40px;
+      background: #F1F5F9; color: #475569;
+      margin-left: 0.15rem;
+    }
+    html[lang="ar"] .nav-links > li > a small,
+    html[lang="zh"] .nav-links > li > a small { text-transform: none; letter-spacing: 0.2px; }
+    .nav-links > li > a small.offline { background: #ECFDF5; color: #047857; }
+    .nav-links > li > a small.online  { background: #EFF6FF; color: #1D4ED8; }
+    .nav-links > li > a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .menu-toggle-checkbox { display: none; }
+    .menu-toggle-label {
+      display: none; align-items: center; justify-content: center;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.65rem 1.15rem;
+      font-size: 0.92rem; font-weight: 500;
+      color: var(--orspex-dark); cursor: pointer;
+      gap: 0.5rem; user-select: none; white-space: nowrap;
+    }
+    .menu-toggle-label span { font-size: 1.05rem; line-height: 1; }
+
+    /* ============================================================
+       MAIN — HERO + TOOL
+    ============================================================ */
+    main { flex: 1; padding: 4rem 0; }
+
+    .hero {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 2.5rem;
+    }
+    .hero .eyebrow {
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 3px; color: var(--orspex-blue);
+      background: #EFF6FF; padding: 0.35rem 0.95rem;
+      border-radius: 999px; margin-bottom: 1.15rem; text-transform: uppercase;
+    }
+    html[lang="ar"] .hero .eyebrow,
+    html[lang="zh"] .hero .eyebrow { text-transform: none; letter-spacing: 2px; }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700; letter-spacing: -0.8px;
+      margin-bottom: 1rem; line-height: 1.18;
+    }
+    html[lang="ar"] .hero h1 { letter-spacing: 0; line-height: 1.35; }
+    html[lang="zh"] .hero h1 { letter-spacing: 0.5px; line-height: 1.3; }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--orspex-blue), var(--orspex-green));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .hero p {
+      color: var(--orspex-slate); font-size: 1rem; line-height: 1.6;
+    }
+    html[lang="ar"] .hero p,
+    html[lang="zh"] .hero p { line-height: 1.85; }
+
+    /* Tool card */
+    .tool-card {
+      background: white;
+      border: 1px solid var(--orspex-border);
+      border-radius: 18px;
+      box-shadow: 0 14px 28px -10px rgba(15,23,42,0.10);
+      padding: 2rem 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--orspex-border);
+      border-radius: 14px;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: #F8FAFC;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--orspex-green);
+      background: #F0FDF4;
+    }
+    .drop-zone-icon {
+      width: 60px; height: 60px; margin: 0 auto 1rem;
+      background: linear-gradient(135deg, #DCFCE7, #BBF7D0);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: #16A34A;
+    }
+    .drop-zone h3 {
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--orspex-dark); margin-bottom: 0.4rem;
+    }
+    .drop-zone p {
+      font-size: 0.88rem; color: var(--orspex-slate); margin-bottom: 0.25rem;
+    }
+    .drop-zone small { font-size: 0.78rem; color: var(--orspex-slate); }
+    .drop-zone input[type="file"] { display: none; }
+
+    .status {
+      text-align: center; padding: 0.75rem;
+      font-size: 0.85rem; color: var(--orspex-slate);
+      display: none;
+    }
+    .status.active { display: block; }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .preview-item {
+      background: #F8FAFC; border: 1px solid var(--orspex-border);
+      border-radius: 12px; padding: 1rem 0.75rem; text-align: center;
+    }
+    .preview-item .preview-box {
+      background: #fff; border: 1px solid var(--orspex-border);
+      border-radius: 8px;
+      width: 100%; aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 0.6rem; padding: 0.5rem; overflow: hidden;
+    }
+    .preview-item img { max-width: 100%; max-height: 100%; image-rendering: pixelated; }
+    .preview-item .size-label {
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--orspex-dark); margin-bottom: 0.15rem; word-break: break-all;
+    }
+    .preview-item .size-file {
+      font-size: 0.68rem; color: var(--orspex-slate); font-family: monospace;
+    }
+
+    .controls {
+      display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;
+      margin-top: 1.5rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--orspex-border);
+    }
+    .control-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .control-group label {
+      font-size: 0.78rem; font-weight: 600; color: #1E293B;
+    }
+    .control-group input[type="color"] {
+      width: 60px; height: 40px;
+      border: 1px solid var(--orspex-border); border-radius: 8px;
+      cursor: pointer; background: none; padding: 2px;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem; border-radius: 10px;
+      font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; border: 1.5px solid transparent;
+      cursor: pointer; transition: all 0.2s ease;
+      font-family: inherit; white-space: nowrap;
+    }
+    .btn-primary { background: var(--orspex-green); color: #fff; }
+    .btn-primary:hover {
+      background: #16A34A; transform: translateY(-1px);
+      box-shadow: 0 8px 16px -6px rgba(34,197,94,0.4);
+    }
+    .btn-outline {
+      background: transparent; color: var(--orspex-dark);
+      border-color: var(--orspex-border);
+    }
+    .btn-outline:hover { border-color: var(--orspex-dark); background: #F8FAFC; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .actions {
+      display: flex; gap: 0.75rem; flex-wrap: wrap;
+      margin-top: 1.5rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--orspex-border);
+    }
+
+    .snippet {
+      margin-top: 1.5rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--orspex-border);
+    }
+    .snippet h3 {
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--orspex-dark); margin-bottom: 0.6rem;
+    }
+    .snippet pre {
+      background: var(--orspex-dark); color: #A5F3FC;
+      padding: 1rem 1.25rem; border-radius: 12px;
+      font-family: monospace; font-size: 0.78rem; line-height: 1.7;
+      overflow-x: auto; white-space: pre;
+      direction: ltr; text-align: left;
+    }
+    .snippet button { margin-top: 0.75rem; font-size: 0.82rem; padding: 0.5rem 1rem; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .site-footer {
+      width: 100%; border-top: 1px solid var(--orspex-border); margin-top: auto;
+    }
+    .footer-inner {
+      padding: 2.5rem 0 1.5rem;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .footer-intro {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+    }
+    .footer-intro p {
+      font-size: 0.9rem; color: var(--orspex-slate);
+      line-height: 1.55; max-width: 640px;
+    }
+    .footer-status {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #EFF6FF; color: #1E40AF;
+      font-size: 0.78rem; font-weight: 500;
+      padding: 0.4rem 0.9rem; border-radius: 60px;
+      border: 1px solid #BFDBFE; white-space: nowrap;
+    }
+    .footer-status::before { content: "🔒"; font-size: 0.85rem; }
+
+    .footer-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem 2.5rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 2rem;
+    }
+    .footer-col h4 {
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--orspex-dark);
+      margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    html[lang="ar"] .footer-col h4,
+    html[lang="zh"] .footer-col h4 { text-transform: none; letter-spacing: 1px; }
+    .footer-col h4::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-blue); flex-shrink: 0;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col ul li a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; color: #334155; text-decoration: none;
+      padding: 0.2rem 0; transition: color 0.15s, transform 0.15s;
+    }
+    .footer-col ul li a:hover { color: var(--orspex-blue); transform: translateX(2px); }
+    html[lang="ar"] .footer-col ul li a:hover { transform: translateX(-2px); }
+    .footer-col ul li a small {
+      font-size: 0.66rem; color: var(--orspex-slate);
+      background: #F1F5F9; padding: 0.1rem 0.4rem;
+      border-radius: 4px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    html[lang="ar"] .footer-col ul li a small,
+    html[lang="zh"] .footer-col ul li a small { text-transform: none; letter-spacing: 0.2px; }
+    .footer-col ul li a small.offline { background: #ECFDF5; color: #047857; }
+    .footer-col ul li a small.online  { background: #EFF6FF; color: #1D4ED8; }
+    .footer-col ul li a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .footer-bottom {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1.4rem;
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--orspex-slate); }
+    .footer-copy strong { color: var(--orspex-dark); font-weight: 600; }
+    .footer-legal {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.5rem 1.25rem; list-style: none;
+    }
+    .footer-legal a {
+      font-size: 0.82rem; color: var(--orspex-slate);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-legal a:hover { color: var(--orspex-blue); }
+    .footer-version {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
+      color: #475569; background: #F1F5F9;
+      padding: 0.3rem 0.7rem; border-radius: 40px;
+      border: 1px solid var(--orspex-border);
+    }
+    .footer-version::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-green);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18); flex-shrink: 0;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1000px) {
+      .wrap, .wrap-narrow { padding: 0 1.5rem; }
+
+      .header-nav-row { flex-direction: column; align-items: stretch; }
+      .menu-toggle-label { display: inline-flex; align-self: flex-start; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        gap: 0.3rem; padding-top: 0.6rem;
+      }
+      .menu-toggle-checkbox:checked ~ .nav-links { display: flex; }
+      .nav-links > li > a {
+        justify-content: space-between; width: 100%;
+        padding: 0.8rem 1.05rem; border-radius: 10px; background: #F8FAFC;
+      }
+      .nav-links > li > a small { margin-left: auto; }
+      .header-actions { width: 100%; justify-content: space-between; }
+
+      .footer-columns { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2rem; }
+    }
+
+    @media (max-width: 640px) {
+      .wrap, .wrap-narrow { padding: 0 1rem; }
+
+      .header-inner { padding: 1rem 0; gap: 0.85rem; }
+      .brand { gap: 0.75rem; }
+      .brand-mark { width: 46px; height: 46px; }
+      .brand-text .name { font-size: 1.3rem; }
+      .brand-text .tagline { font-size: 0.62rem; letter-spacing: 1.8px; }
+
+      .header-actions { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+      .offline-badge, .btn-cta { justify-content: center; }
+      .lang-switch { align-self: center; }
+
+      main { padding: 2.5rem 0; }
+      .hero { margin-bottom: 2rem; }
+
+      .tool-card { padding: 1.25rem 1rem; }
+      .drop-zone { padding: 2rem 1rem; }
+
+      .controls { flex-direction: column; align-items: stretch; }
+      .control-group { width: 100%; }
+      .actions { flex-direction: column; }
+      .actions .btn { width: 100%; }
+      .preview-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .footer-inner { padding: 1.75rem 0 1.25rem; gap: 1.5rem; }
+      .footer-intro { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .footer-intro p { font-size: 0.86rem; line-height: 1.5; }
+
+      .footer-columns {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem 1rem; padding-top: 1.25rem;
+      }
+      .footer-col h4 { font-size: 0.68rem; letter-spacing: 1.5px; margin-bottom: 0.65rem; }
+      .footer-col ul { gap: 0.4rem; }
+      .footer-col ul li a { font-size: 0.82rem; gap: 0.35rem; }
+      .footer-col ul li a small { font-size: 0.58rem; padding: 0.08rem 0.32rem; letter-spacing: 0.2px; }
+
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding-top: 1.1rem; }
+      .footer-copy { font-size: 0.76rem; }
+      .footer-legal { gap: 0.4rem 0.9rem; }
+      .footer-legal a { font-size: 0.76rem; }
+      .footer-version { font-size: 0.66rem; padding: 0.25rem 0.6rem; }
+    }
+
+    @media (max-width: 400px) {
+      .footer-columns { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       ANIMATED BACKGROUND
+  ============================================================ -->
+  <div class="bg-anim" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"
+         preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#0F172A" stroke-width="0.5" opacity="0.015"/>
+        </pattern>
+        <radialGradient id="fade-soft" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="white" stop-opacity="0.45"/>
+          <stop offset="55%" stop-color="white" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <rect width="1600" height="900" fill="url(#grid)"/>
+
+      <g class="orb-1"><circle cx="200" cy="200" r="220" fill="#6EE7A0" opacity="0.35"/><circle cx="200" cy="200" r="220" fill="url(#fade-soft)"/></g>
+      <g class="orb-2"><circle cx="1300" cy="220" r="260" fill="#5BC0EB" opacity="0.3"/><circle cx="1300" cy="220" r="260" fill="url(#fade-soft)"/></g>
+      <g class="orb-3"><circle cx="320" cy="720" r="240" fill="#2563EB" opacity="0.28"/><circle cx="320" cy="720" r="240" fill="url(#fade-soft)"/></g>
+      <g class="orb-4"><circle cx="1180" cy="760" r="230" fill="#22C55E" opacity="0.3"/><circle cx="1180" cy="760" r="230" fill="url(#fade-soft)"/></g>
+      <g class="orb-5"><circle cx="820" cy="440" r="150" fill="#5BC0EB" opacity="0.28"/><circle cx="820" cy="440" r="150" fill="url(#fade-soft)"/></g>
+
+      <circle class="pulse-1" cx="500" cy="480" r="140" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.25"/>
+      <circle class="pulse-2" cx="1080" cy="380" r="180" fill="none" stroke="#22C55E" stroke-width="1" opacity="0.22"/>
+      <circle class="pulse-3" cx="760" cy="620" r="110" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.22"/>
+
+      <circle class="ring-1" cx="1300" cy="200" r="200" fill="none" stroke="#2563EB" stroke-width="0.8" stroke-dasharray="6 14" opacity="0.22"/>
+      <circle class="ring-2" cx="250" cy="850" r="220" fill="none" stroke="#5BC0EB" stroke-width="0.8" stroke-dasharray="8 18" opacity="0.2"/>
+
+      <circle class="dot-1" cx="340" cy="140" r="2.5" fill="#2563EB"/>
+      <circle class="dot-2" cx="900" cy="120" r="2" fill="#5BC0EB"/>
+      <circle class="dot-3" cx="1250" cy="480" r="2.5" fill="#22C55E"/>
+      <circle class="dot-4" cx="1520" cy="700" r="2" fill="#6EE7A0"/>
+      <circle class="dot-5" cx="600" cy="820" r="2.5" fill="#2563EB"/>
+      <circle class="dot-6" cx="120" cy="560" r="2" fill="#5BC0EB"/>
+      <circle class="dot-7" cx="1000" cy="780" r="2" fill="#22C55E"/>
+      <circle class="dot-8" cx="700" cy="240" r="2.5" fill="#2563EB"/>
+
+      <g opacity="0.6">
+        <line x1="980" y1="640" x2="1290" y2="640" stroke="#0F172A" stroke-width="0.6" opacity="0.15"/>
+        <rect class="bar-1" x="995" y="540" width="22" height="100" rx="3" fill="#22C55E"/>
+        <rect class="bar-2" x="1055" y="500" width="22" height="140" rx="3" fill="#22C55E"/>
+        <rect class="bar-3" x="1115" y="460" width="22" height="180" rx="3" fill="#22C55E"/>
+        <rect class="bar-4" x="1175" y="430" width="22" height="210" rx="3" fill="#22C55E"/>
+        <rect class="bar-5" x="1235" y="390" width="22" height="250" rx="3" fill="#22C55E"/>
+        <path class="trend-line" d="M 1006 530 L 1066 480 L 1126 440 L 1186 400 L 1246 355"
+              fill="none" stroke="#2563EB" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="800" opacity="0.5"/>
+        <circle cx="1246" cy="355" r="3" fill="#2563EB" opacity="0.5"/>
+      </g>
+
+      <g class="coin" opacity="0.4">
+        <circle cx="260" cy="640" r="42" fill="none" stroke="#22C55E" stroke-width="1.4"/>
+        <circle cx="260" cy="640" r="34" fill="none" stroke="#6EE7A0" stroke-width="0.8" stroke-dasharray="3 6"/>
+      </g>
+      <text class="currency" x="260" y="660" text-anchor="middle"
+            font-family="'Inter', system-ui, sans-serif" font-size="48"
+            font-weight="600" fill="#22C55E" opacity="0.35">$</text>
+
+      <g opacity="0.35">
+        <line class="tick-1" x1="1360" y1="600" x2="1360" y2="650" stroke="#22C55E" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-1" x="1355" y="615" width="10" height="20" rx="1.5" fill="#22C55E" opacity="0.7"/>
+        <line class="tick-2" x1="1390" y1="590" x2="1390" y2="655" stroke="#2563EB" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-2" x="1385" y="608" width="10" height="24" rx="1.5" fill="#2563EB" opacity="0.7"/>
+        <line class="tick-3" x1="1420" y1="575" x2="1420" y2="645" stroke="#22C55E" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-3" x="1415" y="595" width="10" height="22" rx="1.5" fill="#22C55E" opacity="0.7"/>
+        <line class="tick-4" x1="1450" y1="560" x2="1450" y2="630" stroke="#6EE7A0" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-4" x="1445" y="580" width="10" height="26" rx="1.5" fill="#6EE7A0" opacity="0.7"/>
+      </g>
+
+      <text x="930" y="430" text-anchor="middle"
+            font-family="'Inter', system-ui, sans-serif" font-size="36"
+            font-weight="500" fill="#5BC0EB" opacity="0.18">%</text>
+    </svg>
+  </div>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header" aria-label="ORSPEX main header">
+    <div class="wrap header-inner">
+
+      <div class="header-top">
+        <a class="brand" href="../index.html" aria-label="ORSPEX home">
+          <svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"
+               role="img" aria-label="ORSPEX mark">
+            <circle cx="300" cy="300" r="280" fill="none" stroke="#6EE7A0" stroke-width="18"/>
+            <circle cx="300" cy="300" r="200" fill="none" stroke="#5BC0EB" stroke-width="16"/>
+            <circle cx="300" cy="300" r="160" fill="#2563EB"/>
+            <circle cx="300" cy="300" r="90" fill="#0F172A"/>
+            <circle cx="300" cy="100" r="22" fill="#5BC0EB"/>
+            <circle cx="300" cy="500" r="22" fill="#5BC0EB"/>
+            <circle cx="100" cy="300" r="22" fill="#22C55E"/>
+            <circle cx="500" cy="300" r="22" fill="#22C55E"/>
+          </svg>
+          <div class="brand-text">
+            <span class="name">ORSPEX</span>
+            <span class="tagline" data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button type="button" data-lang="en" class="active" aria-label="English">
+              <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+            </button>
+            <button type="button" data-lang="ar" aria-label="العربية">
+              <span class="flag" aria-hidden="true">🇸🇦</span><span>عربي</span>
+            </button>
+            <button type="button" data-lang="zh" aria-label="中文">
+              <span class="flag" aria-hidden="true">🇨🇳</span><span>中文</span>
+            </button>
+          </div>
+
+          <span class="offline-badge" data-i18n="badge.offline">offline · no cloud</span>
+          <a class="btn-cta" href="../orspex-core/orspex-core.html">
+            <span>⬇</span> <span data-i18n="cta.get">get ORSPEX suite</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="header-nav-row">
+        <input type="checkbox" id="orspex-menu-toggle" class="menu-toggle-checkbox" aria-hidden="true">
+        <label for="orspex-menu-toggle" class="menu-toggle-label">
+          <span>☰</span> <span data-i18n="nav.products">Products</span>
+        </label>
+
+        <ul class="nav-links">
+          <li>
+            <a href="../index.html">
+              🏠 <span data-i18n="nav.home">Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="../orspex-core/orspex-core.html">
+              🧩 <span data-i18n="nav.core">ORSPEX Core</span>
+              <small class="offline" data-i18n="badge.offline.short">offline</small>
+            </a>
+          </li>
+          <li>
+            <a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener">
+              👥 <span data-i18n="nav.job">Job Seeker</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+          <li>
+            <a href="../pdf-compressor/pdf-compressor.html">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+          <li>
+            <a href="../pdf-compressor-offline/pdf-compressor-offline.html">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span>
+              <small class="desktop" data-i18n="badge.desktop.short">desktop</small>
+            </a>
+          </li>
+          <li>
+            <a href="favicon-maker.html" class="current">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+          <li>
+            <a href="../favicon-maker-offline/favicon-maker-offline.html">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span>
+              <small class="desktop" data-i18n="badge.desktop.short">desktop</small>
+            </a>
+          </li>
+          <li>
+            <a href="https://orspex-jobs-seeking.vercel.app/jobs" target="_blank" rel="noopener">
+              🔍 <span data-i18n="nav.talent">Find Talent</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN
+  ============================================================ -->
+  <main>
+    <div class="wrap-narrow">
+
+      <div class="hero">
+        <span class="eyebrow" data-i18n="hero.eyebrow">Free · Offline Tool</span>
+        <h1>
+          <span data-i18n="hero.h1a">Favicon</span>
+          <span data-i18n="hero.h1b">Generator</span>
+        </h1>
+        <p data-i18n="hero.p">
+          Upload one image. Get favicon.ico, all PNG variants, and a site.webmanifest —
+          ready to drop into your website. Runs entirely in your browser.
+        </p>
+      </div>
+
+      <div class="tool-card">
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-zone-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <h3 data-i18n="drop.h3">Drop your image here, or click to browse</h3>
+          <p data-i18n="drop.p">Best results with a square image — at least 512×512</p>
+          <small data-i18n="drop.small">PNG · JPG · SVG · WebP</small>
+          <input type="file" id="fileInput" accept="image/png,image/jpeg,image/svg+xml,image/webp" />
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div id="output" style="display:none;">
+          <div class="preview-grid" id="previewGrid"></div>
+          <div class="controls">
+            <div class="control-group">
+              <label for="bgColor" data-i18n="control.bg">Background</label>
+              <input type="color" id="bgColor" value="#ffffff" />
+            </div>
+            <div class="control-group">
+              <label>&nbsp;</label>
+              <button type="button" class="btn btn-outline" id="regenerateBtn" data-i18n="btn.regenerate">Regenerate</button>
+            </div>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn btn-primary" id="downloadAllBtn" data-i18n="btn.download">Download all (.zip)</button>
+            <button type="button" class="btn btn-outline" id="resetBtn" data-i18n="btn.reset">Upload a different image</button>
+          </div>
+          <div class="snippet">
+            <h3 data-i18n="snippet.h3">Add this to your head</h3>
+            <pre id="htmlSnippet">&lt;link rel="icon" href="/favicon.ico" sizes="any" /&gt;
+&lt;link rel="icon" href="/icon.svg" type="image/svg+xml" /&gt;
+&lt;link rel="apple-touch-icon" href="/apple-touch-icon.png" /&gt;
+&lt;link rel="manifest" href="/site.webmanifest" /&gt;</pre>
+            <button type="button" class="btn btn-outline" id="copySnippetBtn" data-i18n="btn.copy">Copy HTML</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer" aria-label="ORSPEX footer">
+    <div class="wrap footer-inner">
+
+      <div class="footer-intro">
+        <p data-i18n="footer.intro">
+          A stand-alone, offline-first software suite. No cloud, no accounts, no internet
+          required — your data stays on your device.
+        </p>
+        <span class="footer-status" data-i18n="footer.status">offline by design · privacy first</span>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h4 data-i18n="footer.products">Products</h4>
+          <ul>
+            <li><a href="../orspex-core/orspex-core.html">🧩 <span data-i18n="nav.core">ORSPEX Core</span> <small class="offline" data-i18n="badge.offline.short">offline</small></a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener">👥 <span data-i18n="nav.job">Job Seeker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="../pdf-compressor/pdf-compressor.html">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="../pdf-compressor-offline/pdf-compressor-offline.html">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+            <li><a href="favicon-maker.html">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="../favicon-maker-offline/favicon-maker-offline.html">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.modules">Modules</h4>
+          <ul>
+            <li><a href="../orspex-core/orspex-core.html" data-i18n="footer.modules.erp">🧩 Stand-alone ERP</a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener" data-i18n="footer.modules.jobs">👥 Jobs &amp; Hiring</a></li>
+            <li><a href="../pdf-compressor/pdf-compressor.html" data-i18n="footer.modules.pdf">📄 PDF Compression</a></li>
+            <li><a href="favicon-maker.html" data-i18n="footer.modules.fav">⭐ Favicon Generation</a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/jobs" target="_blank" rel="noopener" data-i18n="footer.modules.talent">🔍 Talent Directory</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.resources">Resources</h4>
+          <ul>
+            <li><a href="https://github.com/orpexexitus-maker/favicon-maker" target="_blank" rel="noopener" data-i18n="footer.resources.download">⬇️ Download offline (.exe)</a></li>
+            <li><a href="https://github.com/orpexexitus-maker/favicon-maker" target="_blank" rel="noopener" data-i18n="footer.resources.docs">📘 Documentation</a></li>
+            <li><a href="https://github.com/orpexexitus-maker/favicon-maker" target="_blank" rel="noopener" data-i18n="footer.resources.guides">🛠️ Install guides</a></li>
+            <li><a href="../status.html" data-i18n="footer.resources.release">🧪 Release notes</a></li>
+            <li><a href="../privacy.html" data-i18n="footer.resources.security">🛡️ Security &amp; privacy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.company">Company</h4>
+          <ul>
+            <li><a href="../index.html" data-i18n="footer.company.about">🏢 About ORSPEX</a></li>
+            <li><a href="mailto:info@orspex.com" data-i18n="footer.company.contact">✉️ Contact</a></li>
+            <li><a href="../index.html" data-i18n="footer.company.partners">🤝 Partners</a></li>
+            <li><a href="../index.html" data-i18n="footer.company.press">📰 Press kit</a></li>
+            <li><a href="../index.html" data-i18n="footer.company.careers">💼 Careers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          © <strong>ORSPEX</strong> · <span data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>. <span data-i18n="footer.rights">All rights reserved.</span>
+        </div>
+        <ul class="footer-legal">
+          <li><a href="../privacy.html" data-i18n="footer.legal.privacy">Privacy</a></li>
+          <li><a href="../terms.html" data-i18n="footer.legal.terms">Terms</a></li>
+          <li><a href="../license.html" data-i18n="footer.legal.license">License</a></li>
+          <li><a href="../status.html" data-i18n="footer.legal.status">Status</a></li>
+        </ul>
+        <span class="footer-version">v1.0.0 · <span data-i18n="footer.version.stable">stable</span> · <span data-i18n="footer.version.online">online</span></span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JS — i18n + Favicon generator
+  ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* =========================================================
+         1) i18n
+      ========================================================= */
+      const translations = {
+        en: {
+          'brand.tagline': 'Organization · Planning · Services · Execution',
+          'badge.offline': 'offline · no cloud',
+          'badge.offline.short': 'offline',
+          'badge.online.short': 'online',
+          'badge.desktop.short': 'desktop',
+          'cta.get': 'get ORSPEX suite',
+
+          'nav.home': 'Home',
+          'nav.products': 'Products',
+          'nav.core': 'ORSPEX Core',
+          'nav.job': 'Job Seeker',
+          'nav.pdf': 'PDF Compressor',
+          'nav.favicon': 'Favicon Maker',
+          'nav.talent': 'Find Talent',
+
+          'hero.eyebrow': 'Free · Offline Tool',
+          'hero.h1a': 'Favicon',
+          'hero.h1b': 'Generator',
+          'hero.p': 'Upload one image. Get favicon.ico, all PNG variants, and a site.webmanifest — ready to drop into your website. Runs entirely in your browser.',
+
+          'drop.h3': 'Drop your image here, or click to browse',
+          'drop.p': 'Best results with a square image — at least 512×512',
+          'drop.small': 'PNG · JPG · SVG · WebP',
+          'control.bg': 'Background',
+          'btn.regenerate': 'Regenerate',
+          'btn.download': 'Download all (.zip)',
+          'btn.reset': 'Upload a different image',
+          'snippet.h3': 'Add this to your head',
+          'btn.copy': 'Copy HTML',
+          'btn.copied': 'Copied!',
+          'status.loading': 'Loading image…',
+          'status.generating': 'Generating icons…',
+          'status.packaging': 'Packaging ZIP…',
+          'alert.notImage': 'Please upload an image file.',
+          'alert.loadFailed': 'Could not load that image.',
+          'alert.copyFailed': 'Could not copy.',
+
+          'footer.intro': 'A stand-alone, offline-first software suite. No cloud, no accounts, no internet required — your data stays on your device.',
+          'footer.status': 'offline by design · privacy first',
+          'footer.products': 'Products',
+          'footer.modules': 'Modules',
+          'footer.resources': 'Resources',
+          'footer.company': 'Company',
+          'footer.modules.erp': '🧩 Stand-alone ERP',
+          'footer.modules.jobs': '👥 Jobs & Hiring',
+          'footer.modules.pdf': '📄 PDF Compression',
+          'footer.modules.fav': '⭐ Favicon Generation',
+          'footer.modules.talent': '🔍 Talent Directory',
+          'footer.resources.download': '⬇️ Download offline (.exe)',
+          'footer.resources.docs': '📘 Documentation',
+          'footer.resources.guides': '🛠️ Install guides',
+          'footer.resources.release': '🧪 Release notes',
+          'footer.resources.security': '🛡️ Security & privacy',
+          'footer.company.about': '🏢 About ORSPEX',
+          'footer.company.contact': '✉️ Contact',
+          'footer.company.partners': '🤝 Partners',
+          'footer.company.press': '📰 Press kit',
+          'footer.company.careers': '💼 Careers',
+          'footer.rights': 'All rights reserved.',
+          'footer.legal.privacy': 'Privacy',
+          'footer.legal.terms': 'Terms',
+          'footer.legal.license': 'License',
+          'footer.legal.status': 'Status',
+          'footer.version.stable': 'stable',
+          'footer.version.online': 'online'
+        },
+        ar: {
+          'brand.tagline': 'التنظيم · التخطيط · الخدمات · التنفيذ',
+          'badge.offline': 'يعمل دون اتصال · بدون سحابة',
+          'badge.offline.short': 'دون اتصال',
+          'badge.online.short': 'عبر الإنترنت',
+          'badge.desktop.short': 'سطح المكتب',
+          'cta.get': 'احصل على حزمة ORSPEX',
+
+          'nav.home': 'الرئيسية',
+          'nav.products': 'المنتجات',
+          'nav.core': 'نظام ORSPEX الأساسي',
+          'nav.job': 'الباحث عن عمل',
+          'nav.pdf': 'ضاغط PDF',
+          'nav.favicon': 'صانع الأيقونات',
+          'nav.talent': 'ابحث عن موهبة',
+
+          'hero.eyebrow': 'أداة مجانية · تعمل في المتصفح',
+          'hero.h1a': 'مولّد',
+          'hero.h1b': 'الأيقونات',
+          'hero.p': 'ارفع صورة واحدة. احصل على favicon.ico وجميع نسخ PNG وملف site.webmanifest — جاهزة للإضافة إلى موقعك. تعمل بالكامل في المتصفح.',
+
+          'drop.h3': 'أفلت صورتك هنا، أو انقر للتصفح',
+          'drop.p': 'أفضل النتائج مع صورة مربعة — 512×512 على الأقل',
+          'drop.small': 'PNG · JPG · SVG · WebP',
+          'control.bg': 'الخلفية',
+          'btn.regenerate': 'إعادة الإنشاء',
+          'btn.download': 'تحميل الكل (.zip)',
+          'btn.reset': 'ارفع صورة مختلفة',
+          'snippet.h3': 'أضف هذا إلى وسم head',
+          'btn.copy': 'نسخ HTML',
+          'btn.copied': 'تم النسخ!',
+          'status.loading': 'جارٍ تحميل الصورة…',
+          'status.generating': 'جارٍ إنشاء الأيقونات…',
+          'status.packaging': 'جارٍ ضغط الملفات…',
+          'alert.notImage': 'الرجاء رفع ملف صورة.',
+          'alert.loadFailed': 'تعذر تحميل الصورة.',
+          'alert.copyFailed': 'تعذر النسخ.',
+
+          'footer.intro': 'حزمة برامج مستقلة تعمل دون اتصال. بلا سحابة، بلا حسابات، بلا حاجة للإنترنت — بياناتك تبقى على جهازك.',
+          'footer.status': 'مصمم للعمل دون اتصال · الخصوصية أولاً',
+          'footer.products': 'المنتجات',
+          'footer.modules': 'الوحدات',
+          'footer.resources': 'الموارد',
+          'footer.company': 'الشركة',
+          'footer.modules.erp': '🧩 تخطيط موارد المؤسسات',
+          'footer.modules.jobs': '👥 الوظائف والتوظيف',
+          'footer.modules.pdf': '📄 ضغط PDF',
+          'footer.modules.fav': '⭐ إنشاء الأيقونات',
+          'footer.modules.talent': '🔍 دليل المواهب',
+          'footer.resources.download': '⬇️ تحميل النسخة دون اتصال (.exe)',
+          'footer.resources.docs': '📘 الوثائق',
+          'footer.resources.guides': '🛠️ أدلة التثبيت',
+          'footer.resources.release': '🧪 ملاحظات الإصدار',
+          'footer.resources.security': '🛡️ الأمان والخصوصية',
+          'footer.company.about': '🏢 عن ORSPEX',
+          'footer.company.contact': '✉️ اتصل بنا',
+          'footer.company.partners': '🤝 الشركاء',
+          'footer.company.press': '📰 الحقيبة الصحفية',
+          'footer.company.careers': '💼 الوظائف',
+          'footer.rights': 'جميع الحقوق محفوظة.',
+          'footer.legal.privacy': 'الخصوصية',
+          'footer.legal.terms': 'الشروط',
+          'footer.legal.license': 'الترخيص',
+          'footer.legal.status': 'الحالة',
+          'footer.version.stable': 'مستقر',
+          'footer.version.online': 'عبر الإنترنت'
+        },
+        zh: {
+          'brand.tagline': '组织 · 规划 · 服务 · 执行',
+          'badge.offline': '离线 · 无需云端',
+          'badge.offline.short': '离线',
+          'badge.online.short': '在线',
+          'badge.desktop.short': '桌面',
+          'cta.get': '获取 ORSPEX 套件',
+
+          'nav.home': '首页',
+          'nav.products': '产品',
+          'nav.core': 'ORSPEX 核心',
+          'nav.job': '求职者',
+          'nav.pdf': 'PDF 压缩器',
+          'nav.favicon': '图标生成器',
+          'nav.talent': '寻找人才',
+
+          'hero.eyebrow': '免费 · 浏览器工具',
+          'hero.h1a': '图标',
+          'hero.h1b': '生成器',
+          'hero.p': '上传一张图片，即可获得 favicon.ico、所有 PNG 版本和 site.webmanifest —— 可直接放入您的网站。完全在浏览器中运行。',
+
+          'drop.h3': '拖放图片到此处，或点击浏览',
+          'drop.p': '方形图片效果最佳 —— 至少 512×512',
+          'drop.small': 'PNG · JPG · SVG · WebP',
+          'control.bg': '背景',
+          'btn.regenerate': '重新生成',
+          'btn.download': '全部下载 (.zip)',
+          'btn.reset': '上传其他图片',
+          'snippet.h3': '添加到 head 标签',
+          'btn.copy': '复制 HTML',
+          'btn.copied': '已复制！',
+          'status.loading': '正在加载图片…',
+          'status.generating': '正在生成图标…',
+          'status.packaging': '正在打包 ZIP…',
+          'alert.notImage': '请上传图片文件。',
+          'alert.loadFailed': '无法加载该图片。',
+          'alert.copyFailed': '无法复制。',
+
+          'footer.intro': '一套独立、离线优先的软件套件。无云端，无账户，无需互联网 —— 数据保留在您的设备上。',
+          'footer.status': '天生离线 · 隐私优先',
+          'footer.products': '产品',
+          'footer.modules': '模块',
+          'footer.resources': '资源',
+          'footer.company': '公司',
+          'footer.modules.erp': '🧩 独立 ERP',
+          'footer.modules.jobs': '👥 招聘与求职',
+          'footer.modules.pdf': '📄 PDF 压缩',
+          'footer.modules.fav': '⭐ 图标生成',
+          'footer.modules.talent': '🔍 人才目录',
+          'footer.resources.download': '⬇️ 下载离线版 (.exe)',
+          'footer.resources.docs': '📘 文档',
+          'footer.resources.guides': '🛠️ 安装指南',
+          'footer.resources.release': '🧪 发行说明',
+          'footer.resources.security': '🛡️ 安全与隐私',
+          'footer.company.about': '🏢 关于 ORSPEX',
+          'footer.company.contact': '✉️ 联系我们',
+          'footer.company.partners': '🤝 合作伙伴',
+          'footer.company.press': '📰 媒体资料',
+          'footer.company.careers': '💼 招聘',
+          'footer.rights': '版权所有。',
+          'footer.legal.privacy': '隐私',
+          'footer.legal.terms': '条款',
+          'footer.legal.license': '许可',
+          'footer.legal.status': '状态',
+          'footer.version.stable': '稳定版',
+          'footer.version.online': '在线'
+        }
+      };
+
+      const root = document.getElementById('html-root');
+      const buttons = document.querySelectorAll('.lang-switch button');
+
+      function t(key) {
+        const lang = root.getAttribute('lang') || 'en';
+        return (translations[lang] && translations[lang][key]) || translations.en[key] || key;
+      }
+
+      function setLanguage(lang) {
+        if (!translations[lang]) return;
+        root.setAttribute('lang', lang);
+
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          const key = el.getAttribute('data-i18n');
+          const value = translations[lang][key];
+          if (value !== undefined) el.textContent = value;
+        });
+
+        buttons.forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+
+        try { localStorage.setItem('orspex-lang', lang); } catch (e) {}
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setLanguage(btn.getAttribute('data-lang'));
+        });
+      });
+
+      let initial = 'en';
+      try {
+        const saved = localStorage.getItem('orspex-lang');
+        if (saved && translations[saved]) initial = saved;
+        else {
+          const nav = (navigator.language || 'en').toLowerCase();
+          if (nav.startsWith('ar')) initial = 'ar';
+          else if (nav.startsWith('zh')) initial = 'zh';
+        }
+      } catch (e) {}
+      setLanguage(initial);
+
+      /* =========================================================
+         2) FAVICON GENERATOR
+      ========================================================= */
+      var dropZone = document.getElementById('dropZone');
+      var fileInput = document.getElementById('fileInput');
+      var output = document.getElementById('output');
+      var previewGrid = document.getElementById('previewGrid');
+      var statusEl = document.getElementById('status');
+      var bgColor = document.getElementById('bgColor');
+      var regenerateBtn = document.getElementById('regenerateBtn');
+      var downloadAllBtn = document.getElementById('downloadAllBtn');
+      var resetBtn = document.getElementById('resetBtn');
+      var copySnippetBtn = document.getElementById('copySnippetBtn');
+
+      var SIZES = [
+        { size: 16, name: 'favicon-16x16.png' },
+        { size: 32, name: 'favicon-32x32.png' },
+        { size: 48, name: 'favicon-48x48.png' },
+        { size: 180, name: 'apple-touch-icon.png' },
+        { size: 192, name: 'android-chrome-192x192.png' },
+        { size: 512, name: 'android-chrome-512x512.png' }
+      ];
+      var ICO_SIZES = [16, 32, 48];
+      var currentImage = null;
+      var generatedBlobs = {};
+
+      function showStatus(msg) { statusEl.textContent = msg; statusEl.classList.add('active'); }
+      function hideStatus() { statusEl.classList.remove('active'); }
+
+      function loadImage(file) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var img = new Image();
+            img.onload = function () { resolve(img); };
+            img.onerror = reject;
+            img.src = e.target.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function renderToCanvas(img, size, bgHex) {
+        var canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        var ctx = canvas.getContext('2d');
+        if (bgHex && bgHex !== 'transparent') {
+          ctx.fillStyle = bgHex; ctx.fillRect(0, 0, size, size);
+        }
+        var sw = img.naturalWidth || img.width;
+        var sh = img.naturalHeight || img.height;
+        var scale = Math.max(size / sw, size / sh);
+        var dw = sw * scale;
+        var dh = sh * scale;
+        var dx = (size - dw) / 2;
+        var dy = (size - dh) / 2;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, dx, dy, dw, dh);
+        return canvas;
+      }
+
+      function canvasToPngBlob(canvas) {
+        return new Promise(function (resolve) {
+          canvas.toBlob(function (b) { resolve(b); }, 'image/png');
+        });
+      }
+
+      function buildIco(blobsBySize) {
+        var sizes = Object.keys(blobsBySize).map(Number).sort(function (a, b) { return a - b; });
+        return Promise.all(sizes.map(function (s) { return blobsBySize[s].arrayBuffer(); }))
+          .then(function (pngBuffers) {
+            var headerSize = 6, dirEntrySize = 16;
+            var dirSize = sizes.length * dirEntrySize;
+            var offset = headerSize + dirSize;
+            var offsets = sizes.map(function (s, i) {
+              var o = offset; offset += pngBuffers[i].byteLength; return o;
+            });
+            var buffer = new ArrayBuffer(offset);
+            var view = new DataView(buffer);
+            view.setUint16(0, 0, true);
+            view.setUint16(2, 1, true);
+            view.setUint16(4, sizes.length, true);
+            var dirOffset = 6;
+            sizes.forEach(function (size, i) {
+              view.setUint8(dirOffset + 0, size >= 256 ? 0 : size);
+              view.setUint8(dirOffset + 1, size >= 256 ? 0 : size);
+              view.setUint8(dirOffset + 2, 0);
+              view.setUint8(dirOffset + 3, 0);
+              view.setUint16(dirOffset + 4, 1, true);
+              view.setUint16(dirOffset + 6, 32, true);
+              view.setUint32(dirOffset + 8, pngBuffers[i].byteLength, true);
+              view.setUint32(dirOffset + 12, offsets[i], true);
+              dirOffset += 16;
+            });
+            pngBuffers.forEach(function (buf, i) {
+              new Uint8Array(buffer, offsets[i]).set(new Uint8Array(buf));
+            });
+            return new Blob([buffer], { type: 'image/x-icon' });
+          });
+      }
+
+      function generate(img) {
+        hideStatus();
+        output.style.display = 'none';
+        previewGrid.innerHTML = '';
+        generatedBlobs = {};
+        showStatus(t('status.generating'));
+        var bg = bgColor.value;
+        var pngBlobsBySize = {};
+
+        var chain = Promise.resolve();
+        SIZES.forEach(function (spec) {
+          chain = chain.then(function () {
+            var canvas = renderToCanvas(img, spec.size, bg);
+            return canvasToPngBlob(canvas).then(function (blob) {
+              generatedBlobs[spec.name] = blob;
+              pngBlobsBySize[spec.size] = blob;
+            });
+          });
+        });
+
+        return chain.then(function () {
+          var icoBlobs = {};
+          ICO_SIZES.forEach(function (s) { icoBlobs[s] = pngBlobsBySize[s]; });
+          return buildIco(icoBlobs);
+        }).then(function (icoBlob) {
+          generatedBlobs['favicon.ico'] = icoBlob;
+          var manifest = {
+            name: '', short_name: '',
+            icons: [
+              { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+              { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' }
+            ],
+            theme_color: '#ffffff',
+            background_color: '#ffffff',
+            display: 'standalone'
+          };
+          generatedBlobs['site.webmanifest'] = new Blob(
+            [JSON.stringify(manifest, null, 2)],
+            { type: 'application/manifest+json' }
+          );
+          renderPreviews();
+          hideStatus();
+          output.style.display = 'block';
+        });
+      }
+
+      function renderPreviews() {
+        previewGrid.innerHTML = '';
+        var items = [
+          { label: 'favicon.ico', detail: '16 · 32 · 48', blob: generatedBlobs['favicon.ico'] },
+          { label: 'favicon-16x16.png', detail: '16×16', blob: generatedBlobs['favicon-16x16.png'] },
+          { label: 'favicon-32x32.png', detail: '32×32', blob: generatedBlobs['favicon-32x32.png'] },
+          { label: 'apple-touch-icon.png', detail: '180×180', blob: generatedBlobs['apple-touch-icon.png'] },
+          { label: 'android-chrome-192x192.png', detail: '192×192', blob: generatedBlobs['android-chrome-192x192.png'] },
+          { label: 'android-chrome-512x512.png', detail: '512×512', blob: generatedBlobs['android-chrome-512x512.png'] }
+        ];
+        items.forEach(function (item) {
+          if (!item.blob) return;
+          var url = URL.createObjectURL(item.blob);
+          var el = document.createElement('div');
+          el.className = 'preview-item';
+          el.innerHTML =
+            '<div class="preview-box"><img src="' + url + '" alt="' + item.label + '" /></div>' +
+            '<div class="size-label">' + item.label + '</div>' +
+            '<div class="size-file">' + item.detail + '</div>';
+          previewGrid.appendChild(el);
+        });
+      }
+
+      function handleFile(file) {
+        if (!file.type.startsWith('image/')) { alert(t('alert.notImage')); return; }
+        showStatus(t('status.loading'));
+        loadImage(file).then(function (img) {
+          currentImage = img;
+          return generate(img);
+        }).catch(function (err) {
+          console.error(err);
+          alert(t('alert.loadFailed'));
+          hideStatus();
+        });
+      }
+
+      dropZone.addEventListener('click', function () { fileInput.click(); });
+      dropZone.addEventListener('dragover', function (e) {
+        e.preventDefault(); dropZone.classList.add('dragover');
+      });
+      dropZone.addEventListener('dragleave', function () {
+        dropZone.classList.remove('dragover');
+      });
+      dropZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        var file = e.dataTransfer.files[0];
+        if (file) handleFile(file);
+      });
+      fileInput.addEventListener('change', function (e) {
+        var file = e.target.files[0];
+        if (file) handleFile(file);
+      });
+      regenerateBtn.addEventListener('click', function () {
+        if (currentImage) generate(currentImage);
+      });
+      bgColor.addEventListener('change', function () {
+        if (currentImage) generate(currentImage);
+      });
+      resetBtn.addEventListener('click', function () {
+        currentImage = null;
+        generatedBlobs = {};
+        output.style.display = 'none';
+        fileInput.value = '';
+        hideStatus();
+      });
+
+      function downloadBlob(blob, filename) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      }
+
+      downloadAllBtn.addEventListener('click', function () {
+        if (Object.keys(generatedBlobs).length === 0) return;
+        showStatus(t('status.packaging'));
+        var zip = new JSZip();
+        Object.keys(generatedBlobs).forEach(function (name) {
+          zip.file(name, generatedBlobs[name]);
+        });
+        zip.file('README.txt', 'ORSPEX Favicon Generator output\n\nDrop all files into your website root.');
+        zip.generateAsync({ type: 'blob' }).then(function (zipBlob) {
+          downloadBlob(zipBlob, 'favicons.zip');
+          hideStatus();
+        });
+      });
+
+      copySnippetBtn.addEventListener('click', function () {
+        var snippet = document.getElementById('htmlSnippet').textContent;
+        navigator.clipboard.writeText(snippet).then(function () {
+          copySnippetBtn.textContent = t('btn.copied');
+          setTimeout(function () {
+            copySnippetBtn.textContent = t('btn.copy');
+          }, 1500);
+        }).catch(function () {
+          alert(t('alert.copyFailed'));
+        });
+      });
+
+    })();
+  </script>
+
+</body>
+</html>

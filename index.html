@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ORSPEX · Organization · Planning · Services · Execution</title>
+
+  <!-- SEO -->
+  <meta name="description" content="ORSPEX is a standalone, offline-first software suite: ERP, job seeking, PDF compression, and favicon generation. No cloud, no accounts, no data leaving your machine.">
+  <meta name="keywords" content="ORSPEX, offline software, ERP, PDF compressor, favicon maker, privacy-first, no cloud, standalone suite">
+  <meta name="author" content="ORSPEX">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://orspex.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ORSPEX · Offline-first software suite">
+  <meta property="og:description" content="Six standalone tools. Zero cloud dependency. ERP, PDF compression, favicon generation — all offline.">
+  <meta property="og:url" content="https://orspex.com/">
+  <meta property="og:image" content="https://orspex.com/favicon.svg">
+  <meta property="og:site_name" content="ORSPEX">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ORSPEX · Offline-first software suite">
+  <meta name="twitter:description" content="Six standalone tools. Zero cloud dependency.">
+  <meta name="twitter:image" content="https://orspex.com/favicon.svg">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0F172A">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orspex-dark: #0F172A;
+      --orspex-blue: #2563EB;
+      --orspex-sky: #5BC0EB;
+      --orspex-green: #22C55E;
+      --orspex-mint: #6EE7A0;
+      --orspex-slate: #64748B;
+      --orspex-border: #E2E8F0;
+      --orspex-white: #FFFFFF;
+      --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      --font-arabic: 'Segoe UI', 'Tahoma', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif;
+      --font-chinese: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Noto Sans SC', sans-serif;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--orspex-white);
+      font-family: var(--font-sans);
+      color: var(--orspex-dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      transition: font-family 0.2s ease;
+    }
+
+    html[lang="ar"] body { direction: rtl; font-family: var(--font-arabic); }
+    html[lang="zh"] body { font-family: var(--font-chinese); }
+
+    .bg-anim {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none; opacity: 0.28;
+    }
+    .bg-anim svg { width: 100%; height: 100%; display: block; }
+
+    @keyframes drift-slow {
+      0% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-30px) scale(1.06); }
+      66% { transform: translate(-30px,35px) scale(0.96); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-medium {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(-45px,40px) scale(1.08); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes drift-fast {
+      0% { transform: translate(0,0); }
+      50% { transform: translate(35px,-40px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes color-mint-sky { 0%,100%{fill:#6EE7A0;} 50%{fill:#5BC0EB;} }
+    @keyframes color-sky-blue { 0%,100%{fill:#5BC0EB;} 50%{fill:#2563EB;} }
+    @keyframes color-blue-green { 0%,100%{fill:#2563EB;} 50%{fill:#22C55E;} }
+    @keyframes color-green-mint { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes color-sky-mint { 0%,100%{fill:#5BC0EB;} 50%{fill:#6EE7A0;} }
+    @keyframes pulse-soft { 0%,100%{opacity:0.18;} 50%{opacity:0.4;} }
+    @keyframes twinkle { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+    @keyframes dash-rotate { from{stroke-dashoffset:0;} to{stroke-dashoffset:-400;} }
+    @keyframes stroke-sky-blue { 0%,100%{stroke:#5BC0EB;} 50%{stroke:#2563EB;} }
+    @keyframes stroke-green-mint { 0%,100%{stroke:#22C55E;} 50%{stroke:#6EE7A0;} }
+    @keyframes bar-grow {
+      0% { transform: scaleY(0.3); opacity: 0.15; }
+      40% { transform: scaleY(1); opacity: 0.5; }
+      70% { transform: scaleY(1); opacity: 0.5; }
+      100% { transform: scaleY(0.3); opacity: 0.15; }
+    }
+    @keyframes bar-color { 0%,100%{fill:#22C55E;} 50%{fill:#6EE7A0;} }
+    @keyframes line-draw {
+      0% { stroke-dashoffset: 800; }
+      50% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -800; }
+    }
+    @keyframes float-y {
+      0%,100% { transform: translateY(0); opacity: 0.28; }
+      50% { transform: translateY(-18px); opacity: 0.5; }
+    }
+    @keyframes coin-pulse {
+      0%,100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.05); }
+    }
+    @keyframes tick-fade { 0%,100%{opacity:0.1;} 50%{opacity:0.45;} }
+
+    .orb-1 { animation: drift-slow 24s ease-in-out infinite, color-mint-sky 18s ease-in-out infinite; transform-origin: 200px 200px; }
+    .orb-2 { animation: drift-medium 30s ease-in-out infinite, color-sky-blue 22s ease-in-out infinite; transform-origin: 1200px 300px; }
+    .orb-3 { animation: drift-slow 36s ease-in-out infinite, color-blue-green 26s ease-in-out infinite; transform-origin: 400px 700px; }
+    .orb-4 { animation: drift-medium 28s ease-in-out infinite, color-green-mint 20s ease-in-out infinite; transform-origin: 1100px 800px; }
+    .orb-5 { animation: drift-fast 20s ease-in-out infinite, color-sky-mint 24s ease-in-out infinite; transform-origin: 700px 400px; }
+
+    .pulse-1 { animation: pulse-soft 6s ease-in-out infinite, stroke-sky-blue 20s ease-in-out infinite; }
+    .pulse-2 { animation: pulse-soft 8s ease-in-out infinite 1s, stroke-green-mint 24s ease-in-out infinite; }
+    .pulse-3 { animation: pulse-soft 7s ease-in-out infinite 2s, stroke-sky-blue 22s ease-in-out infinite; }
+
+    .dot-1 { animation: twinkle 4s ease-in-out infinite; }
+    .dot-2 { animation: twinkle 5s ease-in-out infinite 0.5s; }
+    .dot-3 { animation: twinkle 3.5s ease-in-out infinite 1s; }
+    .dot-4 { animation: twinkle 6s ease-in-out infinite 1.5s; }
+    .dot-5 { animation: twinkle 4.5s ease-in-out infinite 2s; }
+    .dot-6 { animation: twinkle 5.5s ease-in-out infinite 0.8s; }
+    .dot-7 { animation: twinkle 4.2s ease-in-out infinite 1.2s; }
+    .dot-8 { animation: twinkle 5.8s ease-in-out infinite 0.3s; }
+
+    .ring-1 { animation: dash-rotate 60s linear infinite; transform-origin: 1300px 200px; }
+    .ring-2 { animation: dash-rotate 80s linear infinite reverse; transform-origin: 250px 850px; }
+
+    .bar-1 { animation: bar-grow 9s ease-in-out infinite, bar-color 12s ease-in-out infinite; transform-origin: 1000px 640px; }
+    .bar-2 { animation: bar-grow 9s ease-in-out infinite 0.6s, bar-color 12s ease-in-out infinite 0.6s; transform-origin: 1060px 640px; }
+    .bar-3 { animation: bar-grow 9s ease-in-out infinite 1.2s, bar-color 12s ease-in-out infinite 1.2s; transform-origin: 1120px 640px; }
+    .bar-4 { animation: bar-grow 9s ease-in-out infinite 1.8s, bar-color 12s ease-in-out infinite 1.8s; transform-origin: 1180px 640px; }
+    .bar-5 { animation: bar-grow 9s ease-in-out infinite 2.4s, bar-color 12s ease-in-out infinite 2.4s; transform-origin: 1240px 640px; }
+
+    .trend-line { animation: line-draw 14s ease-in-out infinite; }
+    .currency { animation: float-y 8s ease-in-out infinite; transform-origin: 260px 640px; }
+    .coin { animation: coin-pulse 5s ease-in-out infinite; transform-origin: 260px 640px; }
+
+    .tick-1 { animation: tick-fade 6s ease-in-out infinite; }
+    .tick-2 { animation: tick-fade 7s ease-in-out infinite 0.5s; }
+    .tick-3 { animation: tick-fade 5s ease-in-out infinite 1s; }
+    .tick-4 { animation: tick-fade 6.5s ease-in-out infinite 1.5s; }
+
+    @media (prefers-reduced-motion: reduce) { .bg-anim * { animation: none !important; } }
+
+    .site-header, main, .site-footer { position: relative; z-index: 1; }
+    .site-header, .site-footer {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .wrap { width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 2.75rem; }
+    .wrap-narrow { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 2.75rem; }
+
+    .site-header { width: 100%; border-bottom: 1px solid var(--orspex-border); }
+    .header-inner { padding: 1.25rem 0; display: flex; flex-direction: column; gap: 1rem; }
+
+    .header-top {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1.5rem;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 1rem;
+      flex-shrink: 0; text-decoration: none; color: inherit;
+    }
+    .brand-mark { width: 58px; height: 58px; flex-shrink: 0; }
+    .brand-text { display: flex; flex-direction: column; gap: 0.15rem; }
+    .brand-text .name {
+      font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--orspex-dark); line-height: 1;
+    }
+    .brand-text .tagline {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 2.4px;
+      color: #334155; text-transform: uppercase; white-space: nowrap;
+    }
+    html[lang="zh"] .brand-text .tagline { letter-spacing: 4px; text-transform: none; font-weight: 500; }
+    html[lang="ar"] .brand-text .tagline { letter-spacing: 1px; text-transform: none; font-weight: 500; }
+
+    .header-actions { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+
+    .offline-badge {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #ECFDF5; color: #065F46;
+      font-size: 0.82rem; font-weight: 500;
+      padding: 0.5rem 1rem; border-radius: 60px;
+      border: 1px solid #A7F3D0; letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .offline-badge::before { content: "⚡"; font-size: 0.95rem; }
+
+    .btn-cta {
+      background: var(--orspex-dark); color: white;
+      font-size: 0.9rem; font-weight: 500;
+      padding: 0.7rem 1.4rem; border-radius: 60px;
+      border: 1px solid var(--orspex-dark); cursor: pointer;
+      letter-spacing: 0.3px; display: inline-flex;
+      align-items: center; gap: 0.5rem;
+      transition: background 0.15s, transform 0.15s;
+      white-space: nowrap; font-family: inherit;
+      text-decoration: none;
+    }
+    .btn-cta:hover { background: #1E293B; transform: translateY(-1px); }
+    .btn-cta span:first-child { font-size: 1rem; line-height: 1; }
+
+    .lang-switch {
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.28rem;
+    }
+    .lang-switch button {
+      background: transparent; border: none;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      color: #475569; padding: 0.4rem 0.75rem;
+      border-radius: 60px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.3px; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.4rem; line-height: 1;
+    }
+    .lang-switch button .flag { font-size: 1.05rem; line-height: 1; }
+    .lang-switch button:hover { color: var(--orspex-dark); }
+    .lang-switch button.active { background: var(--orspex-dark); color: white; }
+
+    .header-nav-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1rem;
+    }
+
+    .nav-links {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.25rem 0.3rem; list-style: none;
+    }
+    .nav-links > li { position: relative; }
+    .nav-links > li > a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: inherit; font-size: 0.95rem; font-weight: 500;
+      color: #1E293B; text-decoration: none;
+      padding: 0.6rem 1.1rem; border-radius: 60px;
+      border: none; background: transparent; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap; line-height: 1.15;
+    }
+    .nav-links > li > a:hover {
+      background: #F1F5F9; color: var(--orspex-blue);
+    }
+    .nav-links > li > a.current { background: #EFF6FF; color: var(--orspex-blue); }
+
+    .nav-links > li > a small {
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.4px; text-transform: uppercase;
+      padding: 0.15rem 0.45rem; border-radius: 40px;
+      background: #F1F5F9; color: #475569;
+      margin-left: 0.15rem;
+    }
+    html[lang="ar"] .nav-links > li > a small,
+    html[lang="zh"] .nav-links > li > a small { text-transform: none; letter-spacing: 0.2px; }
+    .nav-links > li > a small.offline { background: #ECFDF5; color: #047857; }
+    .nav-links > li > a small.online  { background: #EFF6FF; color: #1D4ED8; }
+    .nav-links > li > a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .menu-toggle-checkbox { display: none; }
+    .menu-toggle-label {
+      display: none; align-items: center; justify-content: center;
+      background: #F1F5F9; border: 1px solid var(--orspex-border);
+      border-radius: 60px; padding: 0.65rem 1.15rem;
+      font-size: 0.92rem; font-weight: 500;
+      color: var(--orspex-dark); cursor: pointer;
+      gap: 0.5rem; user-select: none; white-space: nowrap;
+    }
+    .menu-toggle-label span { font-size: 1.05rem; line-height: 1; }
+
+    main { flex: 1; padding: 4rem 0; }
+
+    .hero {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 3.5rem;
+    }
+    .hero .eyebrow {
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 3px; color: var(--orspex-blue);
+      background: #EFF6FF; padding: 0.35rem 0.95rem;
+      border-radius: 999px; margin-bottom: 1.15rem; text-transform: uppercase;
+    }
+    html[lang="ar"] .hero .eyebrow,
+    html[lang="zh"] .hero .eyebrow { text-transform: none; letter-spacing: 2px; }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700; letter-spacing: -0.8px;
+      margin-bottom: 1rem; line-height: 1.18;
+    }
+    html[lang="ar"] .hero h1 { letter-spacing: 0; line-height: 1.35; }
+    html[lang="zh"] .hero h1 { letter-spacing: 0.5px; line-height: 1.3; }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--orspex-blue), var(--orspex-green));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .hero p {
+      color: var(--orspex-slate); font-size: 1rem; line-height: 1.6;
+    }
+    html[lang="ar"] .hero p,
+    html[lang="zh"] .hero p { line-height: 1.85; }
+
+    .site-footer {
+      width: 100%; border-top: 1px solid var(--orspex-border); margin-top: auto;
+    }
+    .footer-inner {
+      padding: 2.5rem 0 1.5rem;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .footer-intro {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+    }
+    .footer-intro p {
+      font-size: 0.9rem; color: var(--orspex-slate);
+      line-height: 1.55; max-width: 640px;
+    }
+    .footer-status {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: #EFF6FF; color: #1E40AF;
+      font-size: 0.78rem; font-weight: 500;
+      padding: 0.4rem 0.9rem; border-radius: 60px;
+      border: 1px solid #BFDBFE; white-space: nowrap;
+    }
+    .footer-status::before { content: "🔒"; font-size: 0.85rem; }
+
+    .footer-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem 2.5rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 2rem;
+    }
+    .footer-col h4 {
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--orspex-dark);
+      margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    html[lang="ar"] .footer-col h4,
+    html[lang="zh"] .footer-col h4 { text-transform: none; letter-spacing: 1px; }
+    .footer-col h4::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-blue); flex-shrink: 0;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col ul li a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; color: #334155; text-decoration: none;
+      padding: 0.2rem 0; transition: color 0.15s, transform 0.15s;
+    }
+    .footer-col ul li a:hover { color: var(--orspex-blue); transform: translateX(2px); }
+    html[lang="ar"] .footer-col ul li a:hover { transform: translateX(-2px); }
+    .footer-col ul li a small {
+      font-size: 0.66rem; color: var(--orspex-slate);
+      background: #F1F5F9; padding: 0.1rem 0.4rem;
+      border-radius: 4px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    html[lang="ar"] .footer-col ul li a small,
+    html[lang="zh"] .footer-col ul li a small { text-transform: none; letter-spacing: 0.2px; }
+    .footer-col ul li a small.offline { background: #ECFDF5; color: #047857; }
+    .footer-col ul li a small.online  { background: #EFF6FF; color: #1D4ED8; }
+    .footer-col ul li a small.desktop { background: #F3E8FF; color: #7E22CE; }
+
+    .footer-bottom {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      border-top: 1px solid var(--orspex-border); padding-top: 1.4rem;
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--orspex-slate); }
+    .footer-copy strong { color: var(--orspex-dark); font-weight: 600; }
+    .footer-legal {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.5rem 1.25rem; list-style: none;
+    }
+    .footer-legal a {
+      font-size: 0.82rem; color: var(--orspex-slate);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-legal a:hover { color: var(--orspex-blue); }
+    .footer-version {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
+      color: #475569; background: #F1F5F9;
+      padding: 0.3rem 0.7rem; border-radius: 40px;
+      border: 1px solid var(--orspex-border);
+    }
+    .footer-version::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orspex-green);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18); flex-shrink: 0;
+    }
+
+    @media (max-width: 1000px) {
+      .wrap, .wrap-narrow { padding: 0 1.5rem; }
+
+      .header-nav-row { flex-direction: column; align-items: stretch; }
+      .menu-toggle-label { display: inline-flex; align-self: flex-start; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        gap: 0.3rem; padding-top: 0.6rem;
+      }
+      .menu-toggle-checkbox:checked ~ .nav-links { display: flex; }
+      .nav-links > li > a {
+        justify-content: space-between; width: 100%;
+        padding: 0.8rem 1.05rem; border-radius: 10px; background: #F8FAFC;
+      }
+      .nav-links > li > a small { margin-left: auto; }
+      .header-actions { width: 100%; justify-content: space-between; }
+
+      .footer-columns { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2rem; }
+    }
+
+    @media (max-width: 640px) {
+      .wrap, .wrap-narrow { padding: 0 1rem; }
+
+      .header-inner { padding: 1rem 0; gap: 0.85rem; }
+      .brand { gap: 0.75rem; }
+      .brand-mark { width: 46px; height: 46px; }
+      .brand-text .name { font-size: 1.3rem; }
+      .brand-text .tagline { font-size: 0.62rem; letter-spacing: 1.8px; }
+
+      .header-actions { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+      .offline-badge, .btn-cta { justify-content: center; }
+      .lang-switch { align-self: center; }
+
+      main { padding: 2.5rem 0; }
+      .hero { margin-bottom: 2.5rem; }
+
+      .footer-inner { padding: 1.75rem 0 1.25rem; gap: 1.5rem; }
+      .footer-intro { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .footer-intro p { font-size: 0.86rem; line-height: 1.5; }
+
+      .footer-columns {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem 1rem; padding-top: 1.25rem;
+      }
+      .footer-col h4 { font-size: 0.68rem; letter-spacing: 1.5px; margin-bottom: 0.65rem; }
+      .footer-col ul { gap: 0.4rem; }
+      .footer-col ul li a { font-size: 0.82rem; gap: 0.35rem; }
+      .footer-col ul li a small { font-size: 0.58rem; padding: 0.08rem 0.32rem; letter-spacing: 0.2px; }
+
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding-top: 1.1rem; }
+      .footer-copy { font-size: 0.76rem; }
+      .footer-legal { gap: 0.4rem 0.9rem; }
+      .footer-legal a { font-size: 0.76rem; }
+      .footer-version { font-size: 0.66rem; padding: 0.25rem 0.6rem; }
+    }
+
+    @media (max-width: 400px) {
+      .footer-columns { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-anim" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"
+         preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#0F172A" stroke-width="0.5" opacity="0.015"/>
+        </pattern>
+        <radialGradient id="fade-soft" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="white" stop-opacity="0.45"/>
+          <stop offset="55%" stop-color="white" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <rect width="1600" height="900" fill="url(#grid)"/>
+
+      <g class="orb-1"><circle cx="200" cy="200" r="220" fill="#6EE7A0" opacity="0.35"/><circle cx="200" cy="200" r="220" fill="url(#fade-soft)"/></g>
+      <g class="orb-2"><circle cx="1300" cy="220" r="260" fill="#5BC0EB" opacity="0.3"/><circle cx="1300" cy="220" r="260" fill="url(#fade-soft)"/></g>
+      <g class="orb-3"><circle cx="320" cy="720" r="240" fill="#2563EB" opacity="0.28"/><circle cx="320" cy="720" r="240" fill="url(#fade-soft)"/></g>
+      <g class="orb-4"><circle cx="1180" cy="760" r="230" fill="#22C55E" opacity="0.3"/><circle cx="1180" cy="760" r="230" fill="url(#fade-soft)"/></g>
+      <g class="orb-5"><circle cx="820" cy="440" r="150" fill="#5BC0EB" opacity="0.28"/><circle cx="820" cy="440" r="150" fill="url(#fade-soft)"/></g>
+
+      <circle class="pulse-1" cx="500" cy="480" r="140" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.25"/>
+      <circle class="pulse-2" cx="1080" cy="380" r="180" fill="none" stroke="#22C55E" stroke-width="1" opacity="0.22"/>
+      <circle class="pulse-3" cx="760" cy="620" r="110" fill="none" stroke="#5BC0EB" stroke-width="1" opacity="0.22"/>
+
+      <circle class="ring-1" cx="1300" cy="200" r="200" fill="none" stroke="#2563EB" stroke-width="0.8" stroke-dasharray="6 14" opacity="0.22"/>
+      <circle class="ring-2" cx="250" cy="850" r="220" fill="none" stroke="#5BC0EB" stroke-width="0.8" stroke-dasharray="8 18" opacity="0.2"/>
+
+      <circle class="dot-1" cx="340" cy="140" r="2.5" fill="#2563EB"/>
+      <circle class="dot-2" cx="900" cy="120" r="2" fill="#5BC0EB"/>
+      <circle class="dot-3" cx="1250" cy="480" r="2.5" fill="#22C55E"/>
+      <circle class="dot-4" cx="1520" cy="700" r="2" fill="#6EE7A0"/>
+      <circle class="dot-5" cx="600" cy="820" r="2.5" fill="#2563EB"/>
+      <circle class="dot-6" cx="120" cy="560" r="2" fill="#5BC0EB"/>
+      <circle class="dot-7" cx="1000" cy="780" r="2" fill="#22C55E"/>
+      <circle class="dot-8" cx="700" cy="240" r="2.5" fill="#2563EB"/>
+
+      <g opacity="0.6">
+        <line x1="980" y1="640" x2="1290" y2="640" stroke="#0F172A" stroke-width="0.6" opacity="0.15"/>
+        <rect class="bar-1" x="995" y="540" width="22" height="100" rx="3" fill="#22C55E"/>
+        <rect class="bar-2" x="1055" y="500" width="22" height="140" rx="3" fill="#22C55E"/>
+        <rect class="bar-3" x="1115" y="460" width="22" height="180" rx="3" fill="#22C55E"/>
+        <rect class="bar-4" x="1175" y="430" width="22" height="210" rx="3" fill="#22C55E"/>
+        <rect class="bar-5" x="1235" y="390" width="22" height="250" rx="3" fill="#22C55E"/>
+        <path class="trend-line" d="M 1006 530 L 1066 480 L 1126 440 L 1186 400 L 1246 355"
+              fill="none" stroke="#2563EB" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="800" opacity="0.5"/>
+        <circle cx="1246" cy="355" r="3" fill="#2563EB" opacity="0.5"/>
+      </g>
+
+      <g class="coin" opacity="0.4">
+        <circle cx="260" cy="640" r="42" fill="none" stroke="#22C55E" stroke-width="1.4"/>
+        <circle cx="260" cy="640" r="34" fill="none" stroke="#6EE7A0" stroke-width="0.8" stroke-dasharray="3 6"/>
+      </g>
+      <text class="currency" x="260" y="660" text-anchor="middle"
+            font-family="'Inter', system-ui, sans-serif" font-size="48"
+            font-weight="600" fill="#22C55E" opacity="0.35">$</text>
+
+      <g opacity="0.35">
+        <line class="tick-1" x1="1360" y1="600" x2="1360" y2="650" stroke="#22C55E" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-1" x="1355" y="615" width="10" height="20" rx="1.5" fill="#22C55E" opacity="0.7"/>
+        <line class="tick-2" x1="1390" y1="590" x2="1390" y2="655" stroke="#2563EB" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-2" x="1385" y="608" width="10" height="24" rx="1.5" fill="#2563EB" opacity="0.7"/>
+        <line class="tick-3" x1="1420" y1="575" x2="1420" y2="645" stroke="#22C55E" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-3" x="1415" y="595" width="10" height="22" rx="1.5" fill="#22C55E" opacity="0.7"/>
+        <line class="tick-4" x1="1450" y1="560" x2="1450" y2="630" stroke="#6EE7A0" stroke-width="1.4" stroke-linecap="round"/>
+        <rect class="tick-4" x="1445" y="580" width="10" height="26" rx="1.5" fill="#6EE7A0" opacity="0.7"/>
+      </g>
+
+      <text x="930" y="430" text-anchor="middle"
+            font-family="'Inter', system-ui, sans-serif" font-size="36"
+            font-weight="500" fill="#5BC0EB" opacity="0.18">%</text>
+    </svg>
+  </div>
+
+  <header class="site-header" aria-label="ORSPEX main header">
+    <div class="wrap header-inner">
+
+      <div class="header-top">
+        <a class="brand" href="index.html" aria-label="ORSPEX home">
+          <svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"
+               role="img" aria-label="ORSPEX mark">
+            <circle cx="300" cy="300" r="280" fill="none" stroke="#6EE7A0" stroke-width="18"/>
+            <circle cx="300" cy="300" r="200" fill="none" stroke="#5BC0EB" stroke-width="16"/>
+            <circle cx="300" cy="300" r="160" fill="#2563EB"/>
+            <circle cx="300" cy="300" r="90" fill="#0F172A"/>
+            <circle cx="300" cy="100" r="22" fill="#5BC0EB"/>
+            <circle cx="300" cy="500" r="22" fill="#5BC0EB"/>
+            <circle cx="100" cy="300" r="22" fill="#22C55E"/>
+            <circle cx="500" cy="300" r="22" fill="#22C55E"/>
+          </svg>
+          <div class="brand-text">
+            <span class="name">ORSPEX</span>
+            <span class="tagline" data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button type="button" data-lang="en" class="active" aria-label="English">
+              <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+            </button>
+            <button type="button" data-lang="ar" aria-label="العربية">
+              <span class="flag" aria-hidden="true">🇸🇦</span><span>عربي</span>
+            </button>
+            <button type="button" data-lang="zh" aria-label="中文">
+              <span class="flag" aria-hidden="true">🇨🇳</span><span>中文</span>
+            </button>
+          </div>
+
+          <span class="offline-badge" data-i18n="badge.offline">offline · no cloud</span>
+          <a class="btn-cta" href="orspex-core/orspex-core.html">
+            <span>⬇</span> <span data-i18n="cta.get">get ORSPEX suite</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="header-nav-row">
+        <input type="checkbox" id="orspex-menu-toggle" class="menu-toggle-checkbox" aria-hidden="true">
+        <label for="orspex-menu-toggle" class="menu-toggle-label">
+          <span>☰</span> <span data-i18n="nav.products">Products</span>
+        </label>
+
+        <ul class="nav-links">
+          <li>
+            <a href="orspex-core/orspex-core.html">
+              🧩 <span data-i18n="nav.core">ORSPEX Core</span>
+              <small class="offline" data-i18n="badge.offline.short">offline</small>
+            </a>
+          </li>
+          <li>
+            <a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener">
+              👥 <span data-i18n="nav.job">Job Seeker</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+          <li>
+            <a href="pdf-compressor/pdf-compressor.html">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+          <li>
+            <a href="pdf-compressor-offline/pdf-compressor-offline.html">
+              📄 <span data-i18n="nav.pdf">PDF Compressor</span>
+              <small class="desktop" data-i18n="badge.desktop.short">desktop</small>
+            </a>
+          </li>
+          <li>
+            <a href="favicon-maker/favicon-maker.html">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+          <li>
+            <a href="favicon-maker-offline/favicon-maker-offline.html">
+              ⭐ <span data-i18n="nav.favicon">Favicon Maker</span>
+              <small class="desktop" data-i18n="badge.desktop.short">desktop</small>
+            </a>
+          </li>
+          <li>
+            <a href="https://orspex-jobs-seeking.vercel.app/jobs" target="_blank" rel="noopener">
+              🔍 <span data-i18n="nav.talent">Find Talent</span>
+              <small class="online" data-i18n="badge.online.short">online</small>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap-narrow">
+      <div class="hero">
+        <span class="eyebrow" data-i18n="hero.eyebrow">The ORSPEX Suite</span>
+        <h1>
+          <span data-i18n="hero.h1a">Six tools.</span>
+          <span data-i18n="hero.h1b">Zero cloud dependency.</span>
+        </h1>
+        <p data-i18n="hero.p">
+          A family of standalone, offline-first applications — ERP, job seeking, PDF compression,
+          and favicon generation — built for individuals and small teams. No accounts, no internet,
+          no data leaving your machine.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" aria-label="ORSPEX footer">
+    <div class="wrap footer-inner">
+
+      <div class="footer-intro">
+        <p data-i18n="footer.intro">
+          A stand-alone, offline-first software suite. No cloud, no accounts, no internet
+          required — your data stays on your device.
+        </p>
+        <span class="footer-status" data-i18n="footer.status">offline by design · privacy first</span>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h4 data-i18n="footer.products">Products</h4>
+          <ul>
+            <li><a href="orspex-core/orspex-core.html">🧩 <span data-i18n="nav.core">ORSPEX Core</span> <small class="offline" data-i18n="badge.offline.short">offline</small></a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener">👥 <span data-i18n="nav.job">Job Seeker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="pdf-compressor/pdf-compressor.html">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="pdf-compressor-offline/pdf-compressor-offline.html">📄 <span data-i18n="nav.pdf">PDF Compressor</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+            <li><a href="favicon-maker/favicon-maker.html">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="online" data-i18n="badge.online.short">online</small></a></li>
+            <li><a href="favicon-maker-offline/favicon-maker-offline.html">⭐ <span data-i18n="nav.favicon">Favicon Maker</span> <small class="desktop" data-i18n="badge.desktop.short">desktop</small></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.modules">Modules</h4>
+          <ul>
+            <li><a href="orspex-core/orspex-core.html" data-i18n="footer.modules.erp">🧩 Stand-alone ERP</a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" rel="noopener" data-i18n="footer.modules.jobs">👥 Jobs &amp; Hiring</a></li>
+            <li><a href="pdf-compressor/pdf-compressor.html" data-i18n="footer.modules.pdf">📄 PDF Compression</a></li>
+            <li><a href="favicon-maker/favicon-maker.html" data-i18n="footer.modules.fav">⭐ Favicon Generation</a></li>
+            <li><a href="https://orspex-jobs-seeking.vercel.app/jobs" target="_blank" rel="noopener" data-i18n="footer.modules.talent">🔍 Talent Directory</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.resources">Resources</h4>
+          <ul>
+            <li><a href="orspex-core/orspex-core.html" data-i18n="footer.resources.docs">📘 Documentation</a></li>
+            <li><a href="orspex-core/orspex-core.html" data-i18n="footer.resources.guides">🛠️ Install guides</a></li>
+            <li><a href="status.html" data-i18n="footer.resources.release">🧪 Release notes</a></li>
+            <li><a href="orspex-core/orspex-core.html" data-i18n="footer.resources.faq">❓ FAQ</a></li>
+            <li><a href="privacy.html" data-i18n="footer.resources.security">🛡️ Security &amp; privacy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.company">Company</h4>
+          <ul>
+            <li><a href="index.html" data-i18n="footer.company.about">🏢 About ORSPEX</a></li>
+            <li><a href="mailto:info@orspex.com" data-i18n="footer.company.contact">✉️ Contact</a></li>
+            <li><a href="#partners" data-i18n="footer.company.partners">🤝 Partners</a></li>
+            <li><a href="#press" data-i18n="footer.company.press">📰 Press kit</a></li>
+            <li><a href="#careers" data-i18n="footer.company.careers">💼 Careers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          © <strong>ORSPEX</strong> · <span data-i18n="brand.tagline">Organization · Planning · Services · Execution</span>. <span data-i18n="footer.rights">All rights reserved.</span>
+        </div>
+
+        <ul class="footer-legal">
+          <li><a href="privacy.html" data-i18n="footer.legal.privacy">Privacy</a></li>
+          <li><a href="terms.html" data-i18n="footer.legal.terms">Terms</a></li>
+          <li><a href="license.html" data-i18n="footer.legal.license">License</a></li>
+          <li><a href="status.html" data-i18n="footer.legal.status">Status</a></li>
+        </ul>
+
+        <span class="footer-version">v1.0.0 · <span data-i18n="footer.version.stable">stable</span> · <span data-i18n="footer.version.offline">offline</span></span>
+      </div>
+
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const translations = {
+        en: {
+          'brand.tagline': 'Organization · Planning · Services · Execution',
+          'badge.offline': 'offline · no cloud',
+          'badge.offline.short': 'offline',
+          'badge.online.short': 'online',
+          'badge.desktop.short': 'desktop',
+          'cta.get': 'get ORSPEX suite',
+          'nav.products': 'Products',
+          'nav.core': 'ORSPEX Core',
+          'nav.job': 'Job Seeker',
+          'nav.pdf': 'PDF Compressor',
+          'nav.favicon': 'Favicon Maker',
+          'nav.talent': 'Find Talent',
+          'hero.eyebrow': 'The ORSPEX Suite',
+          'hero.h1a': 'Six tools.',
+          'hero.h1b': 'Zero cloud dependency.',
+          'hero.p': 'A family of standalone, offline-first applications — ERP, job seeking, PDF compression, and favicon generation — built for individuals and small teams. No accounts, no internet, no data leaving your machine.',
+          'footer.intro': 'A stand-alone, offline-first software suite. No cloud, no accounts, no internet required — your data stays on your device.',
+          'footer.status': 'offline by design · privacy first',
+          'footer.products': 'Products',
+          'footer.modules': 'Modules',
+          'footer.resources': 'Resources',
+          'footer.company': 'Company',
+          'footer.modules.erp': '🧩 Stand-alone ERP',
+          'footer.modules.jobs': '👥 Jobs & Hiring',
+          'footer.modules.pdf': '📄 PDF Compression',
+          'footer.modules.fav': '⭐ Favicon Generation',
+          'footer.modules.talent': '🔍 Talent Directory',
+          'footer.resources.docs': '📘 Documentation',
+          'footer.resources.guides': '🛠️ Install guides',
+          'footer.resources.release': '🧪 Release notes',
+          'footer.resources.faq': '❓ FAQ',
+          'footer.resources.security': '🛡️ Security & privacy',
+          'footer.company.about': '🏢 About ORSPEX',
+          'footer.company.contact': '✉️ Contact',
+          'footer.company.partners': '🤝 Partners',
+          'footer.company.press': '📰 Press kit',
+          'footer.company.careers': '💼 Careers',
+          'footer.rights': 'All rights reserved.',
+          'footer.legal.privacy': 'Privacy',
+          'footer.legal.terms': 'Terms',
+          'footer.legal.license': 'License',
+          'footer.legal.status': 'Status',
+          'footer.version.stable': 'stable',
+          'footer.version.offline': 'offline'
+        },
+        ar: {
+          'brand.tagline': 'التنظيم · التخطيط · الخدمات · التنفيذ',
+          'badge.offline': 'يعمل دون اتصال · بدون سحابة',
+          'badge.offline.short': 'دون اتصال',
+          'badge.online.short': 'عبر الإنترنت',
+          'badge.desktop.short': 'سطح المكتب',
+          'cta.get': 'احصل على حزمة ORSPEX',
+          'nav.products': 'المنتجات',
+          'nav.core': 'نظام ORSPEX الأساسي',
+          'nav.job': 'الباحث عن عمل',
+          'nav.pdf': 'ضاغط PDF',
+          'nav.favicon': 'صانع الأيقونات',
+          'nav.talent': 'ابحث عن موهبة',
+          'hero.eyebrow': 'حزمة ORSPEX',
+          'hero.h1a': 'ستة أدوات.',
+          'hero.h1b': 'بدون اعتماد على السحابة.',
+          'hero.p': 'عائلة من التطبيقات المستقلة التي تعمل دون اتصال — تخطيط موارد المؤسسات، والبحث عن عمل، وضغط PDF، وإنشاء الأيقونات — مبنية للأفراد والفرق الصغيرة. بلا حسابات، بلا إنترنت، بلا بيانات تغادر جهازك.',
+          'footer.intro': 'حزمة برامج مستقلة تعمل دون اتصال. بلا سحابة، بلا حسابات، بلا حاجة للإنترنت — بياناتك تبقى على جهازك.',
+          'footer.status': 'مصمم للعمل دون اتصال · الخصوصية أولاً',
+          'footer.products': 'المنتجات',
+          'footer.modules': 'الوحدات',
+          'footer.resources': 'الموارد',
+          'footer.company': 'الشركة',
+          'footer.modules.erp': '🧩 تخطيط موارد المؤسسات',
+          'footer.modules.jobs': '👥 الوظائف والتوظيف',
+          'footer.modules.pdf': '📄 ضغط PDF',
+          'footer.modules.fav': '⭐ إنشاء الأيقونات',
+          'footer.modules.talent': '🔍 دليل المواهب',
+          'footer.resources.docs': '📘 الوثائق',
+          'footer.resources.guides': '🛠️ أدلة التثبيت',
+          'footer.resources.release': '🧪 ملاحظات الإصدار',
+          'footer.resources.faq': '❓ الأسئلة الشائعة',
+          'footer.resources.security': '🛡️ الأمان والخصوصية',
+          'footer.company.about': '🏢 عن ORSPEX',
+          'footer.company.contact': '✉️ اتصل بنا',
+          'footer.company.partners': '🤝 الشركاء',
+          'footer.company.press': '📰 الحقيبة الصحفية',
+          'footer.company.careers': '💼 الوظائف',
+          'footer.rights': 'جميع الحقوق محفوظة.',
+          'footer.legal.privacy': 'الخصوصية',
+          'footer.legal.terms': 'الشروط',
+          'footer.legal.license': 'الترخيص',
+          'footer.legal.status': 'الحالة',
+          'footer.version.stable': 'مستقر',
+          'footer.version.offline': 'دون اتصال'
+        },
+        zh: {
+          'brand.tagline': '组织 · 规划 · 服务 · 执行',
+          'badge.offline': '离线 · 无需云端',
+          'badge.offline.short': '离线',
+          'badge.online.short': '在线',
+          'badge.desktop.short': '桌面',
+          'cta.get': '获取 ORSPEX 套件',
+          'nav.products': '产品',
+          'nav.core': 'ORSPEX 核心',
+          'nav.job': '求职者',
+          'nav.pdf': 'PDF 压缩器',
+          'nav.favicon': '图标生成器',
+          'nav.talent': '寻找人才',
+          'hero.eyebrow': 'ORSPEX 套件',
+          'hero.h1a': '六大工具。',
+          'hero.h1b': '零云端依赖。',
+          'hero.p': '一系列独立、离线优先的应用 —— ERP、求职、PDF 压缩和图标生成 —— 为个人和小团队打造。无需账户，无需互联网，数据不离开您的设备。',
+          'footer.intro': '一套独立、离线优先的软件套件。无云端，无账户，无需互联网 —— 数据保留在您的设备上。',
+          'footer.status': '天生离线 · 隐私优先',
+          'footer.products': '产品',
+          'footer.modules': '模块',
+          'footer.resources': '资源',
+          'footer.company': '公司',
+          'footer.modules.erp': '🧩 独立 ERP',
+          'footer.modules.jobs': '👥 招聘与求职',
+          'footer.modules.pdf': '📄 PDF 压缩',
+          'footer.modules.fav': '⭐ 图标生成',
+          'footer.modules.talent': '🔍 人才目录',
+          'footer.resources.docs': '📘 文档',
+          'footer.resources.guides': '🛠️ 安装指南',
+          'footer.resources.release': '🧪 发行说明',
+          'footer.resources.faq': '❓ 常见问题',
+          'footer.resources.security': '🛡️ 安全与隐私',
+          'footer.company.about': '🏢 关于 ORSPEX',
+          'footer.company.contact': '✉️ 联系我们',
+          'footer.company.partners': '🤝 合作伙伴',
+          'footer.company.press': '📰 媒体资料',
+          'footer.company.careers': '💼 招聘',
+          'footer.rights': '版权所有。',
+          'footer.legal.privacy': '隐私',
+          'footer.legal.terms': '条款',
+          'footer.legal.license': '许可',
+          'footer.legal.status': '状态',
+          'footer.version.stable': '稳定版',
+          'footer.version.offline': '离线'
+        }
+      };
+
+      const root = document.getElementById('html-root');
+      const buttons = document.querySelectorAll('.lang-switch button');
+
+      function setLanguage(lang) {
+        if (!translations[lang]) return;
+        root.setAttribute('lang', lang);
+
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          const key = el.getAttribute('data-i18n');
+          const value = translations[lang][key];
+          if (value !== undefined) el.textContent = value;
+        });
+
+        buttons.forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+
+        try { localStorage.setItem('orspex-lang', lang); } catch (e) {}
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setLanguage(btn.getAttribute('data-lang'));
+        });
+      });
+
+      let initial = 'en';
+      try {
+        const saved = localStorage.getItem('orspex-lang');
+        if (saved && translations[saved]) initial = saved;
+        else {
+          const nav = (navigator.language || 'en').toLowerCase();
+          if (nav.startsWith('ar')) initial = 'ar';
+          else if (nav.startsWith('zh')) initial = 'zh';
+        }
+      } catch (e) {}
+
+      setLanguage(initial);
+    })();
+  </script>
+
+</body>
+</html>
