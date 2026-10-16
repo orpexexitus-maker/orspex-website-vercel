@@ -1,0 +1,25 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backups
+*.zip
+*.bak
+
+# Editor
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# Local test scripts
+check-links.ps1
+seo-check.ps1
+server.py
+index-test.html
+
+# Leftover files
+favicon.svg.xml
