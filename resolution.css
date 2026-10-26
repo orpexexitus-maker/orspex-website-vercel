@@ -1,0 +1,175 @@
+/* =========================================================
+   ORSPEX MASTER LAYOUT ENGINE (Fixes Desktop & Mobile)
+   ========================================================= */
+
+/* --- 1. GLOBAL RESET --- */
+html { line-height: 1.6; scroll-behavior: smooth; }
+body { margin: 0; padding: 0; overflow-x: hidden; background-color: var(--orspex-bg); }
+
+/* --- 2. DYNAMIC CONTAINERS --- */
+.header-inner, main, .footer-inner {
+  width: 100%;
+  max-width: 90vw; 
+  margin: 0 auto;
+}
+
+/* --- 3. DESKTOP LAYOUT (Default) --- */
+.header-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem 0;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.header-nav-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 1rem;
+  border-top: 1px solid var(--orspex-border);
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* 
+   THE ULTIMATE FIX: 
+   Hide the mobile menu button globally. 
+   It will only be shown inside the mobile media query.
+*/
+.menu-toggle-label {
+  display: none;
+}
+
+/* --- 4. THE HERO --- */
+.hero {
+  text-align: center;
+  margin: clamp(2rem, 8vh, 8rem) auto;
+  max-width: 60vw; 
+  padding: 0 1rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 4.5vw, 6rem); 
+  line-height: 1.1;
+  margin-bottom: 2rem;
+  letter-spacing: -1.5px;
+}
+
+.hero p {
+  font-size: clamp(1rem, 1.5vw, 1.8rem);
+  margin: 0 auto 3rem auto;
+  color: var(--orspex-slate);
+}
+
+/* --- 5. GRIDS --- */
+.product-grid, .services-grid, .portfolio-grid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+/* =========================================================
+   MOBILE LAYOUT (The Vertical Design)
+   ========================================================= */
+@media (max-width: 768px) {
+  .header-inner, main, .footer-inner { 
+    max-width: 100%; 
+    padding: 0 1.5rem; 
+  }
+
+  .hero { max-width: 100%; }
+
+  .header-top {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .header-actions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .header-nav-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* 1. SHOW the Hamburger Button on mobile */
+  .menu-toggle-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: #F4F4F5;
+    border: 1px solid var(--orspex-border);
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    color: var(--orspex-dark);
+    margin-top: 1rem;
+  }
+
+  /* 2. HIDE the links by default on mobile */
+  .nav-links {
+    display: none; 
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    margin-top: 1rem;
+    border: 1px solid var(--orspex-border);
+  }
+
+  /* 3. SHOW the links when the checkbox is checked */
+  .menu-toggle-checkbox:checked ~ .nav-links {
+    display: flex;
+  }
+
+  /* 4. Style the mobile links */
+  .nav-links > li { width: 100%; }
+  .nav-links > li > a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: #FAFAFA;
+    border: 1px solid var(--orspex-border);
+    border-radius: 8px;
+  }
+
+  .product-grid, .services-grid, .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+}

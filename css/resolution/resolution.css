@@ -1,0 +1,88 @@
+/* =========================================================
+   PRECISE RESPONSIVE BREAKPOINTS FOR ORSPEX
+   ========================================================= */
+
+/* --- 1. SMALL SCREENS (Mobile & Small Tablets) --- */
+/* Covers everything up to 640px (VGA / Phones) */
+@media (max-width: 639px) {
+  .product-grid { grid-template-columns: 1fr; }
+  .header-nav-row { flex-direction: column; }
+  .hero h1 { font-size: 2rem; }
+  .footer-top { flex-direction: column; align-items: center; text-align: center; }
+}
+
+/* --- 2. LARGE PHONES & SMALL TABLETS (640px to 799px) --- */
+/* SVGA (800x600) & Standard Phones landscape */
+@media (min-width: 640px) and (max-width: 799px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero h1 { font-size: 2.5rem; }
+}
+
+/* --- 3. TABLETS (800px to 1023px) --- */
+/* XGA (1024x768) & iPad Portrait */
+@media (min-width: 800px) and (max-width: 1023px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .wrap { padding: 0 2rem; }
+  .footer-top { flex-direction: row; flex-wrap: wrap; justify-content: space-around; }
+}
+
+/* --- 4. SMALL LAPTOPS (1024px to 1279px) --- */
+/* SXGA (1280x1024) & Small Laptops */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr); }
+  .hero h1 { font-size: 3rem; }
+  .footer-links-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* --- 5. STANDARD LAPTOPS & DESKTOPS (1280px to 1599px) --- */
+/* WXGA (1366x768), WXGA+ (1440x900) */
+@media (min-width: 1280px) and (max-width: 1599px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr); }
+  .wrap { max-width: 1200px; } /* Prevents text from stretching too wide */
+  .hero h1 { font-size: 3.5rem; }
+}
+
+/* --- 6. FULL HD & STANDARD DESKTOPS (1600px to 1919px) --- */
+/* HD+ (1600x900), UXGA (1600x1200) */
+@media (min-width: 1600px) and (max-width: 1919px) {
+  .product-grid { grid-template-columns: repeat(4, 1fr); }
+  .wrap { max-width: 1500px; }
+}
+
+/* --- 7. FULL HD 1080p (1920px to 2559px) --- */
+/* This is the most common desktop resolution */
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .product-grid { grid-template-columns: repeat(4, 1fr); }
+  .wrap { max-width: 1600px; }
+  .hero h1 { font-size: 4rem; }
+}
+
+/* --- 8. QHD & ULTRAWIDE FHD (2560px to 3439px) --- */
+/* QHD (2560x1440), UWFHD (2560x1080) */
+@media (min-width: 2560px) and (max-width: 3439px) {
+  .product-grid { grid-template-columns: repeat(5, 1fr); }
+  .wrap { max-width: 2200px; }
+}
+
+/* --- 9. UWQHD & 4K UHD (3440px to 3839px) --- */
+/* UWQHD (3440x1440) */
+@media (min-width: 3440px) and (max-width: 3839px) {
+  .product-grid { grid-template-columns: repeat(5, 1fr); }
+  .wrap { max-width: 2800px; }
+}
+
+/* --- 10. TRUE 4K & 5K (3840px and up) --- */
+/* 4K UHD (3840x2160), 5K (5120x2880) */
+@media (min-width: 3840px) {
+  .product-grid { grid-template-columns: repeat(6, 1fr); }
+  .wrap { max-width: 3400px; } /* Caps the content so it doesn't look absurd on an 8K screen */
+  .hero h1 { font-size: 5rem; }
+}
+
+/* --- 11. VERTICAL / PORTRAIT ORIENTATION OVERRIDES --- */
+/* If a 4K screen is rotated vertically (2160x3840), stack it like mobile */
+@media (orientation: portrait) and (min-width: 800px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .wrap { max-width: 800px; }
+  .footer-top { flex-direction: column; align-items: center; }
+}
