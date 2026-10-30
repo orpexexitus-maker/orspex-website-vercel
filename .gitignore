@@ -23,3 +23,5 @@ index-test.html
 
 # Leftover files
 favicon.svg.xml
+.vercel
+.env*

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&family=Prompt:wght@400;500;700&display=swap" rel="stylesheet">
    
   <style>
     /* --- BASE STYLES --- */
@@ -29,6 +29,7 @@
       --font-arabic: 'Tajawal', system-ui, sans-serif;
       --font-zh: 'Noto Sans SC', system-ui, sans-serif;
       --font-hi: 'Noto Sans Devanagari', system-ui, sans-serif;
+      --font-tl: 'Prompt', system-ui, sans-serif;
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.01);
@@ -45,8 +46,11 @@
 
     /* Language-specific Fonts & RTL Support */
     html[lang="ar"] body { font-family: var(--font-arabic); direction: rtl; }
+    html[dir="rtl"] { direction: rtl; }
+    html[dir="ltr"] { direction: ltr; }
     html[lang="zh"] body { font-family: var(--font-zh); }
     html[lang="hi"] body { font-family: var(--font-hi); }
+    html[lang="tl"] body { font-family: var(--font-tl); }
     
     html[lang="ar"] .nav-links > li > a { flex-direction: row-reverse; }
     html[lang="ar"] .dropdown-menu { left: auto; right: 0; }
@@ -59,6 +63,7 @@
     html[lang="ar"] .brand { flex-direction: row-reverse; }
     html[lang="ar"] .footer-brand-section { text-align: right; align-items: flex-end; }
     html[lang="ar"] .footer-col { text-align: right; }
+    html[lang="ar"] #about-page p { text-align: right; }
 
     /* --- CONTAINER --- */
     .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
@@ -90,39 +95,35 @@
     .lang-switch button { background: transparent; border: none; font-size: 0.7rem; font-weight: 700; color: var(--orspex-slate); padding: 0.3rem 0.5rem; border-radius: 60px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.2rem; line-height: 1; }
     .lang-switch button.active { background: white; color: var(--orspex-dark); box-shadow: var(--shadow-sm); }
 
-    /* --- NAVIGATION & DROPDOWN (FIXED) --- */
+    /* --- NAVIGATION & DROPDOWN --- */
     .header-nav-row { display: flex; justify-content: center; padding: 1rem 0 0; }
     .nav-links { display: flex; align-items: center; gap: 0.5rem; list-style: none; flex-wrap: wrap; justify-content: center; }
     .nav-links > li { position: relative; padding-bottom: 10px; }
     .nav-links > li > a { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 600; color: var(--orspex-slate); text-decoration: none; padding: 0.5rem 1rem; border-radius: 60px; transition: all 0.2s; cursor: pointer; }
     .nav-links > li > a:hover, .nav-links > li > a.current { background: #F4F4F5; color: var(--orspex-blue); }
     
-    /* Dropdown Menu */
-    .dropdown-menu { 
-      display: none; 
-      position: absolute; 
-      top: 100%; /* Attaches directly to the bottom of the parent li */
-      left: 0; 
-      background: white; 
-      border: 1px solid var(--orspex-border); 
-      border-radius: 16px; 
-      box-shadow: var(--shadow-xl); 
-      min-width: 240px; 
-      padding: 0.5rem; 
-      z-index: 999; 
-      list-style: none; 
-    }
-
-    /* Show dropdown on hover (Desktop) */
-    @media (min-width: 769px) {
-      .nav-links > li:hover .dropdown-menu { display: block; }
-    }
-
-    /* Show dropdown via JS click (Mobile) */
+    .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid var(--orspex-border); border-radius: 16px; box-shadow: var(--shadow-xl); min-width: 240px; padding: 0.5rem; z-index: 999; list-style: none; }
+    @media (min-width: 769px) { .nav-links > li:hover .dropdown-menu { display: block; } }
     .nav-links > li.mobile-dropdown-active > .dropdown-menu { display: block; }
-
     .dropdown-menu li a { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.8rem; font-size: 0.85rem; font-weight: 500; color: var(--orspex-dark); text-decoration: none; border-radius: 10px; transition: all 0.2s; }
     .dropdown-menu li a:hover { background: #F4F4F5; color: var(--orspex-blue); padding-left: 1rem; }
+
+    /* Responsive navigation and language selector */
+    @media (max-width: 768px) {
+      .header-inner { padding: 1rem; }
+      .header-top { justify-content: center; }
+      .header-actions { justify-content: center; width: 100%; gap: 0.65rem; }
+      .lang-switch { flex-wrap: wrap; justify-content: center; white-space: normal; }
+      .header-nav-row { padding-top: 0.5rem; }
+      .nav-links { width: 100%; gap: 0.25rem; }
+      .nav-links > li { padding-bottom: 4px; }
+      .nav-links > li > a { padding: 0.5rem 0.65rem; font-size: 0.82rem; }
+      .dropdown-menu { position: static; min-width: min(280px, 90vw); margin: 0.25rem auto 0; }
+    }
+    @media (max-width: 420px) {
+      .lang-switch button { padding: 0.35rem 0.4rem; }
+      .nav-links > li > a { padding: 0.45rem 0.5rem; font-size: 0.78rem; }
+    }
     
     main { position: relative; z-index: 1; flex: 1; padding: 4rem 0; }
     .page-section { display: none; animation: slideUp 0.4s ease; }
@@ -191,6 +192,29 @@
     .portfolio-content h3 { font-size: 1.4rem; margin-bottom: 0.75rem; color: var(--orspex-dark); font-weight: 700; }
     .portfolio-content .tag { display: inline-block; background: #F4F4F5; color: var(--orspex-slate); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 20px; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
     .portfolio-content p { color: var(--orspex-slate); line-height: 1.6; font-size: 0.95rem; }
+
+    /* --- PROFESSIONAL BLOG LAYOUT --- */
+    .blog-header-section { text-align: center; margin-bottom: 4rem; }
+    .blog-header-section h2 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem; }
+    .blog-header-section p { color: var(--orspex-slate); font-size: 1.1rem; margin-bottom: 2rem; }
+    
+    .blog-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; max-width: 800px; margin: 0 auto; }
+    
+    .blog-article { background: white; border: 1px solid var(--orspex-border); border-radius: 16px; padding: 2.5rem; transition: all 0.3s; box-shadow: var(--shadow-sm); position: relative; }
+    .blog-article:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: #DBEAFE; }
+    
+    .article-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--orspex-slate); }
+    .author-avatar { width: 40px; height: 40px; border-radius: 50%; background: #F4F4F5; border: 1px solid var(--orspex-border); }
+    .article-meta strong { color: var(--orspex-dark); font-weight: 600; }
+    .meta-divider { width: 4px; height: 4px; border-radius: 50%; background: #D4D4D8; }
+    
+    .article-title { font-size: 1.6rem; font-weight: 800; color: var(--orspex-dark); margin-bottom: 1rem; line-height: 1.3; letter-spacing: -0.5px; }
+    .article-content { font-size: 1.05rem; color: var(--orspex-slate); line-height: 1.7; margin-bottom: 2rem; white-space: pre-wrap; }
+    
+    .article-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--orspex-border); padding-top: 1.5rem; }
+    .read-time { font-size: 0.85rem; color: #71717A; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+    .read-time::before { content: "📖"; }
+    .article-date { font-size: 0.85rem; color: #71717A; font-weight: 500; }
 
     /* --- FOOTER --- */
     .site-footer { position: relative; z-index: 1; background-color: #FFFFFF; border-top: 1px solid var(--orspex-border); margin-top: auto; }
@@ -280,17 +304,19 @@
               <li><a href="https://orpexexitus-maker.github.io/orspex-favicon-generator/" target="_blank" data-i18n="srv_favicon">Free Favicon Maker</a></li>
               <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" data-i18n="srv_jobs">Orspex Jobs</a></li>
               <li><a href="https://orspex-video-compressor.vercel.app" target="_blank" data-i18n="srv_video">Video Compressor</a></li>
+              <li><a href="https://orpexexitus-maker.github.io/barcode-generator/" target="_blank" rel="noopener noreferrer" data-i18n="srv_barcode">Barcode Generator</a></li>
             </ul>
           </li>
 
           <li class="dropdown-parent">
             <a href="#" onclick="handleDropdownToggle(event, 'pricing')" id="nav-products"><span data-i18n="nav_products">Products</span> <span class="dropdown-icon">▼</span></a>
             <ul class="dropdown-menu">
-              <li><a href="#" onclick="openProduct('core'); return false;">ORSPEX Core <small class="offline">Offline</small></a></li>
-              <li><a href="#" onclick="openProduct('forensic'); return false;">Forensic Analyzer <small class="offline">Offline</small></a></li>
-              <li><a href="#" onclick="openProduct('video'); return false;">Video Compressor <small class="desktop">Desktop</small></a></li>
-              <li><a href="#" onclick="openProduct('pdf'); return false;">PDF Compressor <small class="offline">Offline</small></a></li>
-              <li><a href="#" onclick="openProduct('favicon'); return false;">Favicon Maker <small class="offline">Offline</small></a></li>
+              <li><a href="#" onclick="openProduct('checkwriter'); return false;" data-i18n="prod_checkwriter_short">Orspex Check Writer <small class="desktop">Desktop</small></a></li>
+              <li><a href="#" onclick="openProduct('core'); return false;" data-i18n="prod_core_short">ORSPEX Core <small class="offline">Offline</small></a></li>
+              <li><a href="#" onclick="openProduct('forensic'); return false;" data-i18n="prod_forensic_short">Forensic Analyzer <small class="offline">Offline</small></a></li>
+              <li><a href="#" onclick="openProduct('video'); return false;" data-i18n="prod_video_short">Video Compressor <small class="desktop">Desktop</small></a></li>
+              <li><a href="#" onclick="openProduct('pdf'); return false;" data-i18n="prod_pdf_short">PDF Compressor <small class="offline">Offline</small></a></li>
+              <li><a href="#" onclick="openProduct('favicon'); return false;" data-i18n="prod_favicon_short">Favicon Maker <small class="offline">Offline</small></a></li>
             </ul>
           </li>
           
@@ -311,8 +337,8 @@
       <section id="home-page" class="page-section active">
         <div class="hero">
           <span class="eyebrow" data-i18n="hero_eyebrow">Standalone · Privacy-First</span>
-          <h1><span data-i18n="hero_title_1">Five tools. Zero cloud.</span> <br><span data-i18n="hero_title_2">All your data stays local.</span></h1>
-          <p data-i18n="hero_desc">ORSPEX is a single suite for Business ERP, Forensic Analysis, Video Compression, PDF tools, and SEO generators — built for teams who refuse to hand their data to the cloud.</p>
+          <h1><span data-i18n="hero_title_1">Six tools. Zero cloud.</span> <br><span data-i18n="hero_title_2">All your data stays local.</span></h1>
+          <p data-i18n="hero_desc">ORSPEX is a single suite for Check Writing, Business ERP, Forensic Analysis, Video Compression, PDF tools, and SEO generators — built for teams who refuse to hand their data to the cloud.</p>
           <div class="hero-buttons">
             <a href="#" class="btn-cta" onclick="showPage('pricing'); return false;" data-i18n="btn_view_pricing">View Pricing & Products</a>
             <a href="#" class="btn-secondary" onclick="openModal('contact-modal'); return false;" data-i18n="btn_contact_sales">Contact Sales</a>
@@ -352,6 +378,12 @@
             <p data-i18n="srv_video_desc">Quickly compress small video clips directly in your browser. 100% private and offline.</p>
             <a href="https://orspex-video-compressor.vercel.app" target="_blank" class="btn-buy" style="text-decoration: none;" data-i18n="btn_launch">Launch Tool →</a>
           </div>
+          <div class="service-card">
+            <div class="service-icon">▦</div>
+            <h3 data-i18n="srv_barcode">Barcode Generator</h3>
+            <p data-i18n="srv_barcode_desc">Create barcodes quickly with our free online barcode generator.</p>
+            <a href="https://orpexexitus-maker.github.io/barcode-generator/" target="_blank" rel="noopener noreferrer" class="btn-buy" style="text-decoration: none;" data-i18n="btn_launch">Launch Tool →</a>
+          </div>
         </div>
       </section>
 
@@ -359,8 +391,19 @@
       <section id="about-page" class="page-section">
         <div class="glass-container about-container">
           <h2 data-i18n="about_title">About ORSPEX</h2>
-          <p data-i18n="about_p1">ORSPEX was founded on a simple principle: your software should work for you, not the other way around. We believe that your data belongs on your machine, not in a cloud server owned by a corporation.</p>
-          <p data-i18n="about_p2">In an era where everything is moving to the cloud, we are building the opposite. We create high-performance, standalone desktop applications that run entirely offline. No subscriptions, no telemetry, no forced internet connections. Just powerful tools that work when you need them.</p>
+          
+          <p data-i18n="about_p1" style="font-size: 1.15rem; line-height: 1.8; color: var(--orspex-dark); font-weight: 500; margin-bottom: 1.5rem;">ORSPEX is an independent, bootstrapped software studio (Indie App Dev) dedicated to building high-performance, offline-first tools. We create premium desktop applications for professionals who value privacy, speed, and total control over their data.</p>
+          
+          <p data-i18n="about_p2" style="margin-bottom: 1.5rem; line-height: 1.8;">We are a product-led studio, not a venture-backed machine. This means we answer directly to our users, not to advertisers or investors. We believe in sustainable entrepreneurship: building software that generates value through honest, one-time purchases, rather than draining your wallet with endless monthly subscriptions. We evolve by listening, shipping fast, and solving real problems for real professionals.</p>
+          
+          <p data-i18n="about_p3" style="margin-bottom: 2rem; line-height: 1.8;">In an era where everything is moving to the cloud, we are building the opposite. No telemetry, no forced internet connections, and no data mining. Just powerful, standalone tools that work exactly when you need them—whether you're in a boardroom, an oil rig, or a basement with zero Wi-Fi.</p>
+
+          <!-- Check Writer Featured -->
+          <div style="background: white; border: 1px solid var(--orspex-border); padding: 2.5rem; border-radius: 20px; margin-bottom: 2.5rem; box-shadow: var(--shadow-sm);">
+            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--orspex-dark);" data-i18n="prod_checkwriter_title">Orspex Check Writer Pro</h3>
+            <p style="color: var(--orspex-slate); line-height: 1.7; margin-bottom: 1.5rem;" data-i18n="prod_checkwriter_full_desc">A complete, professional desktop application for writing, printing, and reconciling bank checks. Features exact 1:1 physical paper printing, full double-entry ledger management, multi-bank support, and a multi-language interface (English, Arabic, French, Spanish, Chinese, and Hindi).</p>
+            <a href="#" onclick="openProduct('checkwriter'); return false;" class="btn-buy" style="max-width: 250px; padding: 0.8rem;">View Product Details →</a>
+          </div>
           
           <div class="about-values">
             <div class="about-value-card">
@@ -434,59 +477,70 @@
         </div>
         
         <div class="product-grid">
+          <!-- 0. Check Writer Pro -->
+          <article class="product-card" onclick="openProduct('checkwriter')">
+            <div class="card-header">
+              <div class="icon-box">🖨️</div>
+              <h3><span data-i18n="prod_checkwriter_title">Orspex Check Writer Pro</span> <br> <small class="desktop">Desktop</small></h3>
+            </div>
+            <p data-i18n="prod_checkwriter_desc">Professional check writing, printing, and bank reconciliation. Print 1:1 checks, manage vouchers, and balance your ledger.</p>
+            <div class="price">$15.00 USD</div>
+            <a class="btn-buy" href="https://orspexai.gumroad.com/l/orspex-check-writing?wanted=true" target="_blank" onclick="event.stopPropagation();" data-i18n="btn_buy_gumroad">Buy on Gumroad →</a>
+          </article>
+
           <!-- 1. ORSPEX Core -->
           <article class="product-card" onclick="openProduct('core')">
             <div class="card-header">
               <div class="icon-box">📊</div>
-              <h3>ORSPEX CORE - Business Suite <br> <small class="offline">Offline</small></h3>
+              <h3><span data-i18n="prod_core_title">ORSPEX CORE - Business Suite</span> <br> <small class="offline">Offline</small></h3>
             </div>
-            <p>The foundational offline engine. Inventory, invoicing, payroll, CRM, and reporting.</p>
+            <p data-i18n="prod_core_desc">The foundational offline engine. Inventory, invoicing, payroll, CRM, and reporting.</p>
             <div class="price">$35.00 USD</div>
-            <a class="btn-buy" href="https://orspexai.gumroad.com/l/orspex-core?wanted=true" target="_blank" onclick="event.stopPropagation();">Buy on Gumroad →</a>
+            <a class="btn-buy" href="https://orspexai.gumroad.com/l/orspex-core?wanted=true" target="_blank" onclick="event.stopPropagation();" data-i18n="btn_buy_gumroad">Buy on Gumroad →</a>
           </article>
 
           <!-- 2. Forensic Analyzer -->
           <article class="product-card" onclick="openProduct('forensic')">
             <div class="card-header">
               <div class="icon-box">🛡️</div>
-              <h3>Orspex Forensic Media Analyzer <br> <small class="offline">Offline</small></h3>
+              <h3><span data-i18n="prod_forensic_title">Orspex Forensic Media Analyzer</span> <br> <small class="offline">Offline</small></h3>
             </div>
-            <p>13-Point AI & Splice Detection. Deep-dive analysis of local files and metadata.</p>
+            <p data-i18n="prod_forensic_desc">13-Point AI & Splice Detection. Deep-dive analysis of local files and metadata.</p>
             <div class="price">$99.99 USD</div>
-            <a class="btn-buy" href="https://orspexai.gumroad.com/l/orspexforensicmediaanalyzer?wanted=true" target="_blank" onclick="event.stopPropagation();">Buy on Gumroad →</a>
+            <a class="btn-buy" href="https://orspexai.gumroad.com/l/orspexforensicmediaanalyzer?wanted=true" target="_blank" onclick="event.stopPropagation();" data-i18n="btn_buy_gumroad">Buy on Gumroad →</a>
           </article>
 
           <!-- 3. Video Compressor -->
           <article class="product-card" onclick="openProduct('video')">
             <div class="card-header">
               <div class="icon-box">🎬</div>
-              <h3>Orspex Video Compressor <br> <small class="desktop">Desktop</small></h3>
+              <h3><span data-i18n="prod_video_title">Orspex Video Compressor</span> <br> <small class="desktop">Desktop</small></h3>
             </div>
-            <p>Hardware-accelerated video compression. H.264/H.265/AV1, batch queue.</p>
+            <p data-i18n="prod_video_desc">Hardware-accelerated video compression. H.264/H.265/AV1, batch queue.</p>
             <div class="price">$49.99+ USD</div>
-            <a class="btn-buy" href="https://orspexai.gumroad.com/l/vidoe-compressor?wanted=true" target="_blank" onclick="event.stopPropagation();">Buy on Gumroad →</a>
+            <a class="btn-buy" href="https://orspexai.gumroad.com/l/vidoe-compressor?wanted=true" target="_blank" onclick="event.stopPropagation();" data-i18n="btn_buy_gumroad">Buy on Gumroad →</a>
           </article>
 
           <!-- 4. PDF Compressor -->
           <article class="product-card" onclick="openProduct('pdf')">
             <div class="card-header">
               <div class="icon-box">📄</div>
-              <h3>PDF Compressor <br> <small class="offline">Offline</small></h3>
+              <h3><span data-i18n="prod_pdf_title">PDF Compressor</span> <br> <small class="offline">Offline</small></h3>
             </div>
-            <p>Shrink PDFs locally with zero uploads. Batch mode, lossless option.</p>
+            <p data-i18n="prod_pdf_desc">Shrink PDFs locally with zero uploads. Batch mode, lossless option.</p>
             <div class="price">$5.00 USD</div>
-            <a class="btn-buy" href="https://orspexai.gumroad.com/l/pdf-compressor?wanted=true" target="_blank" onclick="event.stopPropagation();">Buy on Gumroad →</a>
+            <a class="btn-buy" href="https://orspexai.gumroad.com/l/pdf-compressor?wanted=true" target="_blank" onclick="event.stopPropagation();" data-i18n="btn_buy_gumroad">Buy on Gumroad →</a>
           </article>
 
           <!-- 5. Favicon Maker -->
           <article class="product-card" onclick="openProduct('favicon')">
             <div class="card-header">
               <div class="icon-box">⭐</div>
-              <h3>Favicon Maker and SEO Generator <br> <small class="offline">Offline</small></h3>
+              <h3><span data-i18n="prod_favicon_title">Favicon Maker and SEO Generator</span> <br> <small class="offline">Offline</small></h3>
             </div>
-            <p>Generate perfect favicons and SEO metadata instantly. Optimized for all modern browsers.</p>
+            <p data-i18n="prod_favicon_desc">Generate perfect favicons and SEO metadata instantly. Optimized for all modern browsers.</p>
             <div class="price">$10.00 USD</div>
-            <a class="btn-buy" href="https://orspexai.gumroad.com/l/FaviconMakerSeoGenerator?wanted=true" target="_blank" onclick="event.stopPropagation();">Buy on Gumroad →</a>
+            <a class="btn-buy" href="https://orspexai.gumroad.com/l/FaviconMakerSeoGenerator?wanted=true" target="_blank" onclick="event.stopPropagation();" data-i18n="btn_buy_gumroad">Buy on Gumroad →</a>
           </article>
         </div>
       </section>
@@ -520,15 +574,19 @@
         </div>
       </section>
 
-      <!-- Blog Section -->
+      <!-- Blog Section (Professional Layout) -->
       <section id="blog-page" class="page-section">
-        <div class="section-header">
-          <h2 data-i18n="blog_title">ORSPEX Blog</h2>
-          <p data-i18n="blog_subtitle">Insights, tutorials, and updates from our team.</p>
-          <button class="btn-cta" onclick="openAuthModal()" style="margin-top: 1rem;" data-i18n="btn_write_post">Write a Post</button>
+        <div class="blog-header-section">
+          <h2 data-i18n="blog_title">ORSPEX Journal</h2>
+          <p data-i18n="blog_subtitle">Insights, tutorials, and updates from our engineering team.</p>
+          <button class="btn-cta" onclick="openAuthModal()" data-i18n="btn_write_post">Write a Post</button>
         </div>
-        <div class="product-grid" id="blog-posts-container">
-           <div class="product-card" style="text-align:center; padding: 3rem;"><p>Loading posts...</p></div>
+        
+        <div class="blog-grid" id="blog-posts-container">
+           <!-- Posts inserted dynamically -->
+           <div class="blog-article" style="text-align:center;">
+             <p style="color:var(--orspex-slate);">Loading posts...</p>
+           </div>
         </div>
       </section>
 
@@ -554,11 +612,12 @@
           <div class="footer-col">
             <h4 data-i18n="footer_products">Products</h4>
             <ul>
-              <li><a href="#" onclick="openProduct('core'); return false;">ORSPEX Core</a></li>
-              <li><a href="#" onclick="openProduct('forensic'); return false;">Forensic Analyzer</a></li>
-              <li><a href="#" onclick="openProduct('video'); return false;">Video Compressor</a></li>
-              <li><a href="#" onclick="openProduct('pdf'); return false;">PDF Compressor</a></li>
-              <li><a href="#" onclick="openProduct('favicon'); return false;">Favicon Maker</a></li>
+              <li><a href="#" onclick="openProduct('checkwriter'); return false;" data-i18n="prod_checkwriter_short">Orspex Check Writer</a></li>
+              <li><a href="#" onclick="openProduct('core'); return false;" data-i18n="prod_core_short">ORSPEX Core</a></li>
+              <li><a href="#" onclick="openProduct('forensic'); return false;" data-i18n="prod_forensic_short">Forensic Analyzer</a></li>
+              <li><a href="#" onclick="openProduct('video'); return false;" data-i18n="prod_video_short">Video Compressor</a></li>
+              <li><a href="#" onclick="openProduct('pdf'); return false;" data-i18n="prod_pdf_short">PDF Compressor</a></li>
+              <li><a href="#" onclick="openProduct('favicon'); return false;" data-i18n="prod_favicon_short">Favicon Maker</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -567,6 +626,7 @@
               <li><a href="https://orpexexitus-maker.github.io/orspex-pdf-compressor/" target="_blank" data-i18n="srv_pdf">Free PDF Compressor</a></li>
               <li><a href="https://orpexexitus-maker.github.io/orspex-favicon-generator/" target="_blank" data-i18n="srv_favicon">Free Favicon Maker</a></li>
               <li><a href="https://orspex-jobs-seeking.vercel.app/" target="_blank" data-i18n="srv_jobs">Orspex Jobs</a></li>
+              <li><a href="https://orpexexitus-maker.github.io/barcode-generator/" target="_blank" rel="noopener noreferrer" data-i18n="srv_barcode">Barcode Generator</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -603,24 +663,21 @@
       <button class="modal-close" onclick="closeModal(event, true)">&times;</button>
       
       <div id="auth-view">
-        <h2 style="margin-bottom:0.5rem; font-size:1.5rem; letter-spacing:-0.5px;">Welcome Back</h2>
-        <p style="color:var(--orspex-slate); margin-bottom:1.5rem; font-size:0.95rem;">Log in or register to write an article.</p>
+        <h2 style="margin-bottom:0.5rem; font-size:1.5rem; letter-spacing:-0.5px;">Write for ORSPEX</h2>
+        <p style="color:var(--orspex-slate); margin-bottom:1.5rem; font-size:0.95rem;">Enter your email to identify your posts on this browser. This is not a secure account login.</p>
         <form onsubmit="handleLogin(event)">
           <div class="form-group">
             <label>Email Address</label>
-            <input type="email" required placeholder="you@example.com" name="email">
+            <input type="email" required placeholder="you@example.com" name="email" autocomplete="email">
           </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" required placeholder="••••••••" name="password" minlength="5">
-          </div>
-          <button type="submit" class="btn-buy" style="margin-bottom:1rem; padding:0.9rem;">Log In / Register</button>
+          <button type="submit" class="btn-buy" style="margin-bottom:1rem; padding:0.9rem;">Continue</button>
         </form>
       </div>
 
       <div id="editor-view" style="display: none;">
         <h2 style="margin-bottom:0.5rem; font-size:1.5rem; letter-spacing:-0.5px;">Write a New Post</h2>
-        <p style="color: var(--orspex-blue); font-weight:600; margin-bottom:1.5rem; font-size:0.9rem;" id="logged-in-email">Welcome back!</p>
+        <p style="color: var(--orspex-blue); font-weight:600; margin-bottom:1rem; font-size:0.9rem;" id="logged-in-email">Ready to publish</p>
+        <button type="button" onclick="signOutBlogUser()" class="btn-secondary" style="margin-bottom:1.25rem;">Change author</button>
         <form onsubmit="handlePublish(event)">
           <div class="form-group"><label>Post Title</label><input type="text" required placeholder="My first blog post..." name="title"></div>
           <div class="form-group"><label>Content</label><textarea required rows="5" placeholder="Write your thoughts here..." name="content"></textarea></div>
@@ -643,6 +700,7 @@
       if (pageId === 'services') document.getElementById('nav-services').classList.add('current');
       if (pageId === 'portfolio') document.getElementById('nav-portfolio').classList.add('current');
       if (pageId === 'pricing') document.getElementById('nav-pricing').classList.add('current');
+      if (pageId === 'product-detail') document.getElementById('nav-products').classList.add('current');
       if (pageId === 'blog') {
         document.getElementById('nav-blog').classList.add('current');
         loadPosts();
@@ -669,57 +727,74 @@
 
     // --- PRODUCT DATA ---
     const productData = {
+      checkwriter: {
+        titleKey: "prod_checkwriter_title", icon: "🖨️", badge: "Desktop", badgeClass: "desktop",
+        descKey: "prod_checkwriter_full_desc",
+        featuresKeys: ["feat_check_1", "feat_check_2", "feat_check_3", "feat_check_4", "feat_check_5"],
+        price: "$15.00 USD", link: "https://orspexai.gumroad.com/l/orspex-check-writing?wanted=true"
+      },
       core: {
-        title: "ORSPEX CORE - Business Suite", icon: "📊", badge: "Offline", badgeClass: "offline",
-        desc: "The foundational offline engine for modern businesses. ORSPEX CORE brings together inventory management, invoicing, payroll, CRM, and advanced reporting into a single, lightning-fast local application.",
-        features: ["100% offline operation — your data never leaves your network.", "Integrated Inventory, Invoicing, and Payroll modules.", "Built-in CRM to manage client relationships securely.", "Customizable reporting dashboard.", "Runs on a single machine or across your local LAN."],
+        titleKey: "prod_core_title", icon: "📊", badge: "Offline", badgeClass: "offline",
+        descKey: "prod_core_full_desc",
+        featuresKeys: ["feat_core_1", "feat_core_2", "feat_core_3", "feat_core_4", "feat_core_5"],
         price: "$35.00 USD", link: "https://orspexai.gumroad.com/l/orspex-core?wanted=true"
       },
       forensic: {
-        title: "Orspex Forensic Media Analyzer", icon: "🛡️", badge: "Offline", badgeClass: "offline",
-        desc: "Professional-grade forensic analysis right on your desktop. Designed for investigators and security professionals who need deep insights without uploading sensitive evidence to the cloud.",
-        features: ["13-Point AI & Splice Detection.", "Deep-dive analysis of local file metadata.", "Extract hidden data and system logs securely.", "Zero uploads — compliant with strict chain-of-custody requirements.", "Export detailed forensic reports."],
+        titleKey: "prod_forensic_title", icon: "🛡️", badge: "Offline", badgeClass: "offline",
+        descKey: "prod_forensic_full_desc",
+        featuresKeys: ["feat_forensic_1", "feat_forensic_2", "feat_forensic_3", "feat_forensic_4", "feat_forensic_5"],
         price: "$99.99 USD", link: "https://orspexai.gumroad.com/l/orspexforensicmediaanalyzer?wanted=true"
       },
       video: {
-        title: "Orspex Video Compressor", icon: "🎬", badge: "Desktop", badgeClass: "desktop",
-        desc: "Lightning-fast video compression powered by your own hardware. Stop waiting for cloud renders and keep your media private with this powerful desktop utility.",
-        features: ["Hardware-accelerated encoding (H.264, H.265, AV1).", "Batch queue processing for multiple files.", "No cloud rendering — 100% local processing.", "Maintain high visual quality at smaller file sizes.", "Supports all major video formats."],
+        titleKey: "prod_video_title", icon: "🎬", badge: "Desktop", badgeClass: "desktop",
+        descKey: "prod_video_full_desc",
+        featuresKeys: ["feat_video_1", "feat_video_2", "feat_video_3", "feat_video_4", "feat_video_5"],
         price: "$49.99+ USD", link: "https://orspexai.gumroad.com/l/vidoe-compressor?wanted=true"
       },
       pdf: {
-        title: "PDF Compressor", icon: "📄", badge: "Offline", badgeClass: "offline",
-        desc: "Shrink your PDFs locally with zero uploads. The ORSPEX PDF Compressor is the fastest and most secure way to reduce file sizes for email or archival.",
-        features: ["Locally hosted — no file uploads required.", "Ghostscript-grade output quality.", "Batch mode for compressing multiple PDFs at once.", "Lossless compression option available.", "Ultra-lightweight and fast."],
+        titleKey: "prod_pdf_title", icon: "📄", badge: "Offline", badgeClass: "offline",
+        descKey: "prod_pdf_full_desc",
+        featuresKeys: ["feat_pdf_1", "feat_pdf_2", "feat_pdf_3", "feat_pdf_4", "feat_pdf_5"],
         price: "$5.00 USD", link: "https://orspexai.gumroad.com/l/pdf-compressor?wanted=true"
       },
       favicon: {
-        title: "Favicon Maker and SEO Generator", icon: "⭐", badge: "Offline", badgeClass: "offline",
-        desc: "Generate perfect favicons and SEO metadata instantly. Optimized for search engines, social media previews, and all modern browsers, all running locally on your machine.",
-        features: ["Generates all required favicon sizes (16x16, 32x32, Apple Touch, etc.).", "Automatically creates SEO meta tags.", "Preview your icons before saving.", "100% offline tool for privacy.", "Instant generation."],
+        titleKey: "prod_favicon_title", icon: "⭐", badge: "Offline", badgeClass: "offline",
+        descKey: "prod_favicon_full_desc",
+        featuresKeys: ["feat_fav_1", "feat_fav_2", "feat_fav_3", "feat_fav_4", "feat_fav_5"],
         price: "$10.00 USD", link: "https://orspexai.gumroad.com/l/FaviconMakerSeoGenerator?wanted=true"
       }
     };
 
+    let currentProductId = null;
+
     function openProduct(productId) {
       const product = productData[productId];
       if (!product) return;
+      currentProductId = productId;
 
       document.getElementById('detail-icon').innerText = product.icon;
-      document.getElementById('detail-title').innerText = product.title;
-      document.getElementById('detail-desc').innerText = product.desc;
       document.getElementById('detail-price').innerText = product.price;
       
       const badgeEl = document.getElementById('detail-badge');
-      badgeEl.innerText = product.badge;
+      badgeEl.innerText = product.badge; 
       badgeEl.className = product.badgeClass;
-
-      const featuresList = document.getElementById('detail-features-list');
-      featuresList.innerHTML = product.features.map(f => `<li>${f}</li>`).join('');
 
       document.getElementById('detail-buy-link').href = product.link;
 
+      renderProductDetails(product);
+
       showPage('product-detail');
+    }
+
+    function renderProductDetails(product) {
+      const lang = document.documentElement.lang || 'en';
+      const dict = translations[lang] || translations['en'];
+
+      document.getElementById('detail-title').innerText = dict[product.titleKey] || "Product";
+      document.getElementById('detail-desc').innerText = dict[product.descKey] || "";
+      
+      const featuresList = document.getElementById('detail-features-list');
+      featuresList.innerHTML = product.featuresKeys.map(key => `<li>${dict[key] || ""}</li>`).join('');
     }
 
     function openModal(id) {
@@ -733,117 +808,215 @@
       }
     }
 
-    // --- SAFE BLOG LOGIC ---
+    // --- BLOG LOGIC (STATIC-HOST COMPATIBLE) ---
+    // Posts and the current author are stored in this browser only.
+    // For shared posts and secure accounts, connect a real backend/API.
+    const BLOG_POSTS_KEY = "orspex-blog-posts-v1";
+    const BLOG_USER_KEY = "orspex-blog-author-v1";
+
+    function getBlogUser() {
+      try {
+        return localStorage.getItem(BLOG_USER_KEY) || "";
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function getBlogPosts() {
+      try {
+        const raw = localStorage.getItem(BLOG_POSTS_KEY);
+        const posts = raw ? JSON.parse(raw) : [];
+        return Array.isArray(posts) ? posts : [];
+      } catch (error) {
+        console.error("Could not read saved blog posts:", error);
+        return [];
+      }
+    }
+
     function openAuthModal() {
-      try {
-        var isLoggedIn = localStorage.getItem("orspex-user-email");
-        if (isLoggedIn) {
-          document.getElementById('auth-view').style.display = 'none';
-          document.getElementById('editor-view').style.display = 'block';
-        } else {
-          document.getElementById('auth-view').style.display = 'block';
-          document.getElementById('editor-view').style.display = 'none';
-        }
-        openModal('auth-modal');
-      } catch(e) {
-        alert("Auth modal could not open.");
+      const user = getBlogUser();
+      const authView = document.getElementById("auth-view");
+      const editorView = document.getElementById("editor-view");
+      const emailInput = document.querySelector('#auth-view input[name="email"]');
+      const loggedInEmail = document.getElementById("logged-in-email");
+
+      if (user) {
+        authView.style.display = "none";
+        editorView.style.display = "block";
+        if (loggedInEmail) loggedInEmail.textContent = "Publishing as " + user;
+      } else {
+        authView.style.display = "block";
+        editorView.style.display = "none";
+        if (emailInput) emailInput.value = "";
       }
+      openModal("auth-modal");
     }
 
-    async function handleLogin(event) {
-      event.preventDefault(); 
-      const email = event.target.querySelector('input[name="email"]').value;
-      const password = event.target.querySelector('input[name="password"]').value;
-      
-      try {
-        let response = await fetch('/api/login', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        if (!response.ok) {
-          response = await fetch('/api/register', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          });
-        }
-        if (response.ok) {
-          localStorage.setItem("orspex-user-email", email);
-          document.getElementById('auth-view').style.display = 'none';
-          document.getElementById('editor-view').style.display = 'block';
-        } else {
-          alert("Auth failed");
-        }
-      } catch (err) {
-        alert("Server error. Is the Python backend running?");
-      }
-    }
-
-    async function handlePublish(event) {
+    function handleLogin(event) {
       event.preventDefault();
-      const title = event.target.querySelector('input[name="title"]').value;
-      const content = event.target.querySelector('textarea[name="content"]').value;
-      const email = localStorage.getItem("orspex-user-email") || "anonymous";
+      const emailInput = event.target.querySelector('input[name="email"]');
+      const email = (emailInput?.value || "").trim().toLowerCase();
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert("Please enter a valid email address.");
+        emailInput?.focus();
+        return;
+      }
 
       try {
-        const response = await fetch('/api/posts', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, content, author_email: email })
+        localStorage.setItem(BLOG_USER_KEY, email);
+        document.getElementById("auth-view").style.display = "none";
+        document.getElementById("editor-view").style.display = "block";
+        const loggedInEmail = document.getElementById("logged-in-email");
+        if (loggedInEmail) loggedInEmail.textContent = "Publishing as " + email;
+      } catch (error) {
+        alert("Your browser could not save the author information. Please enable local storage and try again.");
+      }
+    }
+
+    function signOutBlogUser() {
+      try {
+        localStorage.removeItem(BLOG_USER_KEY);
+      } catch (error) {
+        console.warn("Could not clear blog author:", error);
+      }
+      document.getElementById("auth-view").style.display = "block";
+      document.getElementById("editor-view").style.display = "none";
+    }
+
+    function handlePublish(event) {
+      event.preventDefault();
+
+      const title = (event.target.querySelector('input[name="title"]')?.value || "").trim();
+      const content = (event.target.querySelector('textarea[name="content"]')?.value || "").trim();
+      const author = getBlogUser();
+
+      if (!author) {
+        alert("Please enter your email before publishing.");
+        openAuthModal();
+        return;
+      }
+      if (!title || !content) {
+        alert("Please enter both a post title and content.");
+        return;
+      }
+
+      const posts = getBlogPosts();
+      posts.unshift({
+        id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
+        title,
+        content,
+        author_email: author,
+        created_at: new Date().toISOString()
+      });
+
+      try {
+        localStorage.setItem(BLOG_POSTS_KEY, JSON.stringify(posts));
+        event.target.reset();
+        closeModal(null, true);
+        loadPosts();
+        alert("Post saved in this browser successfully.");
+      } catch (error) {
+        alert("The post could not be saved. Your browser storage may be full or disabled.");
+      }
+    }
+
+    function loadPosts() {
+      const container = document.getElementById("blog-posts-container");
+      if (!container) return;
+
+      const posts = getBlogPosts();
+      container.replaceChildren();
+
+      if (posts.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "blog-article";
+        empty.style.textAlign = "center";
+        empty.style.padding = "4rem";
+        const message = document.createElement("p");
+        message.style.color = "var(--orspex-slate)";
+        message.textContent = "No posts yet. Be the first to write one!";
+        empty.appendChild(message);
+        container.appendChild(empty);
+        return;
+      }
+
+      const safePosts = posts.slice().sort((a, b) =>
+        new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      );
+
+      safePosts.forEach(post => {
+        const author = String(post.author_email || "ORSPEX author");
+        const title = String(post.title || "Untitled");
+        const content = String(post.content || "");
+        const created = post.created_at ? new Date(post.created_at) : new Date();
+        const validDate = Number.isNaN(created.getTime()) ? new Date() : created;
+        const date = validDate.toLocaleDateString(document.documentElement.lang || "en", {
+          year: "numeric", month: "long", day: "numeric"
         });
-        if (response.ok) {
-          alert("Post published!");
-          closeModal(event, true);
-          event.target.reset();
-          loadPosts();
-        }
-      } catch (err) {
-        alert("Failed to save. Is Python running?");
-      }
+        const readTime = Math.max(1, Math.ceil(content.trim().split(/\s+/).filter(Boolean).length / 200));
+
+        const article = document.createElement("article");
+        article.className = "blog-article";
+
+        const meta = document.createElement("div");
+        meta.className = "article-meta";
+
+        const avatar = document.createElement("div");
+        avatar.className = "author-avatar";
+        avatar.setAttribute("aria-hidden", "true");
+        avatar.style.display = "flex";
+        avatar.style.alignItems = "center";
+        avatar.style.justifyContent = "center";
+        avatar.textContent = "✍️";
+
+        const authorBlock = document.createElement("div");
+        authorBlock.style.display = "flex";
+        authorBlock.style.flexDirection = "column";
+
+        const authorName = document.createElement("strong");
+        authorName.textContent = author.split("@")[0];
+        const authorEmail = document.createElement("span");
+        authorEmail.textContent = author;
+        authorBlock.append(authorName, authorEmail);
+
+        const divider = document.createElement("div");
+        divider.className = "meta-divider";
+        const metaDate = document.createElement("span");
+        metaDate.className = "article-date";
+        metaDate.textContent = date;
+        meta.append(avatar, authorBlock, divider, metaDate);
+
+        const heading = document.createElement("h3");
+        heading.className = "article-title";
+        heading.textContent = title;
+
+        const body = document.createElement("div");
+        body.className = "article-content";
+        body.textContent = content;
+
+        const footer = document.createElement("div");
+        footer.className = "article-footer";
+        const read = document.createElement("span");
+        read.className = "read-time";
+        read.textContent = readTime + " min read";
+        const footerDate = document.createElement("span");
+        footerDate.className = "article-date";
+        footerDate.textContent = date;
+        footer.append(read, footerDate);
+
+        article.append(meta, heading, body, footer);
+        container.appendChild(article);
+      });
     }
-
-    async function loadPosts() {
-      const container = document.getElementById('blog-posts-container');
-      if(!container) return;
-      
-      try {
-        const response = await fetch('/api/posts');
-        const posts = await response.json();
-        
-        if (posts.length === 0) {
-           container.innerHTML = `<div class="product-card" style="text-align:center; padding: 3rem; grid-column: 1 / -1;"><p style="color:var(--orspex-slate);">No posts yet. Be the first to write one!</p></div>`;
-           return;
-        }
-
-        container.innerHTML = posts.map(post => {
-          const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(post.author_email)}`;
-          return `
-          <article class="product-card">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-              <img src="${avatarUrl}" alt="Avatar" style="width: 48px; height: 48px; border-radius: 50%; background: #F4F4F5; border: 2px solid #E4E4E7;">
-              <div>
-                <h3 style="color:var(--orspex-dark); margin: 0; font-size: 1.1rem;">${post.title}</h3>
-                <p style="font-size: 0.8rem; color: var(--orspex-slate); margin: 0;">By ${post.author_email}</p>
-              </div>
-            </div>
-            <p style="margin-top: 0.5rem; flex: 1;">${post.content}</p>
-            <div style="border-top:1px solid var(--orspex-border); padding-top:1rem; margin-top:1rem; font-size:0.8rem; color:var(--orspex-slate); text-align: right;">
-              ${new Date(post.created_at).toLocaleDateString()}
-            </div>
-          </article>
-        `}).join('');
-      } catch (err) {
-        container.innerHTML = `<div class="product-card" style="text-align:center; padding: 3rem; grid-column: 1 / -1;">
-          <p style="color:var(--orspex-slate);">Could not load posts. Ensure the Python server (server.py) is running to see blog posts.</p>
-        </div>`;
-      }
-    }
-
-    // --- TRANSLATION DICTIONARY (Includes only EN/AR for brevity, add the rest back if needed) ---
+    // --- FULL TRANSLATION DICTIONARY ---
     const translations = {
       en: {
+        brand_tagline: "Organization · Planning · Services · Execution",
         nav_home: "Home", nav_about: "About Us", nav_services: "Services", nav_products: "Products", nav_portfolio: "Portfolio", nav_blog: "Blog", nav_pricing: "Pricing", nav_contact: "Contact Us",
-        btn_get_started: "Get started", badge_offline: "100% Offline", brand_tagline: "Organization · Planning · Services · Execution",
-        hero_eyebrow: "Standalone · Privacy-First", hero_title_1: "Five tools. Zero cloud.", hero_title_2: "All your data stays local.",
-        hero_desc: "ORSPEX is a single suite for Business ERP, Forensic Analysis, Video Compression, PDF tools, and SEO generators — built for teams who refuse to hand their data to the cloud.",
+        btn_get_started: "Get started", badge_offline: "100% Offline",
+        hero_eyebrow: "Standalone · Privacy-First", hero_title_1: "Six tools. Zero cloud.", hero_title_2: "All your data stays local.",
+        hero_desc: "ORSPEX is a single suite for Check Writing, Business ERP, Forensic Analysis, Video Compression, PDF tools, and SEO generators — built for teams who refuse to hand their data to the cloud.",
         btn_view_pricing: "View Pricing & Products", btn_contact_sales: "Contact Sales",
         srv_title: "Our Free Services", srv_subtitle: "Access our free online tools instantly. No install required.",
         srv_pdf: "Free PDF Compressor", srv_favicon: "Free Favicon Maker", srv_jobs: "Orspex Jobs", srv_video: "Video Compressor",
@@ -851,25 +1024,87 @@
         srv_favicon_desc: "Generate perfect favicons for your website in seconds. All the sizes you need for modern browsers.",
         srv_jobs_desc: "Find your next career opportunity. Our dedicated job portal connects professionals with top-tier roles.",
         srv_video_desc: "Quickly compress small video clips directly in your browser. 100% private and offline.",
-        btn_launch: "Launch Tool →", btn_coming_soon: "Coming Soon",
+        srv_barcode: "Barcode Generator", srv_barcode_desc: "Create barcodes quickly with our free online barcode generator.",
+        btn_launch: "Launch Tool →",
         pricing_title: "FEATURED PRODUCTS", pricing_subtitle: "Buy once, own it forever. Secure checkout via Gumroad.",
         portfolio_title: "Our Portfolio", portfolio_subtitle: "Real-world applications of the ORSPEX suite.",
-        blog_title: "ORSPEX Blog", blog_subtitle: "Insights, tutorials, and updates from our team.", btn_write_post: "Write a Post",
+        blog_title: "ORSPEX Journal", blog_subtitle: "Insights, tutorials, and updates from our engineering team.", btn_write_post: "Write a Post",
         footer_desc: "ORSPEX is a suite of high-performance, offline-first tools designed for professionals who value privacy and speed.",
         footer_products: "Products", footer_free_services: "Free Services", footer_company: "Company", footer_privacy: "Privacy Policy",
         footer_copyright: "© 2025 ORSPEX. All rights reserved. Made for offline use.",
-        about_title: "About ORSPEX", about_p1: "ORSPEX was founded on a simple principle: your software should work for you, not the other way around. We believe that your data belongs on your machine, not in a cloud server owned by a corporation.", about_p2: "In an era where everything is moving to the cloud, we are building the opposite. We create high-performance, standalone desktop applications that run entirely offline. No subscriptions, no telemetry, no forced internet connections. Just powerful tools that work when you need them.",
+        
+        about_title: "About ORSPEX", 
+        about_p1: "ORSPEX is an independent, bootstrapped software studio (Indie App Dev) dedicated to building high-performance, offline-first tools. We create premium desktop applications for professionals who value privacy, speed, and total control over their data.", 
+        about_p2: "We are a product-led studio, not a venture-backed machine. This means we answer directly to our users, not to advertisers or investors. We believe in sustainable entrepreneurship: building software that generates value through honest, one-time purchases, rather than draining your wallet with endless monthly subscriptions. We evolve by listening, shipping fast, and solving real problems for real professionals.",
+        about_p3: "In an era where everything is moving to the cloud, we are building the opposite. No telemetry, no forced internet connections, and no data mining. Just powerful, standalone tools that work exactly when you need them—whether you're in a boardroom, an oil rig, or a basement with zero Wi-Fi.",
+        
         about_v1_title: "🔒 Privacy First", about_v1_desc: "Your data never leaves your computer. No tracking, no analytics, no cloud storage. Absolute privacy by design.",
         about_v2_title: "⚡ High Performance", about_v2_desc: "By utilizing your local hardware, our tools run significantly faster than web-based alternatives.",
         about_v3_title: "💼 Built for Pros", about_v3_desc: "Whether you are a forensic investigator, a business owner, or a video editor, our suite has you covered.",
         about_v4_title: "♾️ Own It Forever", about_v4_desc: "No monthly fees. Buy a license once and use the software for as long as you need it.",
-        btn_back_products: "← Back to Products", detail_features: "Key Features", btn_buy_gumroad: "Buy on Gumroad →"
+        btn_back_products: "← Back to Products", detail_features: "Key Features", btn_buy_gumroad: "Buy on Gumroad →",
+        
+        prod_checkwriter_title: "Orspex Check Writer Pro",
+        prod_checkwriter_short: "Orspex Check Writer",
+        prod_checkwriter_desc: "Professional check writing, printing, and bank reconciliation. Print 1:1 checks, manage vouchers, and balance your ledger.",
+        prod_checkwriter_full_desc: "A complete, professional desktop application for writing, printing, and reconciling bank checks. Features exact 1:1 physical paper printing, full double-entry ledger management, multi-bank support, and a multi-language interface (English, Arabic, French, Spanish, Chinese, and Hindi).",
+        feat_check_1: "Exact 1:1 physical printing with millimeter alignment sliders.",
+        feat_check_2: "Multi-language support (EN, AR, FR, ES, ZH, HI).",
+        feat_check_3: "Full bank reconciliation (checks, deposits, charges, interest).",
+        feat_check_4: "Print professional Payment, Receipt, and Transfer vouchers.",
+        feat_check_5: "100% Offline — Your financial data is stored locally and securely.",
+
+        prod_core_title: "ORSPEX CORE - Business Suite", prod_core_short: "ORSPEX Core",
+        prod_core_desc: "The foundational offline engine. Inventory, invoicing, payroll, CRM, and reporting.",
+        prod_core_full_desc: "The foundational offline engine for modern businesses. ORSPEX CORE brings together inventory management, invoicing, payroll, CRM, and advanced reporting into a single, lightning-fast local application.",
+        feat_core_1: "100% offline operation — your data never leaves your network.",
+        feat_core_2: "Integrated Inventory, Invoicing, and Payroll modules.",
+        feat_core_3: "Built-in CRM to manage client relationships securely.",
+        feat_core_4: "Customizable reporting dashboard.",
+        feat_core_5: "Runs on a single machine or across your local LAN.",
+
+        prod_forensic_title: "Orspex Forensic Media Analyzer", prod_forensic_short: "Forensic Analyzer",
+        prod_forensic_desc: "13-Point AI & Splice Detection. Deep-dive analysis of local files and metadata.",
+        prod_forensic_full_desc: "Professional-grade forensic analysis right on your desktop. Designed for investigators and security professionals who need deep insights without uploading sensitive evidence to the cloud.",
+        feat_forensic_1: "13-Point AI & Splice Detection.",
+        feat_forensic_2: "Deep-dive analysis of local file metadata.",
+        feat_forensic_3: "Extract hidden data and system logs securely.",
+        feat_forensic_4: "Zero uploads — compliant with strict chain-of-custody requirements.",
+        feat_forensic_5: "Export detailed forensic reports.",
+
+        prod_video_title: "Orspex Video Compressor", prod_video_short: "Video Compressor",
+        prod_video_desc: "Hardware-accelerated video compression. H.264/H.265/AV1, batch queue.",
+        prod_video_full_desc: "Lightning-fast video compression powered by your own hardware. Stop waiting for cloud renders and keep your media private with this powerful desktop utility.",
+        feat_video_1: "Hardware-accelerated encoding (H.264, H.265, AV1).",
+        feat_video_2: "Batch queue processing for multiple files.",
+        feat_video_3: "No cloud rendering — 100% local processing.",
+        feat_video_4: "Maintain high visual quality at smaller file sizes.",
+        feat_video_5: "Supports all major video formats.",
+
+        prod_pdf_title: "PDF Compressor", prod_pdf_short: "PDF Compressor",
+        prod_pdf_desc: "Shrink PDFs locally with zero uploads. Batch mode, lossless option.",
+        prod_pdf_full_desc: "Shrink your PDFs locally with zero uploads. The ORSPEX PDF Compressor is the fastest and most secure way to reduce file sizes for email or archival.",
+        feat_pdf_1: "Locally hosted — no file uploads required.",
+        feat_pdf_2: "Ghostscript-grade output quality.",
+        feat_pdf_3: "Batch mode for compressing multiple PDFs at once.",
+        feat_pdf_4: "Lossless compression option available.",
+        feat_pdf_5: "Ultra-lightweight and fast.",
+
+        prod_favicon_title: "Favicon Maker and SEO Generator", prod_favicon_short: "Favicon Maker",
+        prod_favicon_desc: "Generate perfect favicons and SEO metadata instantly. Optimized for all modern browsers.",
+        prod_favicon_full_desc: "Generate perfect favicons and SEO metadata instantly. Optimized for search engines, social media previews, and all modern browsers, all running locally on your machine.",
+        feat_fav_1: "Generates all required favicon sizes (16x16, 32x32, Apple Touch, etc.).",
+        feat_fav_2: "Automatically creates SEO meta tags.",
+        feat_fav_3: "Preview your icons before saving.",
+        feat_fav_4: "100% offline tool for privacy.",
+        feat_fav_5: "Instant generation."
       },
       ar: {
+        brand_tagline: "التنظيم · التخطيط · الخدمات · التنفيذ",
         nav_home: "الرئيسية", nav_about: "من نحن", nav_services: "الخدمات", nav_products: "المنتجات", nav_portfolio: "أعمالنا", nav_blog: "المدونة", nav_pricing: "الأسعار", nav_contact: "اتصل بنا",
-        btn_get_started: "ابدأ الآن", badge_offline: "أوفلاين 100%", brand_tagline: "التنظيم · التخطيط · الخدمات · التنفيذ",
-        hero_eyebrow: "مستقل · الخصوصية أولاً", hero_title_1: "خمس أدوات. بدون سحابة.", hero_title_2: "جميع بياناتك تبقى محلية.",
-        hero_desc: "ORSPEX هي مجموعة واحدة لإدارة الأعمال، التحليل الجنائي، ضغط الفيديو، أدوات PDF، ومولدات SEO — مصممة للفرق التي ترفض تسليم بياناتها للسحابة.",
+        btn_get_started: "ابدأ الآن", badge_offline: "أوفلاين 100%",
+        hero_eyebrow: "مستقل · الخصوصية أولاً", hero_title_1: "ست أدوات. بدون سحابة.", hero_title_2: "جميع بياناتك تبقى محلية.",
+        hero_desc: "ORSPEX هي مجموعة واحدة لكتابة الشيكات، إدارة الأعمال، التحليل الجنائي، ضغط الفيديو، أدوات PDF، ومولدات SEO — مصممة للفرق التي ترفض تسليم بياناتها للسحابة.",
         btn_view_pricing: "عرض الأسعار والمنتجات", btn_contact_sales: "اتصل بالمبيعات",
         srv_title: "خدماتنا المجانية", srv_subtitle: "الوصول إلى أدواتنا المجانية عبر الإنترنت فوراً. لا حاجة للتثبيت.",
         srv_pdf: "ضاغط PDF مجاني", srv_favicon: "صانع أيقونات مجاني", srv_jobs: "وظائف أورسبكس", srv_video: "ضاغط الفيديو",
@@ -877,50 +1112,588 @@
         srv_favicon_desc: "أنشئ أيقونات مثالية لموقعك في ثوانٍ. جميع الأحجام التي تحتاجها المتصفحات الحديثة.",
         srv_jobs_desc: "ابحث عن فرصتك المهنية التالية. بوابة الوظائف المخصصة لدينا تربط المحترفين بأفضل الأدوار.",
         srv_video_desc: "اضغط مقاطع الفيديو الصغيرة مباشرة في متصفحك. خصوصية وأوفلاين 100%.",
-        btn_launch: "تشغيل الأداة ←", btn_coming_soon: "قريباً",
+        srv_barcode: "مولّد الباركود", srv_barcode_desc: "أنشئ الرموز الشريطية بسرعة باستخدام أداتنا المجانية عبر الإنترنت.",
+        btn_launch: "تشغيل الأداة ←",
         pricing_title: "المنتجات المميزة", pricing_subtitle: "اشترِ مرة واحدة، وامتلكها للأبد. الدفع الآمن عبر Gumroad.",
         portfolio_title: "أعمالنا", portfolio_subtitle: "تطبيقات واقعية لمجموعة ORSPEX.",
         blog_title: "مدونة ORSPEX", blog_subtitle: "رؤى ودروس وتحديثات من فريقنا.", btn_write_post: "اكتب مقالاً",
         footer_desc: "ORSPEX هي مجموعة أدوات عالية الأداء تعمل دون اتصال بالإنترنت، مصممة للمحترفين الذين يقدرون الخصوصية والسرعة.",
         footer_products: "المنتجات", footer_free_services: "الخدمات المجانية", footer_company: "الشركة", footer_privacy: "سياسة الخصوصية",
         footer_copyright: "© 2025 ORSPEX. جميع الحقوق محفوظة.",
-        about_title: "عن أورسبكس", about_p1: "تأسست أورسبكس على مبدأ بسيط: يجب أن يعمل برنامجك من أجلك، وليس العكس. نحن نؤمن بأن بياناتك ملك لجهازك، وليس لخادم سحابي تملكه شركة.", about_p2: "في عصر ينتقل فيه كل شيء إلى السحابة، نحن نبني العكس. نصنع تطبيقات سطح مكتب عالية الأداء تعمل دون اتصال بالإنترنت. بدون اشتراكات، بدون تتبع. مجرد أدوات قوية تعمل عندما تحتاجها.",
+        
+        about_title: "عن أورسبكس", 
+        about_p1: "أورسبكس هو استوديو برمجيات مستقل مخصص لبناء أدوات عالية الأداء تعمل دون اتصال بالإنترنت. نحن نصنع تطبيقات سطح مكتب متميزة للمحترفين الذين يقدرون الخصوصية والسرعة والتحكم الكامل في بياناتهم.", 
+        about_p2: "نحن استوديو يقوده المنتج، وليس آلة مدعومة بالمشاريع. هذا يعني أننا نستجيب مباشرة لمستخدمينا، وليس للمعلنين أو المستثمرين. نحن نؤمن بريادة الأعمال المستدامة: بناء برامج تولد قيمة من خلال عمليات شراء لمرة واحدة صادقة، بدلاً من استنزاف محفظتك باشتراكات شهرية لا نهاية لها. نحن نتطور من خلال الاستماع، والشحن السريع، وحل المشاكل الحقيقية للمحترفين الحقيقيين.",
+        about_p3: "في عصر ينتقل فيه كل شيء إلى السحابة، نحن نبني العكس. لا تتبع، لا اتصالات إنترنت قسرية، ولا تعدين للبيانات. مجرد أدوات قوية ومستقلة تعمل بالضبط عندما تحتاجها - سواء كنت في غرفة اجتماعات، أو منصة نفط، أو قبو بدون Wi-Fi.",
+        
         about_v1_title: "🔒 الخصوصية أولاً", about_v1_desc: "بياناتك لا تغادر جهاز الكمبيوتر الخاص بك أبداً. لا تتبع، لا تحليلات، لا تخزين سحابي. خصوصية مطلقة.",
         about_v2_title: "⚡ أداء عالي", about_v2_desc: "من خلال الاستفادة من أجهزتك المحلية، تعمل أدواتنا بشكل أسرع بكثير من البدائل المستندة إلى الويب.",
         about_v3_title: "💼 مصمم للمحترفين", about_v3_desc: "سواء كنت محققاً جنائياً، أو صاحب عمل، أو محرر فيديو، فإن مجموعتنا تلبي احتياجاتك.",
         about_v4_title: "♾️ امتلكها للأبد", about_v4_desc: "لا رسوم شهرية. اشترِ ترخيصاً مرة واحدة واستخدم البرنامج طالما تحتاجه.",
-        btn_back_products: "← العودة إلى المنتجات", detail_features: "الميزات الرئيسية", btn_buy_gumroad: "شراء على Gumroad ←"
+        btn_back_products: "← العودة إلى المنتجات", detail_features: "الميزات الرئيسية", btn_buy_gumroad: "شراء على Gumroad ←",
+        
+        prod_checkwriter_title: "أورسبكس كاتب الشيكات برو", prod_checkwriter_short: "كاتب الشيكات",
+        prod_checkwriter_desc: "كتابة الشيكات المهنية والطباعة والمطابقة المصرفية. طباعة الشيكات 1: 1، وإدارة القسائم، وتحقيق التوازن في دفتر الأستاذ الخاص بك.",
+        prod_checkwriter_full_desc: "تطبيق سطح مكتب كامل واحترافي لكتابة وطباعة ومطابقة الشيكات المصرفية. يتميز بطباعة ورقية مادية دقيقة 1: 1، وإدارة دفتر أستاذ مزدوج كامل، ودعم متعدد البنوك، وواجهة متعددة اللغات (الإنجليزية والعربية والفرنسية والإسبانية والصينية والهندية).",
+        feat_check_1: "طباعة مادية دقيقة 1: 1 مع أشرطة تمرير محاذاة بالمليمتر.",
+        feat_check_2: "دعم متعدد اللغات (الإنجليزية والعربية والفرنسية والإسبانية والصينية والهندية).",
+        feat_check_3: "مطابقة مصرفية كاملة (شيكات، ودائع، رسوم، فوائد).",
+        feat_check_4: "طباعة قسائم الدفع والإيصال والتحويل المهنية.",
+        feat_check_5: "أوفلاين 100% — يتم تخزين بياناتك المالية محليًا وبأمان.",
+
+        prod_core_title: "أورسبكس كور - مجموعة الأعمال", prod_core_short: "أورسبكس كور",
+        prod_core_desc: "المحرك الأساسي دون اتصال. المخزون، الفواتير، الرواتب، إدارة علاقات العملاء، والتقارير.",
+        prod_core_full_desc: "المحرك الأساسي دون اتصال للشركات الحديثة. يجمع أورسبكس كور بين إدارة المخزون وإعداد الفواتير والرواتب وإدارة علاقات العملاء والتقارير المتقدمة في تطبيق محلي واحد سريع.",
+        feat_core_1: "تشغيل 100% دون اتصال — بياناتك لا تغادر شبكتك أبدًا.",
+        feat_core_2: "وحدات متكاملة للمخزون والفواتير والرواتب.",
+        feat_core_3: "إدارة علاقات العملاء المدمجة لإدارة علاقات العملاء بشكل آمن.",
+        feat_core_4: "لوحة تقارير قابلة للتخصيص.",
+        feat_core_5: "يعمل على جهاز واحد أو عبر شبكتك المحلية.",
+
+        prod_forensic_title: "أورسبكس محلل الوسائط الجنائية", prod_forensic_short: "المحلل الجنائي",
+        prod_forensic_desc: "كشف الذكاء الاصطناعي والربط بنقاط 13. تحليل عميق للملفات والبيانات الوصفية المحلية.",
+        prod_forensic_full_desc: "تحليل جنائي احترافي مباشرة على سطح المكتب. مصمم للمحققين ومحترفي الأمن الذين يحتاجون إلى رؤى عميقة دون تحميل الأدلة الحساسة إلى السحابة.",
+        feat_forensic_1: "كشف الذكاء الاصطناعي والربط بنقاط 13.",
+        feat_forensic_2: "تحليل عميق للبيانات الوصفية للملفات المحلية.",
+        feat_forensic_3: "استخراج البيانات المخفية وسجلات النظام بشكل آمن.",
+        feat_forensic_4: "صفر تحميلات — يتوافق مع متطلبات سلسلة الحيازة الصارمة.",
+        feat_forensic_5: "تصدير تقارير جنائية مفصلة.",
+
+        prod_video_title: "أورسبكس ضاغط الفيديو", prod_video_short: "ضاغط الفيديو",
+        prod_video_desc: "ضغط فيديو مسرع بالأجهزة. H.264 / H.265 / AV1 ، قائمة انتظار الدفعات.",
+        prod_video_full_desc: "ضغط فيديو سريع للغاية مدعوم بأجهزتك الخاصة. توقف عن انتظار عمليات العرض السحابية وحافظ على خصوصية وسائطك باستخدام أداة سطح المكتب القوية هذه.",
+        feat_video_1: "ترميز مسرع بالأجهزة (H.264، H.265، AV1).",
+        feat_video_2: "معالجة قائمة انتظار الدفعات لملفات متعددة.",
+        feat_video_3: "لا عرض سحابي — معالجة محلية 100%.",
+        feat_video_4: "حافظ على جودة بصرية عالية بأحجام ملفات أصغر.",
+        feat_video_5: "يدعم جميع تنسيقات الفيديو الرئيسية.",
+
+        prod_pdf_title: "ضاغط PDF", prod_pdf_short: "ضاغط PDF",
+        prod_pdf_desc: "تقليص ملفات PDF محليًا بدون تحميل. وضع الدُفعات ، وخيار ضياع البيانات.",
+        prod_pdf_full_desc: "قلل حجم ملفات PDF الخاصة بك محليًا بدون تحميل. يعد ORSPEX PDF Compressor أسرع وأكثر الطرق أمانًا لتقليل أحجام الملفات للبريد الإلكتروني أو الأرشفة.",
+        feat_pdf_1: "مستضاف محليًا — لا حاجة لتحميل الملفات.",
+        feat_pdf_2: "جودة إخراج بمستوى Ghostscript.",
+        feat_pdf_3: "وضع الدُفعات لضغط ملفات PDF متعددة في وقت واحد.",
+        feat_pdf_4: "خيار ضغط بلا خسارة متاح.",
+        feat_pdf_5: "خفيف الوزن للغاية وسريع.",
+
+        prod_favicon_title: "صانع أيقونات الموقع ومولد SEO", prod_favicon_short: "صانع الأيقونات",
+        prod_favicon_desc: "قم بإنشاء أيقونات مثالية وبيانات SEO وصفية على الفور. مُحسّن لجميع المتصفحات الحديثة.",
+        prod_favicon_full_desc: "قم بإنشاء أيقونات مثالية وبيانات SEO وصفية على الفور. مُحسّن لمحركات البحث ومعاينات الوسائط الاجتماعية وجميع المتصفحات الحديثة ، وكلها تعمل محليًا على جهازك.",
+        feat_fav_1: "يُنشئ جميع أحجام الأيقونات المطلوبة (16x16 ، 32x32 ، Apple Touch ، إلخ).",
+        feat_fav_2: "يُنشئ علامات SEO الوصفية تلقائيًا.",
+        feat_fav_3: "معاينة الرموز قبل الحفظ.",
+        feat_fav_4: "أداة أوفلاين 100% للخصوصية.",
+        feat_fav_5: "توليد فوري."
+      },
+      tl: {
+        brand_tagline: "Organisasyon · Pagpaplano · Serbisyo · Pagpapatupad",
+        nav_home: "Home", nav_about: "Tungkol Sa Amin", nav_services: "Mga Serbisyo", nav_products: "Mga Produkto", nav_portfolio: "Portfolio", nav_blog: "Blog", nav_pricing: "Presyo", nav_contact: "Makipag-ugnayan",
+        btn_get_started: "Magsimula", badge_offline: "100% Offline",
+        hero_eyebrow: "Standalone · Privacy-First", hero_title_1: "Anim na tool. Zero cloud.", hero_title_2: "Nananatili ang lahat ng data sa lokal.",
+        hero_desc: "Ang ORSPEX ay isang suite para sa Check Writing, Business ERP, Forensic Analysis, Video Compression, PDF tools, at SEO generators — ginawa para sa mga team na ayaw magbigay ng data sa cloud.",
+        btn_view_pricing: "Tingnan ang Presyo at Produkto", btn_contact_sales: "Makipag-ugnayan sa Sales",
+        srv_title: "Aming Libreng Serbisyo", srv_subtitle: "I-access ang aming mga libreng online tools agad. Walang kailangang i-install.",
+        srv_pdf: "Libreng PDF Compressor", srv_favicon: "Libreng Favicon Maker", srv_jobs: "Orspex Jobs", srv_video: "Video Compressor",
+        srv_pdf_desc: "Bawasan ang laki ng iyong PDF files agad sa iyong browser. Mabilis, libre, at walang account na kailangan.",
+        srv_favicon_desc: "Gumawa ng perpektong favicons para sa iyong website sa ilang segundo. Lahat ng laki na kailangan mo para sa modernong browsers.",
+        srv_jobs_desc: "Hanapin ang iyong susunod na oportunidad sa karera. Ang aming dedikadong job portal ay nag-uugnay sa mga propesyonal sa mga nangungunang papel.",
+        srv_video_desc: "Mabilis na i-compress ang maliliit na video clips direkta sa iyong browser. 100% pribado at offline.",
+        srv_barcode: "Barcode Generator", srv_barcode_desc: "Gumawa agad ng mga barcode gamit ang aming libreng online na tool.",
+        btn_launch: "Ilunsad ang Tool →",
+        pricing_title: "MGA TAMPOK NA PRODUKTO", pricing_subtitle: "Bumili ng isang beses, pagmamay-ari magpakailanman. Ligtas na checkout sa pamamagitan ng Gumroad.",
+        portfolio_title: "Aming Portfolio", portfolio_subtitle: "Mga totoong aplikasyon ng ORSPEX suite.",
+        blog_title: "ORSPEX Blog", blog_subtitle: "Mga insight, tutorial, at update mula sa aming team.", btn_write_post: "Magsulat ng Post",
+        footer_desc: "Ang ORSPEX ay isang suite ng high-performance, offline-first tools na dinisenyo para sa mga propesyonal na pinahahalagahan ang privacy at bilis.",
+        footer_products: "Mga Produkto", footer_free_services: "Libreng Serbisyo", footer_company: "Kumpanya", footer_privacy: "Patakaran sa Privacy",
+        footer_copyright: "© 2025 ORSPEX. Lahat ng karapatan ay nakalaan. Ginawa para sa offline use.",
+        
+        about_title: "Tungkol sa ORSPEX", 
+        about_p1: "Ang ORSPEX ay isang malayang software studio na nakatuon sa pagbuo ng high-performance, offline-first na mga tool. Gumagawa kami ng mga premium na desktop application para sa mga propesyonal na pinahahalagahan ang privacy, bilis, at ganap na kontrol sa kanilang data.", 
+        about_p2: "Kami ay isang product-led studio, hindi isang venture-backed machine. Nangangahulugan ito na sumasagot kami nang direkta sa aming mga user, hindi sa mga advertiser o investor. Naniniwala kami sa sustainable entrepreneurship: pagbuo ng software na bumubuo ng halaga sa pamamagitan ng tapat, isang beses na pagbili, sa halip na ubusin ang iyong pitaka sa walang katapusang buwanang subscription. Nag-evolve kami sa pamamagitan ng pakikinig, mabilis na pag-ship, at paglutas ng mga tunay na problema para sa mga tunay na propesyonal.",
+        about_p3: "Sa isang panahon kung saan ang lahat ay lumilipat sa cloud, itinatayo namin ang kabaligtaran. Walang telemetry, walang sapilitang koneksyon sa internet, at walang data mining. Makapangyarihang mga standalone tool lamang na gumagana nang eksakto kapag kailangan mo ang mga ito—nasa boardroom ka man, oil rig, o basement na walang Wi-Fi.",
+        
+        about_v1_title: "🔒 Privacy Una", about_v1_desc: "Ang iyong data ay hindi kailanman umaalis sa iyong computer. Walang pagsubaybay, walang analytics, walang cloud storage. Ganap na privacy sa pamamagitan ng disenyo.",
+        about_v2_title: "⚡ Mataas na Pagganap", about_v2_desc: "Sa pamamagitan ng paggamit ng iyong lokal na hardware, ang aming mga tool ay tumatakbo nang mas mabilis kaysa sa mga web-based na alternatibo.",
+        about_v3_title: "💼 Ginawa para sa mga Pro", about_v3_desc: "Maging isa kang forensic investigator, may-ari ng negosyo, o video editor, saklaw ka ng aming suite.",
+        about_v4_title: "♾️ Pagmamay-ari Magpakailanman", about_v4_desc: "Walang buwanang bayad. Bumili ng lisensya nang isang beses at gamitin ang software hangga't kailangan mo.",
+        btn_back_products: "← Bumalik sa Mga Produkto", detail_features: "Mga Pangunahing Tampok", btn_buy_gumroad: "Bumili sa Gumroad →",
+        
+        prod_checkwriter_title: "Orspex Check Writer Pro", prod_checkwriter_short: "Orspex Check Writer",
+        prod_checkwriter_desc: "Propesyonal na pagsulat ng tseke, pag-print, at pagkakasundo ng bangko. I-print ang 1:1 na mga tseke, pamahalaan ang mga voucher, at balansehin ang iyong ledger.",
+        prod_checkwriter_full_desc: "Isang kumpleto, propesyonal na desktop application para sa pagsulat, pag-print, at pagkakasundo ng mga tseke sa bangko. Nagtatampok ng eksaktong 1:1 na pisikal na pag-print ng papel, buong double-entry ledger management, multi-bank support, at multi-language interface (English, Arabic, French, Spanish, Chinese, at Hindi).",
+        feat_check_1: "Eksaktong 1:1 na pisikal na pag-print na may millimeter alignment sliders.",
+        feat_check_2: "Multi-language support (EN, AR, FR, ES, ZH, HI).",
+        feat_check_3: "Buong pagkakasundo ng bangko (mga tseke, deposito, singil, interes).",
+        feat_check_4: "I-print ang propesyonal na Payment, Receipt, at Transfer vouchers.",
+        feat_check_5: "100% Offline — Ang iyong data sa pananalapi ay lokal at ligtas na nakaimbak.",
+
+        prod_core_title: "ORSPEX CORE - Business Suite", prod_core_short: "ORSPEX Core",
+        prod_core_desc: "Ang foundational offline engine. Imbentaryo, invoicing, payroll, CRM, at pag-uulat.",
+        prod_core_full_desc: "Ang foundational offline engine para sa mga modernong negosyo. Pinagsasama ng ORSPEX CORE ang pamamahala ng imbentaryo, invoicing, payroll, CRM, at advanced na pag-uulat sa isang solong, napakabilis na lokal na application.",
+        feat_core_1: "100% offline na operasyon — hindi kailanman umaalis ang iyong data sa iyong network.",
+        feat_core_2: "Integrated na Imbentaryo, Invoicing, at Payroll modules.",
+        feat_core_3: "Built-in CRM upang pamahalaan ang mga relasyon ng kliyente nang ligtas.",
+        feat_core_4: "Nako-customize na reporting dashboard.",
+        feat_core_5: "Tumatakbo sa isang makina o sa buong lokal na LAN.",
+
+        prod_forensic_title: "Orspex Forensic Media Analyzer", prod_forensic_short: "Forensic Analyzer",
+        prod_forensic_desc: "13-Point AI at Splice Detection. Malalim na pagsusuri ng mga lokal na file at metadata.",
+        prod_forensic_full_desc: "Propesyonal na antas ng forensic analysis mismo sa iyong desktop. Dinisenyo para sa mga imbestigador at propesyonal sa seguridad na nangangailangan ng malalim na mga insight nang hindi nag-a-upload ng sensitibong ebidensya sa cloud.",
+        feat_forensic_1: "13-Point AI at Splice Detection.",
+        feat_forensic_2: "Malalim na pagsusuri ng metadata ng lokal na file.",
+        feat_forensic_3: "Ligtas na i-extract ang mga nakatagong data at system logs.",
+        feat_forensic_4: "Zero uploads — sumusunod sa mahigpit na kinakailangan ng chain-of-custody.",
+        feat_forensic_5: "I-export ang mga detalyadong ulat ng forensic.",
+
+        prod_video_title: "Orspex Video Compressor", prod_video_short: "Video Compressor",
+        prod_video_desc: "Hardware-accelerated na compression ng video. H.264/H.265/AV1, batch queue.",
+        prod_video_full_desc: "Napakabilis na compression ng video na pinapagana ng iyong sariling hardware. Itigil ang paghihintay para sa mga cloud render at panatilihing pribado ang iyong media gamit ang makapangyarihang desktop utility na ito.",
+        feat_video_1: "Hardware-accelerated na encoding (H.264, H.265, AV1).",
+        feat_video_2: "Batch queue processing para sa maraming file.",
+        feat_video_3: "Walang cloud rendering — 100% lokal na pagproseso.",
+        feat_video_4: "Panatilihin ang mataas na visual na kalidad sa mas maliit na laki ng file.",
+        feat_video_5: "Sinusuportahan ang lahat ng pangunahing format ng video.",
+
+        prod_pdf_title: "PDF Compressor", prod_pdf_short: "PDF Compressor",
+        prod_pdf_desc: "Bawasan ang PDF nang lokal na walang pag-upload. Batch mode, walang pagkawala ng kalidad na opsyon.",
+        prod_pdf_full_desc: "Bawasan ang iyong mga PDF nang lokal na walang pag-upload. Ang ORSPEX PDF Compressor ay ang pinakamabilis at pinakaligtas na paraan upang bawasan ang mga laki ng file para sa email o archival.",
+        feat_pdf_1: "Lokal na naka-host — walang kailangang pag-upload ng file.",
+        feat_pdf_2: "Kalidad ng output na antas ng Ghostscript.",
+        feat_pdf_3: "Batch mode para sa pag-compress ng maraming PDF nang sabay-sabay.",
+        feat_pdf_4: "May available na opsyon sa lossless compression.",
+        feat_pdf_5: "Napakagaan at mabilis.",
+
+        prod_favicon_title: "Favicon Maker at SEO Generator", prod_favicon_short: "Favicon Maker",
+        prod_favicon_desc: "Gumawa ng perpektong favicons at metadata ng SEO agad. Na-optimize para sa lahat ng modernong browser.",
+        prod_favicon_full_desc: "Gumawa ng perpektong favicons at metadata ng SEO agad. Na-optimize para sa mga search engine, social media previews, at lahat ng modernong browser, na tumatakbo nang lokal sa iyong makina.",
+        feat_fav_1: "Bumubuo ng lahat ng kinakailangang laki ng favicon (16x16, 32x32, Apple Touch, atbp.).",
+        feat_fav_2: "Awtomatikong gumagawa ng mga meta tag ng SEO.",
+        feat_fav_3: "I-preview ang iyong mga icon bago i-save.",
+        feat_fav_4: "100% offline tool para sa privacy.",
+        feat_fav_5: "Agarang pagbuo."
+      },
+      zh: {
+        brand_tagline: "组织 · 规划 · 服务 · 执行",
+        nav_home: "首页", nav_about: "关于我们", nav_services: "服务", nav_products: "产品", nav_portfolio: "作品集", nav_blog: "博客", nav_pricing: "价格", nav_contact: "联系我们",
+        btn_get_started: "开始使用", badge_offline: "100% 离线",
+        hero_eyebrow: "独立 · 隐私优先", hero_title_1: "六个工具。零云端。", hero_title_2: "您的所有数据都留在本地。",
+        hero_desc: "ORSPEX 是一个集支票填写、商业 ERP、法证分析、视频压缩、PDF 工具和 SEO 生成器于一体的单一套件——专为拒绝将数据交给云端的团队而构建。",
+        btn_view_pricing: "查看价格和产品", btn_contact_sales: "联系销售",
+        srv_title: "我们的免费服务", srv_subtitle: "立即访问我们的免费在线工具。无需安装。",
+        srv_pdf: "免费 PDF 压缩器", srv_favicon: "免费 Favicon 生成器", srv_jobs: "Orspex 招聘", srv_video: "视频压缩器",
+        srv_pdf_desc: "在您的浏览器中立即缩小 PDF 文件。快速、免费且无需帐户。",
+        srv_favicon_desc: "在几秒钟内为您的网站生成完美的 favicon。现代浏览器所需的所有尺寸。",
+        srv_jobs_desc: "寻找您的下一个职业机会。我们专门的求职门户将专业人士与顶级职位联系起来。",
+        srv_video_desc: "直接在浏览器中快速压缩小型视频剪辑。100% 私密且离线。",
+        srv_barcode: "条形码生成器", srv_barcode_desc: "使用我们的免费在线工具快速生成条形码。",
+        btn_launch: "启动工具 →",
+        pricing_title: "精选产品", pricing_subtitle: "一次购买，永久拥有。通过 Gumroad 安全结账。",
+        portfolio_title: "我们的作品集", portfolio_subtitle: "ORSPEX 套件的实际应用。",
+        blog_title: "ORSPEX 博客", blog_subtitle: "来自我们团队的见解、教程和更新。", btn_write_post: "写文章",
+        footer_desc: "ORSPEX 是一套高性能、离线优先的工具，专为重视隐私和速度的专业人士设计。",
+        footer_products: "产品", footer_free_services: "免费服务", footer_company: "公司", footer_privacy: "隐私政策",
+        footer_copyright: "© 2025 ORSPEX. 保留所有权利。专为离线使用而设计。",
+        
+        about_title: "关于 ORSPEX", 
+        about_p1: "ORSPEX 是一家独立的软件工作室，致力于构建高性能、离线优先的工具。我们为重视隐私、速度和数据完全控制的专业人士创建优质的桌面应用程序。", 
+        about_p2: "我们是一家产品驱动的工作室，而不是风险投资驱动的机器。这意味着我们直接对用户负责，而不是对广告商或投资者负责。我们相信可持续的创业精神：通过诚实的一次性购买来创造价值，而不是用无休止的月度订阅来榨干您的钱包。我们通过倾听、快速发布和解决真正专业人士的真正问题来发展壮大。",
+        about_p3: "在一切都转移到云端的时代，我们正在构建相反的东西。没有遥测，没有强制互联网连接，也没有数据挖掘。只有在您需要时才能使用的强大的独立工具——无论您是在董事会会议室、石油钻井平台，还是在没有 Wi-Fi 的地下室。",
+        
+        about_v1_title: "🔒 隐私优先", about_v1_desc: "您的数据永远不会离开您的计算机。没有跟踪，没有分析，没有云存储。绝对的设计隐私。",
+        about_v2_title: "⚡ 高性能", about_v2_desc: "通过利用您的本地硬件，我们的工具运行速度明显快于基于 Web 的替代品。",
+        about_v3_title: "💼 为专业人士打造", about_v3_desc: "无论您是法医调查员、企业主还是视频编辑，我们的套件都能满足您的需求。",
+        about_v4_title: "♾️ 永久拥有", about_v4_desc: "没有月费。购买一次许可证，即可在您需要的时间内使用该软件。",
+        btn_back_products: "← 返回产品", detail_features: "主要特点", btn_buy_gumroad: "在 Gumroad 上购买 →",
+        
+        prod_checkwriter_title: "Orspex 支票填写专家", prod_checkwriter_short: "支票填写专家",
+        prod_checkwriter_desc: "专业的支票填写、打印和银行对账。打印 1:1 支票，管理凭证并平衡您的分类账。",
+        prod_checkwriter_full_desc: "一个完整、专业的桌面应用程序，用于填写、打印和核对银行支票。具有精确的 1:1 物理纸张打印、完整的复式分类账管理、多银行支持以及多语言界面（英语、阿拉伯语、法语、西班牙语、中文和印地语）。",
+        feat_check_1: "精确的 1:1 物理打印，带有毫米对齐滑块。",
+        feat_check_2: "多语言支持（英语、阿拉伯语、法语、西班牙语、中文、印地语）。",
+        feat_check_3: "完整的银行对账（支票、存款、费用、利息）。",
+        feat_check_4: "打印专业的付款、收款和转账凭证。",
+        feat_check_5: "100% 离线 — 您的财务数据安全地存储在本地。",
+
+        prod_core_title: "ORSPEX CORE - 商业套件", prod_core_short: "ORSPEX Core",
+        prod_core_desc: "基础离线引擎。库存、发票、薪资、CRM 和报告。",
+        prod_core_full_desc: "现代企业的基础离线引擎。ORSPEX CORE 将库存管理、发票、薪资、CRM 和高级报告整合到一个单一的、快如闪电的本地应用程序中。",
+        feat_core_1: "100% 离线操作——您的数据永远不会离开您的网络。",
+        feat_core_2: "集成的库存、发票和薪资模块。",
+        feat_core_3: "内置 CRM 以安全地管理客户关系。",
+        feat_core_4: "可自定义的报告仪表板。",
+        feat_core_5: "在单台机器或本地局域网上运行。",
+
+        prod_forensic_title: "Orspex 法证媒体分析仪", prod_forensic_short: "法证分析仪",
+        prod_forensic_desc: "13点 AI 和拼接检测。本地文件和元数据的深入分析。",
+        prod_forensic_full_desc: "直接在您的桌面上进行专业级法证分析。专为需要深入了解而无需将敏感证据上传到云端的调查人员和安全专业人员而设计。",
+        feat_forensic_1: "13点 AI 和拼接检测。",
+        feat_forensic_2: "本地文件元数据的深入分析。",
+        feat_forensic_3: "安全地提取隐藏数据和系统日志。",
+        feat_forensic_4: "零上传——符合严格的监管链要求。",
+        feat_forensic_5: "导出详细的法证报告。",
+
+        prod_video_title: "Orspex 视频压缩器", prod_video_short: "视频压缩器",
+        prod_video_desc: "硬件加速视频压缩。H.264/H.265/AV1，批量队列。",
+        prod_video_full_desc: "由您自己的硬件驱动的快如闪电的视频压缩。停止等待云渲染，并使用这个强大的桌面实用程序保持您的媒体私密性。",
+        feat_video_1: "硬件加速编码（H.264、H.265、AV1）。",
+        feat_video_2: "多个文件的批量队列处理。",
+        feat_video_3: "无云渲染——100% 本地处理。",
+        feat_video_4: "以更小的文件大小保持高视觉质量。",
+        feat_video_5: "支持所有主要视频格式。",
+
+        prod_pdf_title: "PDF 压缩器", prod_pdf_short: "PDF 压缩器",
+        prod_pdf_desc: "本地缩小 PDF，零上传。批处理模式，无损选项。",
+        prod_pdf_full_desc: "本地缩小 PDF，零上传。ORSPEX PDF 压缩器是减小电子邮件或存档文件大小的最快、最安全的方法。",
+        feat_pdf_1: "本地托管——无需上传文件。",
+        feat_pdf_2: "Ghostscript 级输出质量。",
+        feat_pdf_3: "批处理模式可一次压缩多个 PDF。",
+        feat_pdf_4: "提供无损压缩选项。",
+        feat_pdf_5: "超轻量且快速。",
+
+        prod_favicon_title: "Favicon 制作器和 SEO 生成器", prod_favicon_short: "Favicon 制作器",
+        prod_favicon_desc: "立即生成完美的 favicon 和 SEO 元数据。针对所有现代浏览器进行了优化。",
+        prod_favicon_full_desc: "立即生成完美的 favicon 和 SEO 元数据。针对搜索引擎、社交媒体预览和所有现代浏览器进行了优化，所有这些都在您的机器上本地运行。",
+        feat_fav_1: "生成所有必需的 favicon 尺寸（16x16、32x32、Apple Touch 等）。",
+        feat_fav_2: "自动创建 SEO 元标签。",
+        feat_fav_3: "在保存前预览您的图标。",
+        feat_fav_4: "100% 离线的隐私工具。",
+        feat_fav_5: "即时生成。"
+      },
+      hi: {
+        brand_tagline: "संगठन · योजना · सेवाएँ · निष्पादन",
+        nav_home: "होम", nav_about: "हमारे बारे में", nav_services: "सेवाएं", nav_products: "उत्पाद", nav_portfolio: "पोर्टफोलियो", nav_blog: "ब्लॉग", nav_pricing: "मूल्य निर्धारण", nav_contact: "संपर्क करें",
+        btn_get_started: "शुरू करें", badge_offline: "100% ऑफ़लाइन",
+        hero_eyebrow: "स्टैंडअलोन · गोपनीयता-प्रथम", hero_title_1: "छह उपकरण। शून्य क्लाउड।", hero_title_2: "आपका सारा डेटा स्थानीय रहता है।",
+        hero_desc: "ORSPEX चेक राइटिंग, बिजनेस ERP, फोरेंसिक विश्लेषण, वीडियो कम्प्रेशन, PDF टूल और SEO जनरेटर के लिए एक सिंगल सूट है - उन टीमों के लिए बनाया गया है जो अपना डेटा क्लाउड को सौंपने से इंकार करते हैं।",
+        btn_view_pricing: "मूल्य निर्धारण और उत्पाद देखें", btn_contact_sales: "बिक्री से संपर्क करें",
+        srv_title: "हमारी मुफ्त सेवाएं", srv_subtitle: "हमारे मुफ्त ऑनलाइन टूल्स तक तुरंत पहुंचें। इंस्टॉल की आवश्यकता नहीं है।",
+        srv_pdf: "मुफ़्त PDF कंप्रेसर", srv_favicon: "मुफ़्त फ़ेविकॉन मेकर", srv_jobs: "ऑर्सपेक्स नौकरियां", srv_video: "वीडियो कंप्रेसर",
+        srv_pdf_desc: "अपने ब्राउज़र में तुरंत अपनी PDF फ़ाइलों को छोटा करें। तेज़, मुफ़्त, और किसी खाते की आवश्यकता नहीं।",
+        srv_favicon_desc: "कुछ ही सेकंड में अपनी वेबसाइट के लिए सही फ़ेविकॉन बनाएं। आधुनिक ब्राउज़रों के लिए आपके द्वारा आवश्यक सभी आकार।",
+        srv_jobs_desc: "अपना अगला करियर अवसर खोजें। हमारा समर्पित नौकरी पोर्टल पेशेवरों को शीर्ष स्तरीय भूमिकाओं से जोड़ता है।",
+        srv_video_desc: "सीधे अपने ब्राउज़र में छोटी वीडियो क्लिप को जल्दी से कंप्रेस करें। 100% निजी और ऑफ़लाइन।",
+        srv_barcode: "बारकोड जनरेटर", srv_barcode_desc: "हमारे मुफ्त ऑनलाइन टूल से आसानी से बारकोड बनाएं।",
+        btn_launch: "टूल लॉन्च करें →",
+        pricing_title: "विशेष रुप से प्रदर्शित प्रोडक्ट्स", pricing_subtitle: "एक बार खरीदें, हमेशा के लिए अपने पास रखें। गुमरोड के माध्यम से सुरक्षित चेकआउट।",
+        portfolio_title: "हमारा पोर्टफोलियो", portfolio_subtitle: "ORSPEX सूट के वास्तविक दुनिया के अनुप्रयोग।",
+        blog_title: "ORSPEX ब्लॉग", blog_subtitle: "हमारी टीम से अंतर्दृष्टि, ट्यूटोरियल और अपडेट।", btn_write_post: "एक पोस्ट लिखें",
+        footer_desc: "ORSPEX उच्च-प्रदर्शन, ऑफ़लाइन-प्रथम टूल का एक सूट है जो उन पेशेवरों के लिए डिज़ाइन किया गया है जो गोपनीयता और गति को महत्व देते हैं।",
+        footer_products: "उत्पाद", footer_free_services: "मुफ्त सेवाएं", footer_company: "कंपनी", footer_privacy: "गोपनीयता नीति",
+        footer_copyright: "© 2025 ORSPEX. सर्वाधिकार सुरक्षित। ऑफ़लाइन उपयोग के लिए बनाया गया।",
+        
+        about_title: "ORSPEX के बारे में", 
+        about_p1: "ORSPEX एक स्वतंत्र सॉफ़्टवेयर स्टूडियो है जो उच्च-प्रदर्शन, ऑफ़लाइन-प्रथम टूल बनाने के लिए समर्पित है। हम उन पेशेवरों के लिए प्रीमियम डेस्कटॉप एप्लिकेशन बनाते हैं जो गोपनीयता, गति और अपने डेटा पर पूर्ण नियंत्रण को महत्व देते हैं।", 
+        about_p2: "हम एक उत्पाद-नेतृत्व वाला स्टूडियो हैं, उद्यम-पूंजी वाली मशीन नहीं। इसका मतलब है कि हम सीधे अपने उपयोगकर्ताओं को जवाब देते हैं, विज्ञापनदाताओं या निवेशकों को नहीं। हम सतत उद्यमशीलता में विश्वास करते हैं: ईमानदार, एकमुश्त खरीदारी के माध्यम से मूल्य उत्पन्न करने वाले सॉफ़्टवेयर का निर्माण करना, न कि अंतहीन मासिक सदस्यताओं के साथ आपके बटुए को सूखा करना। हम सुनकर, तेजी से शिपिंग करके और वास्तविक पेशेवरों के लिए वास्तविक समस्याओं को हल करके विकसित होते हैं।",
+        about_p3: "ऐसे युग में जहां सब कुछ क्लाउड की ओर बढ़ रहा है, हम इसके विपरीत निर्माण कर रहे हैं। कोई टेलीमेट्री नहीं, कोई जबरन इंटरनेट कनेक्शन नहीं, और कोई डेटा माइनिंग नहीं। बस शक्तिशाली, स्टैंडअलोन उपकरण जो ठीक तब काम करते हैं जब आपको उनकी आवश्यकता होती है—चाहे आप बोर्डरूम में हों, ऑयल रिग पर हों, या शून्य वाई-फाई वाले तहखाने में हों।",
+        
+        about_v1_title: "🔒 गोपनीयता पहले", about_v1_desc: "आपका डेटा कभी भी आपके कंप्यूटर को नहीं छोड़ता है। कोई ट्रैकिंग नहीं, कोई एनालिटिक्स नहीं, कोई क्लाउड स्टोरेज नहीं। डिज़ाइन द्वारा पूर्ण गोपनीयता।",
+        about_v2_title: "⚡ उच्च प्रदर्शन", about_v2_desc: "अपने स्थानीय हार्डवेयर का उपयोग करके, हमारे टूल वेब-आधारित विकल्पों की तुलना में काफी तेज़ चलते हैं।",
+        about_v3_title: "💼 पेशेवरों के लिए निर्मित", about_v3_desc: "चाहे आप एक फोरेंसिक जांचकर्ता, एक व्यवसाय के मालिक, या एक वीडियो संपादक हों, हमारा सूट आपके लिए है।",
+        about_v4_title: "♾️ हमेशा के लिए अपने पास रखें", about_v4_desc: "कोई मासिक शुल्क नहीं। एक बार लाइसेंस खरीदें और जब तक आपको आवश्यकता हो तब तक सॉफ़्टवेयर का उपयोग करें।",
+        btn_back_products: "← उत्पादों पर वापस जाएं", detail_features: "मुख्य विशेषताएं", btn_buy_gumroad: "Gumroad पर खरीदें →",
+        
+        prod_checkwriter_title: "Orspex चेक राइटर प्रो", prod_checkwriter_short: "चेक राइटर",
+        prod_checkwriter_desc: "पेशेवर चेक राइटिंग, प्रिंटिंग और बैंक सुलह। 1:1 चेक प्रिंट करें, वाउचर प्रबंधित करें और अपने बहीखाता को संतुलित करें।",
+        prod_checkwriter_full_desc: "बैंक चेक लिखने, प्रिंट करने और सुलझाने के लिए एक पूर्ण, पेशेवर डेस्कटॉप एप्लिकेशन। सटीक 1:1 भौतिक कागज मुद्रण, पूर्ण दोहरी-प्रविष्टि बहीखाता प्रबंधन, बहु-बैंक समर्थन, और एक बहु-भाषा इंटरफ़ेस (अंग्रेजी, अरबी, फ्रेंच, स्पेनिश, चीनी और हिंदी) की सुविधा है।",
+        feat_check_1: "मिलीमीटर संरेखण स्लाइडर्स के साथ सटीक 1:1 भौतिक मुद्रण।",
+        feat_check_2: "बहु-भाषा समर्थन (EN, AR, FR, ES, ZH, HI)।",
+        feat_check_3: "पूर्ण बैंक सुलह (चेक, जमा, शुल्क, ब्याज)।",
+        feat_check_4: "पेशेवर भुगतान, रसीद और स्थानांतरण वाउचर प्रिंट करें।",
+        feat_check_5: "100% ऑफ़लाइन - आपका वित्तीय डेटा स्थानीय और सुरक्षित रूप से संग्रहीत है।",
+
+        prod_core_title: "ORSPEX CORE - बिजनेस सूट", prod_core_short: "ORSPEX Core",
+        prod_core_desc: "मूल ऑफ़लाइन इंजन। इन्वेंट्री, इनवॉइसिंग, पेरोल, CRM और रिपोर्टिंग।",
+        prod_core_full_desc: "आधुनिक व्यवसायों के लिए मूल ऑफ़लाइन इंजन। ORSPEX CORE इन्वेंट्री प्रबंधन, इनवॉइसिंग, पेरोल, CRM और उन्नत रिपोर्टिंग को एक ही, बिजली-तेज स्थानीय एप्लिकेशन में एक साथ लाता है।",
+        feat_core_1: "100% ऑफ़लाइन ऑपरेशन - आपका डेटा कभी भी आपके नेटवर्क को नहीं छोड़ता है।",
+        feat_core_2: "एकीकृत इन्वेंट्री, इनवॉइसिंग और पेरोल मॉड्यूल।",
+        feat_core_3: "ग्राहक संबंधों को सुरक्षित रूप से प्रबंधित करने के लिए अंतर्निहित CRM।",
+        feat_core_4: "अनुकूलन योग्य रिपोर्टिंग डैशबोर्ड।",
+        feat_core_5: "एक मशीन पर या आपके स्थानीय LAN में चलता है।",
+
+        prod_forensic_title: "Orspex फोरेंसिक मीडिया विश्लेषक", prod_forensic_short: "फोरेंसिक विश्लेषक",
+        prod_forensic_desc: "13-बिंदु AI और स्प्लिस डिटेक्शन। स्थानीय फ़ाइलों और मेटाडेटा का गहरा विश्लेषण।",
+        prod_forensic_full_desc: "सीधे अपने डेस्कटॉप पर पेशेवर-ग्रेड फोरेंसिक विश्लेषण। जांचकर्ताओं और सुरक्षा पेशेवरों के लिए डिज़ाइन किया गया है जिन्हें संवेदनशील साक्ष्यों को क्लाउड पर अपलोड किए बिना गहरी अंतर्दृष्टि की आवश्यकता होती है।",
+        feat_forensic_1: "13-बिंदु AI और स्प्लिस डिटेक्शन।",
+        feat_forensic_2: "स्थानीय फ़ाइल मेटाडेटा का गहरा विश्लेषण।",
+        feat_forensic_3: "छिपे हुए डेटा और सिस्टम लॉग को सुरक्षित रूप से निकालें।",
+        feat_forensic_4: "शून्य अपलोड - सख्त श्रृंखला-अभिरक्षा आवश्यकताओं के अनुरूप।",
+        feat_forensic_5: "विस्तृत फोरेंसिक रिपोर्ट निर्यात करें।",
+
+        prod_video_title: "Orspex वीडियो कंप्रेसर", prod_video_short: "वीडियो कंप्रेसर",
+        prod_video_desc: "हार्डवेयर-त्वरित वीडियो संपीड़न। H.264/H.265/AV1, बैच कतार।",
+        prod_video_full_desc: "अपने स्वयं के हार्डवेयर द्वारा संचालित बिजली-तेज वीडियो संपीड़न। क्लाउड रेंडर की प्रतीक्षा करना बंद करें और इस शक्तिशाली डेस्कटॉप उपयोगिता के साथ अपने मीडिया को निजी रखें।",
+        feat_video_1: "हार्डवेयर-त्वरित एन्कोडिंग (H.264, H.265, AV1)।",
+        feat_video_2: "कई फ़ाइलों के लिए बैच कतार प्रसंस्करण।",
+        feat_video_3: "कोई क्लाउड रेंडरिंग नहीं - 100% स्थानीय प्रसंस्करण।",
+        feat_video_4: "छोटे फ़ाइल आकारों पर उच्च दृश्य गुणवत्ता बनाए रखें।",
+        feat_video_5: "सभी प्रमुख वीडियो प्रारूपों का समर्थन करता है।",
+
+        prod_pdf_title: "PDF कंप्रेसर", prod_pdf_short: "PDF कंप्रेसर",
+        prod_pdf_desc: "शून्य अपलोड के साथ स्थानीय रूप से PDF छोटा करें। बैच मोड, दोषरहित विकल्प।",
+        prod_pdf_full_desc: "शून्य अपलोड के साथ स्थानीय रूप से अपने PDF को छोटा करें। ORSPEX PDF कंप्रेसर ईमेल या अभिलेखीय के लिए फ़ाइल आकार को कम करने का सबसे तेज़ और सबसे सुरक्षित तरीका है।",
+        feat_pdf_1: "स्थानीय रूप से होस्ट किया गया - किसी फ़ाइल अपलोड की आवश्यकता नहीं।",
+        feat_pdf_2: "Ghostscript-ग्रेड आउटपुट गुणवत्ता।",
+        feat_pdf_3: "एक बार में कई PDF को कंप्रेस करने के लिए बैच मोड।",
+        feat_pdf_4: "दोषरहित संपीड़न विकल्प उपलब्ध है।",
+        feat_pdf_5: "अल्ट्रा-लाइटवेट और तेज़।",
+
+        prod_favicon_title: "फ़ेविकॉन मेकर और SEO जनरेटर", prod_favicon_short: "फ़ेविकॉन मेकर",
+        prod_favicon_desc: "तुरंत सही फ़ेविकॉन और SEO मेटाडेटा उत्पन्न करें। सभी आधुनिक ब्राउज़रों के लिए अनुकूलित।",
+        prod_favicon_full_desc: "तुरंत सही फ़ेविकॉन और SEO मेटाडेटा उत्पन्न करें। खोज इंजन, सोशल मीडिया पूर्वावलोकन और सभी आधुनिक ब्राउज़रों के लिए अनुकूलित, सभी आपकी मशीन पर स्थानीय रूप से चल रहे हैं।",
+        feat_fav_1: "सभी आवश्यक फ़ेविकॉन आकार (16x16, 32x32, Apple Touch, आदि) उत्पन्न करता है।",
+        feat_fav_2: "स्वचालित रूप से SEO मेटा टैग बनाता है।",
+        feat_fav_3: "सहेजने से पहले अपने आइकन का पूर्वावलोकन करें।",
+        feat_fav_4: "गोपनीयता के लिए 100% ऑफ़लाइन टूल।",
+        feat_fav_5: "तत्काल पीढ़ी।"
+      },
+      es: {
+        brand_tagline: "Organización · Planificación · Servicios · Ejecución",
+        nav_home: "Inicio", nav_about: "Sobre Nosotros", nav_services: "Servicios", nav_products: "Productos", nav_portfolio: "Portafolio", nav_blog: "Blog", nav_pricing: "Precios", nav_contact: "Contáctanos",
+        btn_get_started: "Empezar", badge_offline: "100% Sin conexión",
+        hero_eyebrow: "Independiente · Privacidad Primero", hero_title_1: "Seis herramientas. Cero nube.", hero_title_2: "Todos tus datos se quedan locales.",
+        hero_desc: "ORSPEX es una suite única para Cheques, ERP de Negocios, Análisis Forense, Compresión de Video, herramientas PDF y generadores SEO — construida para equipos que se niegan a entregar sus datos a la nube.",
+        btn_view_pricing: "Ver Precios y Productos", btn_contact_sales: "Contactar Ventas",
+        srv_title: "Nuestros Servicios Gratuitos", srv_subtitle: "Accede a nuestras herramientas en línea gratuitas al instante. No requiere instalación.",
+        srv_pdf: "Compresor PDF Gratis", srv_favicon: "Creador de Favicons Gratis", srv_jobs: "Orspex Jobs", srv_video: "Compresor de Video",
+        srv_pdf_desc: "Reduce tus archivos PDF al instante en tu navegador. Rápido, gratis y sin necesidad de cuenta.",
+        srv_favicon_desc: "Genera favicons perfectos para tu sitio web en segundos. Todos los tamaños que necesitas para navegadores modernos.",
+        srv_jobs_desc: "Encuentra tu próxima oportunidad profesional. Nuestro portal de empleo dedicado conecta a profesionales con roles de primer nivel.",
+        srv_video_desc: "Comprime rápidamente pequeños clips de video directamente en tu navegador. 100% privado y sin conexión.",
+        srv_barcode: "Generador de Códigos de Barras", srv_barcode_desc: "Crea códigos de barras rápidamente con nuestro generador gratuito en línea.",
+        btn_launch: "Lanzar Herramienta →",
+        pricing_title: "PRODUCTOS DESTACADOS", pricing_subtitle: "Compra una vez, es tuyo para siempre. Pago seguro a través de Gumroad.",
+        portfolio_title: "Nuestro Portafolio", portfolio_subtitle: "Aplicaciones reales de la suite ORSPEX.",
+        blog_title: "Blog de ORSPEX", blog_subtitle: "Perspectivas, tutoriales y actualizaciones de nuestro equipo.", btn_write_post: "Escribir un Artículo",
+        footer_desc: "ORSPEX es una suite de herramientas de alto rendimiento y sin conexión diseñadas para profesionales que valoran la privacidad y la velocidad.",
+        footer_products: "Productos", footer_free_services: "Servicios Gratuitos", footer_company: "Compañía", footer_privacy: "Política de Privacidad",
+        footer_copyright: "© 2025 ORSPEX. Todos los derechos reservados. Hecho para uso sin conexión.",
+        about_title: "Sobre ORSPEX", 
+        about_p1: "ORSPEX es un estudio de software independiente dedicado a crear herramientas de alto rendimiento y sin conexión. Creamos aplicaciones de escritorio premium para profesionales que valoran la privacidad, la velocidad y el control total sobre sus datos.", 
+        about_p2: "Somos un estudio liderado por productos, no una máquina respaldada por capital riesgo. Esto significa que respondemos directamente a nuestros usuarios, no a anunciantes o inversores. Creemos en el emprendimiento sostenible: crear software que genere valor a través de compras únicas y honestas, en lugar de vaciar tu cartera con suscripciones mensuales interminables. Evolucionamos escuchando, lanzando rápido y resolviendo problemas reales para profesionales reales.",
+        about_p3: "En una era en la que todo se mueve a la nube, estamos construyendo lo contrario. Sin telemetría, sin conexiones a Internet forzadas y sin minería de datos. Solo herramientas poderosas e independientes que funcionan exactamente cuando las necesitas, ya sea en una sala de juntas, una plataforma petrolífera o un sótano sin Wi-Fi.",
+        about_v1_title: "🔒 Privacidad Primero", about_v1_desc: "Tus datos nunca salen de tu computadora. Sin rastreo, sin análisis, sin almacenamiento en la nube. Privacidad absoluta por diseño.",
+        about_v2_title: "⚡ Alto Rendimiento", about_v2_desc: "Al utilizar tu hardware local, nuestras herramientas se ejecutan significativamente más rápido que las alternativas basadas en la web.",
+        about_v3_title: "💼 Hecho para Profesionales", about_v3_desc: "Ya seas un investigador forense, un dueño de negocio o un editor de video, nuestra suite te tiene cubierto.",
+        about_v4_title: "♾️ Tuyo Para Siempre", about_v4_desc: "Sin cuotas mensuales. Compra una licencia una vez y usa el software tanto tiempo como necesites.",
+        btn_back_products: "← Volver a Productos", detail_features: "Características Principales", btn_buy_gumroad: "Comprar en Gumroad →",
+        
+        prod_checkwriter_title: "Orspex Check Writer Pro", prod_checkwriter_short: "Orspex Check Writer",
+        prod_checkwriter_desc: "Escritura profesional de cheques, impresión y conciliación bancaria. Imprima cheques 1:1, administre comprobantes y equilibre su libro mayor.",
+        prod_checkwriter_full_desc: "Una aplicación de escritorio completa y profesional para escribir, imprimir y conciliar cheques bancarios. Cuenta con impresión exacta de papel físico 1:1, gestión completa de libro mayor de doble entrada, soporte multibancario y una interfaz multilingüe (inglés, árabe, francés, español, chino e hindi).",
+        feat_check_1: "Impresión física exacta 1:1 con controles deslizantes de alineación milimétrica.",
+        feat_check_2: "Soporte multilingüe (EN, AR, FR, ES, ZH, HI).",
+        feat_check_3: "Conciliación bancaria completa (cheques, depósitos, cargos, intereses).",
+        feat_check_4: "Imprima comprobantes profesionales de Pago, Recibo y Transferencia.",
+        feat_check_5: "100% fuera de línea: sus datos financieros se almacenan de forma local y segura.",
+
+        prod_core_title: "ORSPEX CORE - Suite de Negocios", prod_core_short: "ORSPEX Core",
+        prod_core_desc: "El motor offline fundamental. Inventario, facturación, nómina, CRM e informes.",
+        prod_core_full_desc: "El motor offline fundamental para empresas modernas. ORSPEX CORE reúne la gestión de inventario, facturación, nómina, CRM e informes avanzados en una única aplicación local ultrarrápida.",
+        feat_core_1: "Operación 100% offline: sus datos nunca salen de su red.",
+        feat_core_2: "Módulos integrados de Inventario, Facturación y Nómina.",
+        feat_core_3: "CRM integrado para gestionar relaciones con clientes de forma segura.",
+        feat_core_4: "Panel de informes personalizable.",
+        feat_core_5: "Se ejecuta en una sola máquina o en su LAN local.",
+
+        prod_forensic_title: "Orspex Analizador Forense de Medios", prod_forensic_short: "Analizador Forense",
+        prod_forensic_desc: "Detección de IA y empalmes de 13 puntos. Análisis profundo de archivos locales y metadatos.",
+        prod_forensic_full_desc: "Análisis forense de nivel profesional directamente en su escritorio. Diseñado para investigadores y profesionales de la seguridad que necesitan información profunda sin cargar pruebas confidenciales a la nube.",
+        feat_forensic_1: "Detección de IA y empalmes de 13 puntos.",
+        feat_forensic_2: "Análisis profundo de metadatos de archivos locales.",
+        feat_forensic_3: "Extraiga datos ocultos y registros del sistema de forma segura.",
+        feat_forensic_4: "Cero cargas: cumple con estrictos requisitos de cadena de custodia.",
+        feat_forensic_5: "Exporte informes forenses detallados.",
+
+        prod_video_title: "Orspex Compresor de Video", prod_video_short: "Compresor de Video",
+        prod_video_desc: "Compresión de video acelerada por hardware. H.264/H.265/AV1, cola por lotes.",
+        prod_video_full_desc: "Compresión de video ultrarrápida impulsada por su propio hardware. Deje de esperar renders en la nube y mantenga sus medios privados con esta poderosa utilidad de escritorio.",
+        feat_video_1: "Codificación acelerada por hardware (H.264, H.265, AV1).",
+        feat_video_2: "Procesamiento de cola por lotes para múltiples archivos.",
+        feat_video_3: "Sin renderizado en la nube: procesamiento 100% local.",
+        feat_video_4: "Mantenga una alta calidad visual con tamaños de archivo más pequeños.",
+        feat_video_5: "Compatible con todos los formatos de video principales.",
+
+        prod_pdf_title: "Compresor PDF", prod_pdf_short: "Compresor PDF",
+        prod_pdf_desc: "Reduzca sus PDF localmente con cero cargas. Modo por lotes, opción sin pérdida.",
+        prod_pdf_full_desc: "Reduzca sus PDF localmente con cero cargas. ORSPEX PDF Compressor es la forma más rápida y segura de reducir el tamaño de los archivos para correo electrónico o archivo.",
+        feat_pdf_1: "Alojado localmente: no se requieren cargas de archivos.",
+        feat_pdf_2: "Calidad de salida de nivel Ghostscript.",
+        feat_pdf_3: "Modo por lotes para comprimir varios PDF a la vez.",
+        feat_pdf_4: "Opción de compresión sin pérdida disponible.",
+        feat_pdf_5: "Ultraligero y rápido.",
+
+        prod_favicon_title: "Creador de Favicons y Generador SEO", prod_favicon_short: "Creador de Favicons",
+        prod_favicon_desc: "Genere favicons perfectos y metadatos SEO al instante. Optimizado para todos los navegadores modernos.",
+        prod_favicon_full_desc: "Genere favicons perfectos y metadatos SEO al instante. Optimizado para motores de búsqueda, vistas previas de redes sociales y todos los navegadores modernos, todo ejecutándose localmente en su máquina.",
+        feat_fav_1: "Genera todos los tamaños de favicon requeridos (16x16, 32x32, Apple Touch, etc.).",
+        feat_fav_2: "Crea automáticamente metaetiquetas SEO.",
+        feat_fav_3: "Obtenga una vista previa de sus iconos antes de guardar.",
+        feat_fav_4: "Herramienta 100% offline para privacidad.",
+        feat_fav_5: "Generación instantánea."
+      },
+      fr: {
+        brand_tagline: "Organisation · Planification · Services · Exécution",
+        nav_home: "Accueil", nav_about: "À Propos", nav_services: "Services", nav_products: "Produits", nav_portfolio: "Portfolio", nav_blog: "Blog", nav_pricing: "Tarifs", nav_contact: "Contactez-nous",
+        btn_get_started: "Commencer", badge_offline: "100% Hors ligne",
+        hero_eyebrow: "Autonome · Confidentialité d'abord", hero_title_1: "Six outils. Zéro cloud.", hero_title_2: "Toutes vos données restent locales.",
+        hero_desc: "ORSPEX est une suite unique pour la rédaction de chèques, l'ERP d'entreprise, l'analyse médico-légale, la compression vidéo, les outils PDF et les générateurs SEO — conçue pour les équipes qui refusent de confier leurs données au cloud.",
+        btn_view_pricing: "Voir les tarifs et produits", btn_contact_sales: "Contacter les ventes",
+        srv_title: "Nos services gratuits", srv_subtitle: "Accédez instantanément à nos outils en ligne gratuits. Aucune installation requise.",
+        srv_pdf: "Compresseur PDF gratuit", srv_favicon: "Créateur de Favicon gratuit", srv_jobs: "Orspex Jobs", srv_video: "Compresseur Vidéo",
+        srv_pdf_desc: "Réduisez vos fichiers PDF instantanément dans votre navigateur. Rapide, gratuit et sans compte requis.",
+        srv_favicon_desc: "Générez des favicons parfaits pour votre site Web en quelques secondes. Toutes les tailles dont vous avez besoin pour les navigateurs modernes.",
+        srv_jobs_desc: "Trouvez votre prochaine opportunité de carrière. Notre portail d'emploi dédié connecte les professionnels à des rôles de premier plan.",
+        srv_video_desc: "Compressez rapidement de petits clips vidéo directement dans votre navigateur. 100% privé et hors ligne.",
+        srv_barcode: "Générateur de codes-barres", srv_barcode_desc: "Créez rapidement des codes-barres avec notre générateur en ligne gratuit.",
+        btn_launch: "Lancer l'outil →",
+        pricing_title: "PRODUITS VEDETTES", pricing_subtitle: "Achetez une fois, possédez-le pour toujours. Paiement sécurisé via Gumroad.",
+        portfolio_title: "Notre Portfolio", portfolio_subtitle: "Applications réelles de la suite ORSPEX.",
+        blog_title: "Blog ORSPEX", blog_subtitle: "Perspectives, tutoriels et mises à jour de notre équipe.", btn_write_post: "Écrire un article",
+        footer_desc: "ORSPEX est une suite d'outils haute performance, axés sur le mode hors ligne, conçus pour les professionnels qui valorisent la confidentialité et la rapidité.",
+        footer_products: "Produits", footer_free_services: "Services gratuits", footer_company: "Entreprise", footer_privacy: "Politique de confidentialité",
+        footer_copyright: "© 2025 ORSPEX. Tous droits réservés. Conçu pour une utilisation hors ligne.",
+        
+        about_title: "À propos d'ORSPEX", 
+        about_p1: "ORSPEX est un studio de logiciels indépendant dédié à la création d'outils haute performance et hors ligne. Nous créons des applications de bureau haut de gamme pour les professionnels qui valorisent la confidentialité, la rapidité et le contrôle total de leurs données.", 
+        about_p2: "Nous sommes un studio axé sur les produits, pas une machine financée par le capital-risque. Cela signifie que nous répondons directement à nos utilisateurs, et non aux annonceurs ou aux investisseurs. Nous croyons en l'entrepreneuriat durable : créer des logiciels qui génèrent de la valeur grâce à des achats uniques et honnêtes, plutôt que de vider votre portefeuille avec des abonnements mensuels sans fin. Nous évoluons en écoutant, en livrant rapidement et en résolvant de vrais problèmes pour de vrais professionnels.",
+        about_p3: "À une époque où tout migre vers le cloud, nous construisons l'inverse. Pas de télémétrie, pas de connexions Internet forcées et pas d'exploration de données. Juste des outils puissants et autonomes qui fonctionnent exactement quand vous en avez besoin, que vous soyez dans une salle de conférence, sur une plate-forme pétrolière ou dans un sous-sol sans Wi-Fi.",
+        
+        about_v1_title: "🔒 Confidentialité d'abord", about_v1_desc: "Vos données ne quittent jamais votre ordinateur. Pas de suivi, pas d'analyses, pas de stockage cloud. Confidentialité absolue dès la conception.",
+        about_v2_title: "⚡ Haute Performance", about_v2_desc: "En utilisant votre matériel local, nos outils fonctionnent beaucoup plus rapidement que les alternatives basées sur le Web.",
+        about_v3_title: "💼 Conçu pour les pros", about_v3_desc: "Que vous soyez un enquêteur médico-légal, un propriétaire d'entreprise ou un monteur vidéo, notre suite vous couvre.",
+        about_v4_title: "♾️ Possédez-le pour toujours", about_v4_desc: "Pas de frais mensuels. Achetez une licence une fois et utilisez le logiciel aussi longtemps que vous en avez besoin.",
+        btn_back_products: "← Retour aux produits", detail_features: "Caractéristiques principales", btn_buy_gumroad: "Acheter sur Gumroad →",
+        
+        prod_checkwriter_title: "Orspex Check Writer Pro", prod_checkwriter_short: "Orspex Check Writer",
+        prod_checkwriter_desc: "Rédaction professionnelle de chèques, impression et rapprochement bancaire. Imprimez des chèques 1:1, gérez les bons et équilibrez votre grand livre.",
+        prod_checkwriter_full_desc: "Une application de bureau complète et professionnelle pour rédiger, imprimer et rapprocher les chèques bancaires. Comprend une impression papier physique exacte 1:1, une gestion complète du grand livre en partie double, la prise en charge de plusieurs banques et une interface multilingue (anglais, arabe, français, espagnol, chinois et hindi).",
+        feat_check_1: "Impression physique exacte 1:1 avec curseurs d'alignement au millimètre.",
+        feat_check_2: "Prise en charge multilingue (EN, AR, FR, ES, ZH, HI).",
+        feat_check_3: "Rapprochement bancaire complet (chèques, dépôts, frais, intérêts).",
+        feat_check_4: "Imprimez des bons de paiement, de réception et de transfert professionnels.",
+        feat_check_5: "100% hors ligne — Vos données financières sont stockées localement et en toute sécurité.",
+
+        prod_core_title: "ORSPEX CORE - Suite d'entreprise", prod_core_short: "ORSPEX Core",
+        prod_core_desc: "Le moteur hors ligne fondamental. Inventaire, facturation, paie, CRM et rapports.",
+        prod_core_full_desc: "Le moteur hors ligne fondamental pour les entreprises modernes. ORSPEX CORE regroupe la gestion des stocks, la facturation, la paie, le CRM et les rapports avancés dans une seule application locale ultra-rapide.",
+        feat_core_1: "Fonctionnement 100% hors ligne — vos données ne quittent jamais votre réseau.",
+        feat_core_2: "Modules intégrés d'inventaire, de facturation et de paie.",
+        feat_core_3: "CRM intégré pour gérer les relations clients en toute sécurité.",
+        feat_core_4: "Tableau de bord de rapports personnalisable.",
+        feat_core_5: "Fonctionne sur une seule machine ou sur votre réseau local.",
+
+        prod_forensic_title: "Orspex Analyseur de Médias Médico-Légal", prod_forensic_short: "Analyseur Médico-Légal",
+        prod_forensic_desc: "Détection d'IA et d'épissures en 13 points. Analyse approfondie des fichiers locaux et des métadonnées.",
+        prod_forensic_full_desc: "Analyse médico-légale de qualité professionnelle directement sur votre bureau. Conçu pour les enquêteurs et les professionnels de la sécurité qui ont besoin d'informations approfondies sans télécharger de preuves sensibles dans le cloud.",
+        feat_forensic_1: "Détection d'IA et d'épissures en 13 points.",
+        feat_forensic_2: "Analyse approfondie des métadonnées des fichiers locaux.",
+        feat_forensic_3: "Extrayez les données cachées et les journaux système en toute sécurité.",
+        feat_forensic_4: "Zéro téléchargement — conforme aux exigences strictes de la chaîne de possession.",
+        feat_forensic_5: "Exportez des rapports médico-légaux détaillés.",
+
+        prod_video_title: "Orspex Compresseur Vidéo", prod_video_short: "Compresseur Vidéo",
+        prod_video_desc: "Compression vidéo accélérée par le matériel. H.264/H.265/AV1, file d'attente par lots.",
+        prod_video_full_desc: "Compression vidéo ultra-rapide alimentée par votre propre matériel. Arrêtez d'attendre les rendus cloud et gardez vos médias privés avec cet puissant utilitaire de bureau.",
+        feat_video_1: "Encodage accéléré par le matériel (H.264, H.265, AV1).",
+        feat_video_2: "Traitement de la file d'attente par lots pour plusieurs fichiers.",
+        feat_video_3: "Pas de rendu cloud — traitement 100% local.",
+        feat_video_4: "Maintenez une haute qualité visuelle avec des tailles de fichiers plus petites.",
+        feat_video_5: "Prend en charge tous les principaux formats vidéo.",
+
+        prod_pdf_title: "Compresseur PDF", prod_pdf_short: "Compresseur PDF",
+        prod_pdf_desc: "Réduisez les PDF localement avec zéro téléchargement. Mode batch, option sans perte.",
+        prod_pdf_full_desc: "Réduisez vos PDF localement avec zéro téléchargement. ORSPEX PDF Compressor est le moyen le plus rapide et le plus sûr de réduire la taille des fichiers pour l'envoi par e-mail ou l'archivage.",
+        feat_pdf_1: "Hébergé localement — aucun téléchargement de fichier requis.",
+        feat_pdf_2: "Qualité de sortie de niveau Ghostscript.",
+        feat_pdf_3: "Mode batch pour compresser plusieurs PDF à la fois.",
+        feat_pdf_4: "Option de compression sans perte disponible.",
+        feat_pdf_5: "Ultra-léger et rapide.",
+
+        prod_favicon_title: "Créateur de Favicon et Générateur SEO", prod_favicon_short: "Créateur de Favicon",
+        prod_favicon_desc: "Générez des favicons parfaits et des métadonnées SEO instantanément. Optimisé pour tous les navigateurs modernes.",
+        prod_favicon_full_desc: "Générez des favicons parfaits et des métadonnées SEO instantanément. Optimisé pour les moteurs de recherche, les aperçus des médias sociaux et tous les navigateurs modernes, le tout fonctionnant localement sur votre machine.",
+        feat_fav_1: "Génère toutes les tailles de favicon requises (16x16, 32x32, Apple Touch, etc.).",
+        feat_fav_2: "Crée automatiquement des balises méta SEO.",
+        feat_fav_3: "Prévisualisez vos icônes avant de les sauvegarder.",
+        feat_fav_4: "Outil 100% hors ligne pour la confidentialité.",
+        feat_fav_5: "Génération instantanée."
       }
     };
 
-    // --- TRANSLATION ENGINE ---
-    function setLanguage(lang) {
-      if(!translations[lang]) return;
-      document.documentElement.lang = lang;
-      document.querySelectorAll('.lang-switch button').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-      });
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-          el.innerText = translations[lang][key];
-        }
-      });
-      try { localStorage.setItem('orspex-lang', lang); } catch(e) {}
+    // --- RELIABLE MULTI-LANGUAGE ENGINE ---
+    function applyTranslation(element, translatedText) {
+      // Preserve nested markup (for example the Desktop / Offline badges in product links).
+      const textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+      if (textNode) {
+        textNode.nodeValue = translatedText;
+      } else {
+        element.insertBefore(document.createTextNode(translatedText), element.firstChild);
+      }
     }
 
-    document.querySelectorAll('.lang-switch button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        setLanguage(btn.getAttribute('data-lang'));
+    function setLanguage(requestedLanguage) {
+      const lang = Object.prototype.hasOwnProperty.call(translations, requestedLanguage)
+        ? requestedLanguage
+        : 'en';
+      const dictionary = translations[lang];
+
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+      // Update language buttons and their accessible state.
+      document.querySelectorAll('.lang-switch button[data-lang]').forEach(button => {
+        const isActive = button.dataset.lang === lang;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
       });
+
+      // Translate the page without destroying child elements or status badges.
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.dataset.i18n;
+        const value = dictionary[key] ?? translations.en[key];
+        if (typeof value === 'string') applyTranslation(element, value);
+      });
+
+      // Re-render the open product using its stable ID, even when switching
+      // directly between two languages other than English.
+      if (currentProductId && productData[currentProductId]) {
+        const detailPage = document.getElementById('product-detail-page');
+        if (detailPage && detailPage.classList.contains('active')) {
+          renderProductDetails(productData[currentProductId]);
+        }
+      }
+
+      try {
+        localStorage.setItem('orspex-lang', lang);
+      } catch (error) {
+        // The site still works when browser storage is disabled.
+      }
+    }
+
+    function initializeLanguageAndNavigation() {
+      let savedLanguage = 'en';
+      try {
+        savedLanguage = localStorage.getItem('orspex-lang') || 'en';
+      } catch (error) {
+        // Use English when browser storage is unavailable.
+      }
+
+      setLanguage(savedLanguage);
+      showPage('home');
+    }
+
+    // Bind language controls after they exist. This script is at the end of the
+    // document, but the readyState check also supports moving it into the head.
+    document.querySelectorAll('.lang-switch button[data-lang]').forEach(button => {
+      button.addEventListener('click', () => setLanguage(button.dataset.lang));
     });
 
-    window.addEventListener('DOMContentLoaded', () => {
-      let savedLang = 'en';
-      try { savedLang = localStorage.getItem('orspex-lang') || 'en'; } catch(e) {}
-      setLanguage(savedLang);
-      showPage('home'); // Force home page to show on load
-    });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeLanguageAndNavigation, { once: true });
+    } else {
+      initializeLanguageAndNavigation();
+    }
   </script>
 </body>
 </html>
